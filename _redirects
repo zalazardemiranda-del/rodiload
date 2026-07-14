@@ -1,0 +1,2 @@
+# Redirigir la raíz directamente al cubicador (301 = permanente, sin flash)
+/  /cubicador_premium/index.html  301

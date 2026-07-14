@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RODILOAD | Cubicador Premium</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="icon" href="assets/logo_rodiload.png" type="image/png">
+    <link rel="apple-touch-icon" href="assets/logo_rodiload.png">
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- SheetJS para Excel (Lectura) -->
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+
+    <!-- ExcelJS para Excel (Escritura con estilos) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+
+    <!-- Three.js (Global Version for local file:// compatibility) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- OrbitControls for r128 -->
+    <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/controls/OrbitControls.js"></script>
+    <!-- GLTFLoader for r128 -->
+    <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/loaders/GLTFLoader.js"></script>
+    <!-- TransformControls for r128 -->
+    <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/controls/TransformControls.js"></script>
+
+    <!-- Font Awesome para los iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Firebase SDKs (v10 Compat for easy integration) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <style>
+        .hist-btn-pdf {
+            background: rgba(82, 181, 212, 0.1); border: 1px solid #52b5d4; color: #52b5d4; padding: 6px 12px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 5px; font-weight: 600; font-size: 11px; transition: all 0.2s ease;
+        }
+        .hist-btn-pdf:hover { background: #52b5d4; color: #060b13; }
+        .hist-btn-icon { background: transparent; border: none; color: #a0aec0; cursor: pointer; padding: 4px; border-radius: 4px; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; }
+        .hist-btn-icon:hover { color: white; background: rgba(255,255,255,0.1); }
+        .hist-btn-icon.danger:hover { color: #ef4444; background: rgba(239,68,68,0.1); }
+    </style>
+
+</head>
+
+<body>
+    <!-- Pantalla de Inicio / Login -->
+    <div id="login-screen" class="login-overlay" style="display: none;">
+        <!-- Cubos Decorativos (estilo la imagen del usuario) -->
+        <div class="cube-decorator cube-1"></div>
+        <div class="cube-decorator cube-2"></div>
+        <div class="cube-decorator cube-3"></div>
+        
+        <div class="login-card">
+
+            <div class="login-brand">
+                <a href="https://rodiload.com" style="text-decoration: none; display: inline-block; cursor: pointer; transition: transform 0.2s;">
+                    <img src="assets/logo_rodiload.png" alt="RODILOAD Logo" class="login-logo">
+                </a>
+                <h1>RODILOAD</h1>
+            </div>
+            <form id="login-form" class="login-form">
+                <div class="login-input-group">
+                    <label><i data-lucide="user"></i> CORREO ELECTRÓNICO</label>
+                    <input type="text" id="login-username" placeholder="Ingresa tu correo" required>
+                </div>
+                <div class="login-input-group">
+                    <label><i data-lucide="key"></i> CLAVE DE EMPRESA</label>
+                    <input type="text" id="login-tenant" placeholder="Ej. RODIPACK" required>
+                </div>
+                <div class="login-input-group">
+                    <label><i data-lucide="lock"></i> CONTRASEÑA</label>
+                    <input type="password" id="login-password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-login">
+                    INGRESAR AL SISTEMA <i data-lucide="arrow-right"></i>
+                </button>
+            </form>
+            
+            <div class="login-footer">
+            </div>
+        </div>
+    </div>
+
+    <!-- Mode Selection Screen -->
+    <div id="mode-selection-screen" class="mode-selection-overlay" style="display: none;">
+        <!-- Cubos Decorativos -->
+        <div class="cube-decorator cube-1"></div>
+        <div class="cube-decorator cube-2"></div>
+        <div class="cube-decorator cube-3"></div>
+
+        <div class="mode-selection-logo" style="position: relative; z-index: 10;">
+            <a href="https://rodiload.com" id="logo-link-mode" style="text-decoration: none; display: inline-block; cursor: pointer; transition: transform 0.2s;">
+                <img src="assets/logo_rodiload.png" alt="RODILOAD Logo">
+            </a>
+        </div>
+        <h1 style="position: relative; z-index: 10;">Selecciona el Modo de Trabajo</h1>
+        <div class="mode-cards-container" style="position: relative; z-index: 10;">
+            <div class="mode-card" id="btn-mode-individual">
+                <i data-lucide="box"></i>
+                <h2>Cubicador Individual</h2>
+                <p>Calcula y visualiza la carga pieza por pieza en un entorno 3D.</p>
+            </div>
+            <div class="mode-card" id="btn-mode-massive">
+                <i data-lucide="layers"></i>
+                <h2>Cubicación Masiva</h2>
+                <p>Procesa cientos de piezas desde Excel y obtén el acomodo en múltiples unidades.</p>
+            </div>
+        </div>
+        
+        <div id="admin-mode-container" style="display: none; width: 100%; max-width: 800px; margin: 30px auto 0; text-align: center; position: relative; z-index: 10;">
+            <button id="btn-mode-admin" style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.4); color: #f59e0b; padding: 12px 30px; border-radius: 12px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 10px; font-size: 16px; font-weight: 500; transition: all 0.3s; backdrop-filter: blur(10px);" onmouseover="this.style.background='rgba(245, 158, 11, 0.2)'; this.style.borderColor='rgba(245, 158, 11, 0.6)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(245, 158, 11, 0.1)'; this.style.borderColor='rgba(245, 158, 11, 0.4)'; this.style.transform='translateY(0)';">
+                <i data-lucide="shield" style="width: 20px; height: 20px;"></i> Panel Administrativo
+            </button>
+        </div>
+    </div>
+
+    <!-- Admin Panel Screen -->
+    <div id="admin-panel-container" class="admin-container" style="display: none; padding: 40px; max-width: 1000px; margin: 0 auto;">
+        <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <h2 style="color: #f59e0b; display: flex; align-items: center; gap: 10px;">
+                <i data-lucide="shield"></i> PANEL ADMINISTRATIVO
+            </h2>
+            <button id="btn-admin-back" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #a0aec0; padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s;" onmouseover="this.style.color='#fff'; this.style.background='rgba(255,255,255,0.1)';" onmouseout="this.style.color='#a0aec0'; this.style.background='rgba(255,255,255,0.05)';">
+                <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i> Volver
+            </button>
+        </header>
+
+        <div style="background: rgba(11, 20, 29, 0.85); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 16px; padding: 25px;">
+            <h3 style="color: #fff; margin-bottom: 20px;">Asignar Clave a Usuario</h3>
+            <form id="admin-assign-form" style="display: flex; gap: 15px; align-items: flex-end; margin-bottom: 30px;">
+                <div style="flex: 1;">
+                    <label style="color: #a0aec0; font-size: 12px; margin-bottom: 5px; display: block;">Correo del Usuario</label>
+                    <input type="email" id="admin-input-email" placeholder="ejemplo@correo.com" required style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 10px; border-radius: 8px;">
+                </div>
+                <div style="flex: 1;">
+                    <label style="color: #a0aec0; font-size: 12px; margin-bottom: 5px; display: block;">Clave de Empresa</label>
+                    <input type="text" id="admin-input-tenant" placeholder="Ej. RODIPACK" required style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 10px; border-radius: 8px; text-transform: uppercase;">
+                </div>
+                <button type="submit" class="btn btn-primary" id="btn-admin-assign" style="background: #f59e0b; border: none; padding: 12px 25px; color: #fff; cursor: pointer; width: auto; white-space: nowrap; flex-shrink: 0;">
+                    ASIGNAR <i data-lucide="plus"></i>
+                </button>
+            </form>
+
+            <h3 style="color: #fff; margin-bottom: 15px;">Usuarios Asignados</h3>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left; color: #e2e8f0;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); color: #a0aec0; font-size: 13px;">
+                            <th style="padding: 10px;">Correo</th>
+                            <th style="padding: 10px;">Clave de Empresa</th>
+                            <th style="padding: 10px; text-align: right;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-users-list">
+                        <!-- Llenado dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Massive Cubing Screen -->
+    <div id="massive-cubing-container" class="massive-container" style="display: none;">
+          <header class="main-header" style="background: rgba(11, 20, 29, 0.8); border-bottom: 1px solid rgba(82, 181, 212, 0.2); margin: -40px -40px 30px -40px; padding: 15px 40px;">
+              <div class="logo-area" style="cursor: default;">
+                  <img src="assets/logo_rodiload.png" alt="RODILOAD Logo" class="logo-img">
+                  <div class="brand-details">
+                      <h1 class="logo-title">RODILOAD</h1>
+                      <div class="tagline-area">
+                          <span class="tagline-text">LOGISTICS CONTROL & OPTIMIZATION</span>
+                      </div>
+                  </div>
+              </div>
+              <div class="header-right">
+                  <div class="user-profile-area">
+                      <button id="btn-massive-back" class="btn-menu-back" title="Cambiar de Modo">
+                          <i data-lucide="layout-grid"></i> CAMBIAR MODO
+                      </button>
+
+                      <div class="user-actions">
+                          <button id="btn-massive-logout" class="btn-logout-premium" title="Cerrar Sesión">
+                              <i data-lucide="log-out"></i>
+                          </button>
+                      </div>
+                  </div>
+              </div>
+          </header>
+          
+          <h2 style="margin-bottom: 25px; color: #fff; display: flex; align-items: center; gap: 10px;">
+            <i data-lucide="layers" style="color: #00e5ff;"></i> CUBICACIÓN MASIVA
+          </h2>
+        
+        <!-- Contenedor Principal a Dos Columnas -->
+        <div id="massive-two-column-layout" style="display: flex; gap: 30px; align-items: flex-start; width: 100%; max-width: 1600px; margin: 0 auto; flex: 1; min-height: 0;">
+        
+        <!-- Step 1: Upload and Configure -->
+        <div id="massive-setup-section" style="flex: 0 0 380px; width: 100%; display: flex; flex-direction: column; min-height: 0; height: 100%;">
+            <div class="massive-compact-card" style="background: rgba(11, 20, 29, 0.85); border: 1px solid rgba(82, 181, 212, 0.3); border-radius: 16px; padding: 20px 25px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 20px rgba(0, 229, 255, 0.1); backdrop-filter: blur(10px); display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; box-sizing: border-box;">
+
+                <!-- Contenido scrollable -->
+                <div style="flex: 1; overflow-y: auto; min-height: 0; padding-right: 4px;">
+
+                <!-- Step 1 -->
+                <div class="step-container" style="margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h3 style="font-size: 13px; color: #e2e8f0; margin: 0; font-weight: 600;">1. Archivo de Carga (Excel)</h3>
+                        <button id="btn-download-template" style="background: transparent; border: none; color: #52b5d4; cursor: pointer; font-size: 12px; display: flex; align-items: center; gap: 5px; transition: color 0.3s; padding: 0;" onmouseover="this.style.color='#00e5ff'" onmouseout="this.style.color='#52b5d4'">
+                            <i data-lucide="download" style="width: 14px; height: 14px;"></i> Plantilla
+                        </button>
+                    </div>
+                    <div class="drop-zone" id="excel-drop-zone" style="padding: 18px 15px; border-radius: 12px; background: rgba(0,0,0,0.3); border: 1px dashed rgba(82, 181, 212, 0.4); text-align: center; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.borderColor='#00e5ff'; this.style.background='rgba(0, 229, 255, 0.05)';" onmouseout="this.style.borderColor='rgba(82, 181, 212, 0.4)'; this.style.background='rgba(0,0,0,0.3)';">
+                        <i data-lucide="upload-cloud" style="color: #52b5d4; width: 26px; height: 26px; margin-bottom: 8px;"></i>
+                        <p style="margin: 0; font-size: 12px; color: #a0aec0;">Arrastra o haz clic para subir archivo</p>
+                        <input type="file" id="excel-file-input" accept=".xlsx, .xls, .csv" style="display: none;">
+                    </div>
+                    <div id="excel-file-info" style="margin-top: 8px; color: #00e5ff; font-size: 12px; text-align: center; display: none; background: rgba(0, 229, 255, 0.1); padding: 7px; border-radius: 6px; font-weight: 500;"></div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="step-container" style="margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h3 style="font-size: 13px; color: #e2e8f0; margin: 0; font-weight: 600; display: flex; align-items: center; gap: 7px;">
+                            <i data-lucide="truck" style="width:15px; height:15px; color:#f59e0b;"></i> 2. Unidades Disponibles
+                        </h3>
+                        <div class="unit-toggle" style="background: rgba(255,255,255,0.05); padding: 4px; border-radius: 8px; display: none; gap: 4px; align-items: center;">
+                        </div>
+                    </div>
+                    <!-- Lista plana de unidades — sin dropdown, sin scrollbar interno -->
+                    <div id="massive-units-list" style="display: flex; flex-direction: column; gap: 4px;">
+                        <!-- Checkboxes inyectados por JS -->
+                    </div>
+                </div>
+
+                </div><!-- fin scrollable -->
+
+                <!-- Action Button (siempre visible al fondo) -->
+                <button id="btn-process-massive" class="btn-process" disabled style="flex-shrink: 0; width: 100%; box-sizing: border-box; padding: 16px 15px; font-size: 15px; font-weight: bold; letter-spacing: 1px; border-radius: 12px; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 15px; box-shadow: 0 4px 15px rgba(0, 229, 255, 0.2); background: #52b5d4; color: #060b13; border: none; cursor: pointer; transition: all 0.3s;">
+                    <i data-lucide="play-circle" style="width: 22px; height: 22px;"></i> COMENZAR CUBICACIÓN
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 2: Results -->
+        <div id="massive-results-section" style="display: none; flex: 1; width: 100%; padding-bottom: 50px; overflow-y: auto; padding-right: 15px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="font-size: 16px; font-weight: 600; margin: 0;">Resultados (Viajes Asignados)</h3>
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <button id="btn-new-massive" class="btn-menu-back" style="border-color: #F43F5E; color: #F43F5E; margin-right: 0;">
+                        <i data-lucide="trash-2"></i> LIMPIAR RESULTADOS
+                    </button>
+                </div>
+            </div>
+            <div id="massive-results-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+            </div>
+            
+            <!-- Paginator -->
+            <div style="display: flex; justify-content: center; margin-top: 30px;">
+                <div id="massive-paginator" style="display: none; align-items: center; gap: 15px; background: rgba(255,255,255,0.05); padding: 5px 15px; border-radius: 20px; border: 1px solid rgba(82, 181, 212, 0.3);">
+                    <button id="btn-prev-page" style="background: transparent; border: none; color: #52b5d4; cursor: pointer; padding: 5px; display: flex; align-items: center; justify-content: center; transition: 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#52b5d4'"><i data-lucide="chevron-left"></i></button>
+                    <span id="page-indicator" style="color: #e2e8f0; font-size: 13px; font-weight: 600; min-width: 90px; text-align: center;">Página 1 de 1</span>
+                    <button id="btn-next-page" style="background: transparent; border: none; color: #52b5d4; cursor: pointer; padding: 5px; display: flex; align-items: center; justify-content: center; transition: 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#52b5d4'"><i data-lucide="chevron-right"></i></button>
+                </div>
+            </div>
+        </div>
+        
+        </div> <!-- Fin de Contenedor Dos Columnas -->
+    </div>
+
+    <!-- Pantalla de Carga -->
+    <div id="loading-screen" class="loading-screen" style="display: flex;">
+        <div class="loader-content">
+            <div class="loader-spinner"></div>
+            <h2 class="loader-title">RODILOAD</h2>
+            <p class="loader-text">Inicializando Entorno de Simulación 3D...</p>
+        </div>
+    </div>
+
+    <!-- Modal: Agregar Unidades Extra -->
+    <div id="add-units-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i data-lucide="alert-triangle" style="color: #f97316;"></i> Faltan Unidades</h3>
+            </div>
+            <div class="modal-body">
+                <p id="add-units-message">Sin unidades disponibles para la ruta X.</p>
+                <p style="margin-bottom: 15px; font-size: 14px; color: #94a3b8;">¿Qué unidad deseas agregar para continuar con esta ruta?</p>
+                
+                <div class="form-group">
+                    <label>Tipo de Unidad:</label>
+                    <select id="extra-unit-select" class="custom-select">
+                        <!-- Options populated via JS -->
+                    </select>
+                </div>
+                
+                <div class="form-group" style="margin-top: 15px;">
+                    <label>Cantidad a agregar:</label>
+                    <input type="number" id="extra-unit-qty" value="1" min="1" class="custom-input" style="width: 100%;">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-cancel-extra-units" class="btn-cancel">Omitir Ruta</button>
+                <button id="btn-add-extra-units" class="btn-confirm" style="background: rgba(249, 115, 22, 0.1); border-color: #f97316; color: #f97316;">Agregar Unidades</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="app-container" style="display: none;">
+
+        <!-- Header -->
+        <header class="main-header">
+            <a href="https://rodiload.com" id="logo-link-header" class="logo-area" style="text-decoration: none; cursor: pointer;">
+                <img src="assets/logo_rodiload.png" alt="RODILOAD Logo" class="logo-img">
+                <div class="brand-details">
+                    <h1 class="logo-title">RODILOAD</h1>
+                    <div class="tagline-area">
+                        <span class="tagline-text">LOGISTICS CONTROL & OPTIMIZATION</span>
+                    </div>
+                </div>
+            </a>
+            <div class="header-right">
+                <div class="user-profile-area">
+                    <button id="btn-back-to-menu" class="btn-menu-back" title="Cambiar de Modo">
+                        <i data-lucide="layout-grid"></i> CAMBIAR MODO
+                    </button>
+
+                    <div class="user-actions">
+                        <button id="btn-logout" class="btn-logout-premium" title="Cerrar Sesión">
+                            <i data-lucide="log-out"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-layout">
+            <!-- Sidebar Izquierdo -->
+            <aside class="sidebar">
+                <div class="panel-card">
+                    <div class="panel-header-with-actions" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h3 class="panel-title" style="margin: 0;"><i data-lucide="package"></i> DATOS DE LA CARGA</h3>
+                        <div class="unit-toggle" style="background: rgba(255,255,255,0.05); padding: 4px; border-radius: 8px; display: flex; gap: 2px;">
+                            <button id="btn-unit-metric" class="unit-btn active" style="padding: 4px 8px; font-size: 11px; font-weight: 600; border: none; border-radius: 6px; background: var(--primary); color: white; cursor: pointer;">CM / KG</button>
+                            <button id="btn-unit-imperial" class="unit-btn" style="padding: 4px 8px; font-size: 11px; font-weight: 600; border: none; border-radius: 6px; background: transparent; color: #94a3b8; cursor: pointer;">IN / LBS</button>
+                        </div>
+                    </div>
+                    <div class="input-group full" style="margin-bottom: 15px;">
+                        <label>TIPO DE UNIDAD</label>
+                        <div class="custom-select-wrapper" id="custom-unit-select">
+                            <div class="custom-select-trigger">
+                                <span id="custom-select-label">⚡ TODAS LAS UNIDADES (Automático)</span>
+                                <i data-lucide="chevron-down" class="select-icon"></i>
+                            </div>
+                            <div class="custom-select-options">
+                                <div class="custom-option selected" data-value="all">⚡ TODAS LAS UNIDADES (Automático)</div>
+                                <!-- JS llenará el resto -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label id="lbl-length">LARGO (cm)</label>
+                            <input type="number" id="input-length" value="">
+                        </div>
+                        <div class="input-group">
+                            <label id="lbl-width">ANCHO (cm)</label>
+                            <input type="number" id="input-width" value="">
+                        </div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label id="lbl-height">ALTO (cm)</label>
+                            <input type="number" id="input-height" value="">
+                        </div>
+                        <div class="input-group">
+                            <label>SKU (ID)</label>
+                            <input type="text" id="input-sku" placeholder="Ej: SKU-001">
+                        </div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label id="lbl-weight">PESO / PIEZA (kg)</label>
+                            <input type="number" id="input-weight" value="">
+                        </div>
+                        <div class="input-group">
+                            <label>CANTIDAD</label>
+                            <input type="number" id="input-quantity" value="">
+                        </div>
+                    </div>
+                    <div class="input-group full">
+                        <label>DESCRIPCIÓN</label>
+                        <input type="text" id="input-description" value="">
+                    </div>
+
+                    <h3 class="panel-title"><i data-lucide="settings"></i> CARACTERÍSTICAS</h3>
+                    <div class="features-grid">
+                        <label class="cb-item"><input type="checkbox" id="cb-fragile"> FRÁGIL</label>
+                        <label class="cb-item"><input type="checkbox" id="cb-stackable" checked> APILABLE</label>
+                        <label class="cb-item"><input type="checkbox" id="cb-dangerous"> PELIGROSO</label>
+                        <label class="cb-item"><input type="checkbox" id="cb-refrigerated"> REFRIGERADO</label>
+                    </div>
+
+                    <div class="sidebar-actions">
+                        <button id="btn-add-cargo" class="btn-secondary">+ AGREGAR PIEZA</button>
+                        
+                        <div id="cargo-selection-actions" class="selection-actions-pill" style="display: none;">
+                            <button id="btn-edit-selected" class="btn-pill btn-edit-pill">
+                                <i data-lucide="edit-2"></i> EDITAR
+                            </button>
+                            <button id="btn-delete-selected" class="btn-pill btn-delete-pill">
+                                <i data-lucide="trash-2"></i> BORRAR
+                            </button>
+                        </div>
+
+                        <!-- LISTA DE PIEZAS AGREGADAS -->
+                        <div id="pending-cargo-container" class="pending-cargo-list">
+                            <div id="cargo-items-list" class="items-list"></div>
+                        </div>
+
+                        <button id="btn-calculate" class="btn-primary"><i data-lucide="zap"></i> CUBICAR</button>
+                        <button id="btn-clear-cargo" class="btn-link">↺ LIMPIAR</button>
+
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Contenido Central -->
+            <section class="content-area">
+                <div class="viewer-container">
+                    <header class="viewer-header">
+                        <div class="header-main-info">
+                            <i data-lucide="truck"></i>
+                            <span id="current-unit-title">ACOMODO EN NISSAN 1.5T</span>
+                        </div>
+                    </header>
+
+                    <div id="three-container" class="canvas-3d"></div>
+
+
+
+                    <footer class="viewer-footer">
+                        <div class="unit-carousel-container" style="display: none;">
+                            <button class="carousel-btn prev" id="btn-prev-unit">
+                                <i data-lucide="chevron-left"></i>
+                            </button>
+                            <div class="unit-chips" id="unit-chips"></div>
+                            <button class="carousel-btn next" id="btn-next-unit">
+                                <i data-lucide="chevron-right"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="viewer-actions">
+                            <button id="btn-manual-mode" class="btn-manual-mode disabled" title="Activar Ajuste Manual de Carga">
+                                <i data-lucide="mouse-pointer-2"></i> AJUSTE MANUAL
+                            </button>
+
+                        </div>
+                    </footer>
+
+
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <label>APROVECHAMIENTO</label>
+                        <div class="stat-content">
+                            <div class="circle-progress">
+                                <svg viewBox="0 0 36 36" class="circular-chart">
+                                    <path class="circle-bg"
+                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                    <path class="circle" id="stat-efficiency-circle" stroke-dasharray="0, 100"
+                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                </svg>
+                                <span class="circle-text" id="stat-efficiency">0%</span>
+                            </div>
+                            <div class="stat-info">
+                                <span class="info-main" id="stat-vol-used">0.00 m³</span>
+                                <span class="info-sub" id="stat-vol-total">Capacidad Total</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-box">
+                        <label>PESO CARGA / MÁX</label>
+                        <div class="stat-content-row">
+                            <i data-lucide="scale" class="stat-icon"></i>
+                            <div>
+                                <span class="info-value" id="stat-weight-text">0 / 0 kg</span>
+                                <span class="info-sub" id="stat-weight-pct">Carga útil permitida</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-box">
+                        <label>NORMATIVIDAD (NOMS)</label>
+                        <div id="nom-list" class="nom-list">
+                            <div class="nom-item"><i data-lucide="file-check"></i> NOM-012-SCT-2-2017</div>
+                            <div class="nom-item"><i data-lucide="file-check"></i> NOM-068-SCT-2-2014</div>
+                            <div class="nom-item"><i data-lucide="file-check"></i> NOM-010-SCT-2-2009</div>
+                        </div>
+                    </div>
+
+                    <div class="stat-box pdf-export-box">
+                        <label>REPORTE DE CARGA</label>
+                        <div class="pdf-content">
+                            <button id="btn-generate-pdf" class="btn-pdf disabled">
+                                <i data-lucide="file-text"></i>
+                                GENERAR REPORTE PDF
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+        </main>
+    </div>
+
+
+
+
+
+    <!-- Modal Detalle del Embarque (Imagen 3 Style) -->
+    <div id="detail-modal" class="modal-overlay" style="display: none;">
+        <div class="detail-container">
+            <header class="detail-header">
+                <div class="detail-brand">
+                    <img src="assets/logo_rodipack.png" alt="Logo" height="30">
+                    <div>
+                        <h4 id="detail-title">DETALLE DE EMBARQUE</h4>
+                        <span id="detail-date" class="detail-subtext"></span>
+                    </div>
+                </div>
+                <button id="close-detail" class="close-btn">×</button>
+            </header>
+            <div class="detail-body">
+                <div id="detail-items-list" class="detail-section">
+                    <h5><i data-lucide="list"></i> LISTADO DE PIEZAS</h5>
+                    <div class="detail-table-wrapper">
+                        <table class="detail-table">
+                            <thead>
+                                <tr>
+                                    <th>L (m)</th>
+                                    <th>A (m)</th>
+                                    <th>AL (m)</th>
+                                    <th>KG</th>
+                                    <th>QT</th>
+                                    <th>OPC</th>
+                                </tr>
+                            </thead>
+                            <tbody id="detail-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="detail-summary-grid">
+                    <div class="detail-stat">
+                        <label>EFICIENCIA</label>
+                        <span id="detail-eff-text">0%</span>
+                    </div>
+                    <div class="detail-stat">
+                        <label>PESO TOTAL</label>
+                        <span id="detail-weight-text">0 kg</span>
+                    </div>
+                    <button id="btn-download-pdf-history" class="btn-pdf-detail">
+                        <i data-lucide="file-check"></i> PDF GENERADO
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANEL DE CALIBRACIÓN -->
+    <div id="calibration-panel" class="calibration-panel" style="display: none;">
+        <div class="calib-header">
+            <span><i data-lucide="sliders"></i> CALIBRACIÓN DE UNIDAD</span>
+            <button id="btn-close-calibration" class="close-btn">×</button>
+        </div>
+        <div class="calib-body">
+            <!-- Calibración Modelo 3D -->
+            <div class="calib-section">
+                <label>MODELO 3D (CAMIÓN/TRAILER)</label>
+                <div class="calib-controls">
+                    <button id="calib-move-left" title="Izquierda"><i data-lucide="arrow-left"></i></button>
+                    <button id="calib-move-right" title="Derecha"><i data-lucide="arrow-right"></i></button>
+                    <button id="calib-move-back" title="Atrás"><i data-lucide="arrow-up"></i></button>
+                    <button id="calib-move-front" title="Adelante"><i data-lucide="arrow-down"></i></button>
+                    <button id="calib-move-up" title="Subir"><i data-lucide="chevron-up"></i></button>
+                    <button id="calib-move-down" title="Bajar"><i data-lucide="chevron-down"></i></button>
+                </div>
+                <div class="calib-row">
+                    <span>ESCALA:</span>
+                    <div>
+                        <button id="calib-scale-down" style="padding:4px 8px; border-radius:4px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: white; cursor: pointer;">-</button>
+                        <button id="calib-scale-up" style="padding:4px 8px; border-radius:4px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: white; cursor: pointer;">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calibración Caja Azul -->
+            <div id="box-calibration-section" class="calib-section">
+                <label>ÁREA DE CARGA (CAJA AZUL)</label>
+                <div class="calib-controls">
+                    <button id="box-move-left" title="Izquierda"><i data-lucide="arrow-left"></i></button>
+                    <button id="box-move-right" title="Derecha"><i data-lucide="arrow-right"></i></button>
+                    <button id="box-move-back" title="Atrás"><i data-lucide="arrow-up"></i></button>
+                    <button id="box-move-front" title="Adelante"><i data-lucide="arrow-down"></i></button>
+                    <button id="box-move-up" title="Subir"><i data-lucide="chevron-up"></i></button>
+                    <button id="box-move-down" title="Bajar"><i data-lucide="chevron-down"></i></button>
+                </div>
+            </div>
+
+            <button id="btn-lock-calibration" class="btn-lock">
+                <i data-lucide="lock"></i> GUARDAR CALIBRACIÓN
+            </button>
+        </div>
+    </div>
+
+    <!-- PANELES FLOTANTES MOVIDOS FUERA DEL CONTENEDOR PARA EVITAR CLIPPING -->
+    <!-- PANEL DE CONTROL MANUAL DE CARGA -->
+    <div id="manual-control-panel" class="manual-panel" style="display: none;">
+        <div class="manual-header">
+            <span><i data-lucide="move"></i> AJUSTE DE CARGA</span>
+            <button id="close-manual" class="close-btn">×</button>
+        </div>
+        <div class="manual-body">
+            <div class="ctrl-group">
+                <label>DESPLAZAR PIEZA</label>
+                <div class="ctrl-grid">
+                    <button onclick="window.app.moveBoxManual('x', -0.05)" title="Izquierda"><i data-lucide="arrow-left"></i></button>
+                    <button onclick="window.app.moveBoxManual('x', 0.05)" title="Derecha"><i data-lucide="arrow-right"></i></button>
+                    <button onclick="window.app.moveBoxManual('z', -0.05)" title="Arriba"><i data-lucide="chevron-up"></i></button>
+                    <button onclick="window.app.moveBoxManual('z', 0.05)" title="Abajo"><i data-lucide="chevron-down"></i></button>
+                    <button onclick="window.app.moveBoxManual('y', 0.05)" class="btn-up" title="Subir"><i data-lucide="arrow-up"></i></button>
+                    <button onclick="window.app.moveBoxManual('y', -0.05)" class="btn-up" title="Bajar"><i data-lucide="arrow-down"></i></button>
+                </div>
+            </div>
+
+            <button onclick="window.app.deleteSelectedBox()" class="btn-delete-manual">
+                <i data-lucide="trash-2"></i> ELIMINAR PIEZA SELECCIONADA
+            </button>
+    <script src="app.js?v=11"></script>
+    <script src="massive.js?v=11"></script>
+    <script src="admin.js?v=11"></script>
+    <script>lucide.createIcons();</script>
+</body>
+
+</html>

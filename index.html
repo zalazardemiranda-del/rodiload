@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RODILOAD - Optimiza tu Logística en 3D</title>
+    <meta name="description" content="Software lider en cubicacion 3D, cubica toda tu flotilla en un solo lugar, comparte tus embarques con tu equipo de trabajo para tener una mejor cordinacion y control de embarques.">
+    <!-- Open Graph for WhatsApp, Facebook, LinkedIn previews -->
+    <meta property="og:title" content="RODILOAD - Optimiza tu Logística en 3D">
+    <meta property="og:description" content="Software lider en cubicacion 3D, cubica toda tu flotilla en un solo lugar, comparte tus embarques con tu equipo de trabajo para tener una mejor cordinacion y control de embarques.">
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <!-- Background Effects -->
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container nav-content">
+            <div class="logo">
+                <img src="./css/logo_rodiload.png" alt="Rodiload Logo" class="logo-img">
+                <span class="logo-text">RODI<span class="highlight">LOAD</span></span>
+            </div>
+            <div class="nav-links">
+                <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" class="nav-link">Inicio</a>
+                <a href="#ventajas" class="nav-link">Funciones</a>
+                <a href="#planes" class="nav-link">Planes</a>
+                <a href="#" class="btn btn-primary" id="btn-login-nav">Iniciar Sesión</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="container hero-grid">
+            <!-- Columna Izquierda: Texto -->
+            <div class="hero-text-content">
+                <h1 class="fade-up delay-1">Optimiza cada carga.<br><span class="text-gradient">Maximiza cada viaje.</span></h1>
+                <p class="hero-subtitle fade-up delay-2">
+                    RODILOAD es el software de cubicación inteligente que te permite planificar, visualizar y optimizar la distribución de tu mercancía en segundos.
+                </p>
+
+                <!-- Cuadrícula de Mini-Funciones -->
+                <div class="hero-features-grid fade-up delay-3">
+                    <div class="hero-feature-item">
+                        <div class="hero-feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                        </div>
+                        <div>
+                            <strong>Entorno 3D</strong>
+                            <p>Visualiza y organiza tu carga fácilmente.</p>
+                        </div>
+                    </div>
+                    <div class="hero-feature-item">
+                        <div class="hero-feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+                        </div>
+                        <div>
+                            <strong>Importa desde Excel</strong>
+                            <p>Ahorra tiempo con carga masiva automatizada.</p>
+                        </div>
+                    </div>
+                    <div class="hero-feature-item">
+                        <div class="hero-feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+                        </div>
+                        <div>
+                            <strong>Cumple con la ley</strong>
+                            <p>NOMs integradas para una operación segura.</p>
+                        </div>
+                    </div>
+                    <div class="hero-feature-item">
+                        <div class="hero-feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+                        </div>
+                        <div>
+                            <strong>Reportes PDF</strong>
+                            <p>Genera reportes profesionales al instante.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hero-actions fade-up delay-3">
+                    <button id="btn-trial-hero" class="btn btn-primary btn-large">Comenzar Prueba de 15 Días →</button>
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Visual 3D -->
+            <div class="hero-image-content fade-up delay-2">
+                <img src="./css/truck_rendering.png" alt="Simulación 3D de cubicación de carga en tráiler" class="hero-truck-img">
+            </div>
+        </div>
+    </header>
+
+    <!-- Ventajas Section -->
+    <section id="ventajas" class="features">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>¿POR QUÉ RODILOAD?</h2>
+                <p>Software de cubicación 3D diseñado para maximizar espacio, agilizar operaciones y simplificar la planificación logística.</p>
+            </div>
+            
+            <div class="features-grid">
+                <!-- Card 1 -->
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/>
+                            <path d="M15 18H9"/>
+                            <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/>
+                            <circle cx="17" cy="18" r="2"/>
+                            <circle cx="7" cy="18" r="2"/>
+                            <path d="M2 9h4"/>
+                            <path d="M2 13h2"/>
+                        </svg>
+                    </div>
+                    <h3>Configuración flexible de unidades</h3>
+                    <p>Selecciona diferentes tipos de camiones y unidades de carga para adaptar cada cubicación a tus necesidades operativas reales.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="feature-card reveal delay-1">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="20" height="14" x="2" y="3" rx="2"/>
+                            <line x1="8" x2="16" y1="21" y2="21"/>
+                            <line x1="12" x2="12" y1="17" y2="21"/>
+                        </svg>
+                    </div>
+                    <h3>Cubicación rápida y visual</h3>
+                    <p>Organiza mercancía de forma simple con una interfaz intuitiva y visualización clara de distribución de carga.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="feature-card reveal delay-2">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
+                            <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
+                            <path d="M10 9H8"/>
+                            <path d="M16 13H8"/>
+                            <path d="M16 17H8"/>
+                        </svg>
+                    </div>
+                    <h3>Generación automática de PDF</h3>
+                    <p>Exporta reportes profesionales en PDF para compartir cubicaciones, optimizar procesos y mejorar la presentación operativa.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Planes Section -->
+    <section id="planes" class="pricing-section">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>PLANES</h2>
+                <p class="pricing-subtitle">Optimiza cada <span class="text-gradient">centímetro</span> de tu carga · Cubicación inteligente para logística moderna.</p>
+            </div>
+
+            <div class="pricing-grid reveal">
+
+                <!-- Plan Diario -->
+                <div class="pricing-card">
+                    <div class="pricing-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><polyline points="9 16 11 18 15 14"/></svg>
+                    </div>
+                    <div class="plan-name">PLAN DIARIO</div>
+                    <p class="plan-per-user">/ precio por usuario</p>
+                    <div class="plan-price">
+                        <span class="price-amount">$169</span>
+                        <span class="price-currency">MXN</span>
+                    </div>
+                    <ul class="plan-features">
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            Acceso por 24 horas
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                            Cálculo de cubicación y embalaje
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            Generador de PDF
+                        </li>
+                    </ul>
+                    <button class="btn-plan" onclick="document.getElementById('trial-modal').classList.add('active')">COMENZAR <span>›</span></button>
+                </div>
+
+                <!-- Plan Mensual (Destacado) -->
+                <div class="pricing-card featured">
+                    <div class="pricing-icon featured-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><polyline points="9 16 11 18 15 14"/></svg>
+                    </div>
+                    <div class="plan-name">PLAN MENSUAL</div>
+                    <p class="plan-per-user">/ precio por usuario</p>
+                    <div class="plan-price">
+                        <span class="price-amount">$1,349</span>
+                        <span class="price-currency">MXN / mes</span>
+                    </div>
+                    <ul class="plan-features">
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                            Optimización de espacios
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.51"/></svg>
+                            Actualizaciones incluidas
+                        </li>
+                    </ul>
+                    <button class="btn-plan featured-btn" onclick="document.getElementById('trial-modal').classList.add('active')">COMENZAR <span>›</span></button>
+                </div>
+
+                <!-- Plan Empresarial -->
+                <div class="pricing-card enterprise">
+                    <div class="pricing-icon enterprise-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+                    </div>
+                    <div class="plan-name enterprise-name">PLAN EMPRESARIAL ANUAL</div>
+                    <p class="plan-per-user">/ precio por usuario</p>
+                    <div class="plan-price">
+                        <span class="price-amount">$13,499</span>
+                        <span class="price-currency">MXN / año</span>
+                    </div>
+                    <ul class="plan-features">
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            Acceso anual completo
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                            Panel administrativo
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                            Prioridad en soporte
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+                            35% de descuento al adquirir más de 3 licencias
+                        </li>
+                    </ul>
+                    <button class="btn-plan enterprise-btn" onclick="document.getElementById('trial-modal').classList.add('active')">COMENZAR <span>›</span></button>
+                </div>
+
+            </div>
+
+            <!-- Garantías -->
+            <div class="pricing-trust reveal">
+                <span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    Seguridad de datos
+                </span>
+                <span class="trust-dot">•</span>
+                <span>Pagos 100% seguros</span>
+                <span class="trust-dot">•</span>
+                <span>Soporte confiable</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Final -->
+    <section class="cta-section reveal">
+        <div class="container">
+            <div class="cta-box">
+                <h2>¿Listo para modernizar tu logística?</h2>
+                <p>Únete a las empresas que ya están ahorrando tiempo y dinero en cada embarque.</p>
+                <a href="#" onclick="document.getElementById('trial-modal').classList.add('active');return false;" class="btn btn-primary btn-large">Crear Cuenta</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal de Prueba 15 Días -->
+    <div id="trial-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Solicita tu Acceso a RODILOAD</h2>
+            <p>Completa el formulario y nuestro equipo te contactará en menos de 24 horas para activar tu cuenta.</p>
+            <form class="trial-form" id="trial-form" name="solicitud-rodiload" netlify data-netlify="true" onsubmit="handleTrialSubmit(event)">
+                <input type="hidden" name="form-name" value="solicitud-rodiload">
+                <input type="text"     id="form-name"     name="nombre_empresa" placeholder="Empresa o Nombre completo" required>
+                <input type="email"    id="form-email"    name="correo"         placeholder="Correo electrónico" required>
+                <input type="tel"      id="form-phone"    name="telefono"       placeholder="Teléfono (opcional)">
+                <input type="password" id="form-password" name="contrasena"     placeholder="Crea una contraseña" required>
+                <button type="submit" class="btn btn-primary btn-full" id="form-submit-btn">Enviar Solicitud</button>
+            </form>
+            <p class="modal-footer-text">Al registrarte, aceptas nuestros <a href="#" onclick="openLegal('terms');return false;" style="color:#60a5fa">Términos y Condiciones</a> y el <a href="#" onclick="openLegal('privacy');return false;" style="color:#60a5fa">Aviso de Privacidad</a>.</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <img src="./css/logo_rodiload.png" alt="Rodiload Logo" class="logo-img">
+                        <span class="logo-text">RODI<span class="highlight">LOAD</span></span>
+                    </div>
+                    <p>La plataforma definitiva para simulación de carga y documentación logística.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Producto</h4>
+                    <a href="#ventajas">Características</a>
+                    <a href="#planes">Precios</a>
+                    <a href="#ventajas">Casos de Uso</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Soporte</h4>
+                    <a href="https://wa.me/523143523230?text=Hola%20Rodipack%20,%20me%20interesa%20conocer%20mas%20sobre%20el%20Rodiload." target="_blank" rel="noopener">Contacto</a>
+                    <a href="#" id="btn-tutorials-footer">Tutoriales 3D</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Legal</h4>
+                    <a href="#" onclick="openLegal('terms');return false;">Términos y Condiciones</a>
+                    <a href="#" onclick="openLegal('privacy');return false;">Aviso de Privacidad</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Rodipack. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal Legal: Términos y Aviso de Privacidad -->
+    <div id="legal-modal" class="modal">
+        <div class="modal-content modal-legal">
+            <span class="close-modal" onclick="document.getElementById('legal-modal').classList.remove('active')">&times;</span>
+            <div id="legal-content"></div>
+        </div>
+    </div>
+
+    <script src="./js/main.js"></script>
+</body>
+</html>

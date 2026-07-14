@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RODILOAD | Planes y Ventajas</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="icon" href="assets/logo_rodiload.png" type="image/png">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            background-color: var(--bg-dark);
+            background-image: none; /* Removed background port image to match reference */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-y: auto;
+            color: white;
+            padding: 40px 20px;
+            font-family: 'Inter', sans-serif;
+            position: relative;
+        }
+
+        /* Ambient glowing backgrounds */
+        .ambient-glow-left {
+            position: absolute;
+            top: 20%;
+            left: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(0,245,212,0.1) 0%, transparent 70%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .ambient-glow-right {
+            position: absolute;
+            bottom: 10%;
+            right: 0;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(14,165,233,0.1) 0%, transparent 70%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .pricing-container {
+            max-width: 1000px;
+            width: 100%;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .pricing-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .pricing-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .pricing-logo img {
+            height: 45px;
+        }
+
+        .pricing-logo h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin: 0;
+        }
+
+        .pricing-logo p {
+            font-size: 11px;
+            color: var(--primary);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .pricing-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 36px;
+            font-weight: 700;
+            margin: 0 0 10px 0;
+        }
+        
+        .pricing-header h2 span {
+            color: var(--primary);
+        }
+
+        .pricing-header > p {
+            color: var(--text-muted);
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            width: 100%;
+            margin-bottom: 40px;
+        }
+
+        .plan-card {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s, box-shadow 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .plan-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Specific Plan Styles */
+        .plan-daily {
+            border-color: rgba(255,255,255,0.1);
+        }
+
+        .plan-monthly {
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 30px rgba(0, 245, 212, 0.15);
+            transform: scale(1.02);
+            background: rgba(15, 23, 42, 0.6);
+        }
+
+        .plan-monthly:hover {
+            transform: scale(1.02) translateY(-5px);
+        }
+
+        .plan-annual {
+            border: 1px solid #0ea5e9;
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.1);
+        }
+
+        .plan-icon-wrapper {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+        }
+
+        .plan-daily .plan-icon-wrapper {
+            border: 1px solid rgba(255,255,255,0.2);
+            color: var(--text-muted);
+        }
+
+        .plan-monthly .plan-icon-wrapper {
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 245, 212, 0.2);
+        }
+
+        .plan-annual .plan-icon-wrapper {
+            border: 1px solid #0ea5e9;
+            color: #0ea5e9;
+            box-shadow: 0 0 15px rgba(14, 165, 233, 0.2);
+        }
+
+        .plan-title {
+            text-align: center;
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .plan-monthly .plan-title { color: var(--primary); }
+        .plan-annual .plan-title { color: #0ea5e9; }
+
+        .plan-subtitle {
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            min-height: 30px;
+        }
+
+        .plan-price-area {
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 25px;
+            margin-bottom: 25px;
+        }
+
+        .plan-price {
+            font-family: 'Outfit', sans-serif;
+            font-size: 36px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .plan-price span {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .plan-monthly .plan-price span { color: var(--primary); }
+        .plan-annual .plan-price span { color: #0ea5e9; }
+
+        .features-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 30px 0;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 12px;
+            color: var(--text-light);
+            line-height: 1.4;
+        }
+
+        .feature-item i {
+            color: var(--text-muted);
+            width: 16px;
+            height: 16px;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .plan-monthly .feature-item i { color: var(--primary); }
+        .plan-annual .feature-item i { color: #0ea5e9; }
+        
+        .feature-highlight {
+            color: #0ea5e9;
+            font-weight: 600;
+        }
+
+        .btn-plan {
+            width: 100%;
+            padding: 14px;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-daily {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .btn-daily:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-monthly {
+            background: var(--primary);
+            color: #060b13;
+            box-shadow: 0 5px 20px rgba(0, 245, 212, 0.3);
+        }
+
+        .btn-monthly:hover {
+            background: #00e0c2;
+            transform: translateY(-2px);
+        }
+
+        .btn-annual {
+            background: #0ea5e9;
+            color: white;
+            box-shadow: 0 5px 20px rgba(14, 165, 233, 0.3);
+        }
+
+        .btn-annual:hover {
+            background: #0284c7;
+            transform: translateY(-2px);
+        }
+
+        .pricing-footer {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 11px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .trust-badges {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .trust-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .trust-badge i {
+            color: var(--primary);
+            width: 14px;
+        }
+
+        .trust-badges span.dot {
+            color: rgba(255,255,255,0.2);
+        }
+
+        .cancellation-note {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .btn-back {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            transition: color 0.3s;
+            z-index: 10;
+        }
+
+        .btn-back:hover {
+            color: white;
+        }
+
+        @media (max-width: 900px) {
+            .plans-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+            }
+            .plan-monthly {
+                transform: scale(1);
+            }
+            .plan-monthly:hover {
+                transform: translateY(-5px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="ambient-glow-left"></div>
+    <div class="ambient-glow-right"></div>
+
+    <a href="index.html" class="btn-back">
+        <i data-lucide="arrow-left"></i> VOLVER AL INICIO
+    </a>
+
+    <div class="pricing-container">
+        
+        <header class="pricing-header">
+            <div class="pricing-logo">
+                <img src="assets/logo_rodiload.png" alt="RODILOAD Logo">
+                <h1>RODILOAD</h1>
+                <p>CUBICADOR PREMIUM</p>
+            </div>
+            <h2>Optimiza cada <span>centímetro</span> de tu carga</h2>
+            <p>Cubicación inteligente para logística moderna.</p>
+        </header>
+
+        <div class="plans-grid">
+            
+            <!-- PLAN DIARIO -->
+            <div class="plan-card plan-daily">
+                <div class="plan-icon-wrapper">
+                    <i data-lucide="calendar"></i>
+                </div>
+                <h3 class="plan-title">PLAN DIARIO</h3>
+                <p class="plan-subtitle">Acceso rápido para<br>operaciones inmediatas</p>
+                
+                <div class="plan-price-area">
+                    <h4 class="plan-price">$169 <span>MXN</span></h4>
+                </div>
+
+                <ul class="features-list">
+                    <li class="feature-item">
+                        <i data-lucide="clock"></i> Acceso por 24 horas
+                    </li>
+                    <li class="feature-item">
+                        <i data-lucide="user"></i> 1 usuario
+                    </li>
+                    <li class="feature-item">
+                        <i data-lucide="package"></i> Cálculo de cubicación y embalaje
+                    </li>
+                    <li class="feature-item">
+                        <i data-lucide="file-text"></i> Generador de PDF
+                    </li>
+                    <li class="feature-item">
+                        <i data-lucide="headphones"></i> Soporte estándar
+                    </li>
+                </ul>
+
+                <a href="#" class="btn-plan btn-daily" onclick="alert('Funcionalidad de pago en construcción'); return false;">
+                    COMENZAR <i data-lucide="chevron-right"></i>
+                </a>
+            </div>
+
+            <!-- PLAN MENSUAL -->
+            <div class="plan-card plan-monthly">
+                <div class="plan-icon-wrapper">
+                    <i data-lucide="calendar-check"></i>
+                </div>
+                <h3 class="plan-title">PLAN MENSUAL</h3>
+                <p class="plan-subtitle">La mejor opción para<br>logística continua</p>
+                
+                <div class="plan-price-area">
+                    <h4 class="plan-price">$1,349 <span>MXN / mes</span></h4>
+                </div>
+
+                <ul class="features-list">
+                    <li class="feature-item">
+                        <i data-lucide="user"></i> 1 usuario
+                    </li>
+                    <li class="feature-item">
+                        <i data-lucide="history"></i> Historial de cubicaciones
+                    </li>
+                    <li class="feature-item">
+                        <i data-lucide="box"></i> Optimización de espacios
+                    </li>
+                    <li class="feature-item">
+                        <i data-lucide="refresh-cw"></i> Actualizaciones incluidas
+                    </li>
+                </ul>
+
+                <a href="#" class="btn-plan btn-monthly" onclick="alert('Funcionalidad de pago en construcción'); return false;">
+                    COMENZAR <i data-lucide="chevron-right"></i>
+                </a>
+            </div>
+
+            <!-- PLAN ANUAL -->
+            <div class="plan-card plan-annual">
+                <div class="plan-icon-wrapper">
+                    <i data-lucide="building-2"></i>
+                </div>
+                <h3 class="plan-title">PLAN EMPRESARIAL ANUAL</h3>
+                <p class="plan-subtitle">Optimización profesional para<br>operaciones de alto volumen</p>
+                
+                <div class="plan-price-area">
+                    <h4 class="plan-price">$13,499 <span>MXN / año</span></h4>
+                </div>
+
+                <ul class="features-list">
+                    <li class="feature-item">
+                        <i data-lucide="shield-check"></i> Acceso anual completo
+                    </li>
+                    <li class="feature-item">
+                        <i data-lucide="monitor"></i> Panel administrativo
+                    </li>
+                    <li class="feature-item">
+                        <i data-lucide="headset"></i> Prioridad en soporte
+                    </li>
+                    <li class="feature-item">
+                        <i data-lucide="tags"></i> <span class="feature-highlight">35% de descuento al<br>adquirir más de 3 licencias</span>
+                    </li>
+                </ul>
+
+                <a href="#" class="btn-plan btn-annual" onclick="alert('Funcionalidad de pago en construcción'); return false;">
+                    COMENZAR <i data-lucide="chevron-right"></i>
+                </a>
+            </div>
+
+        </div>
+
+        <footer class="pricing-footer">
+            <div class="trust-badges">
+                <div class="trust-badge">
+                    <i data-lucide="shield"></i> Seguridad de datos
+                </div>
+                <span class="dot">•</span>
+                <div class="trust-badge">
+                    <i data-lucide="credit-card"></i> Pagos 100% seguros
+                </div>
+                <span class="dot">•</span>
+                <div class="trust-badge">
+                    <i data-lucide="check-circle"></i> Soporte confiable
+                </div>
+            </div>
+            
+            <div class="cancellation-note">
+                <i data-lucide="lock"></i> Sin compromisos. Cancela cuando quieras.
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
