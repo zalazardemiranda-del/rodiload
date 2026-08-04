@@ -39,6 +39,7 @@ class CubicadorApp {
             this.currentUnitIndex = 0; 
             this.currentUnit = UNITS[this.currentUnitIndex]; 
             this.loader = null;
+            this.modelCache = {}; // Cache para modelos GLB — evita re-descargas
             if (typeof THREE.GLTFLoader !== 'undefined') {
                 this.loader = new THREE.GLTFLoader();
             } else if (typeof GLTFLoader !== 'undefined') {
@@ -72,13 +73,33 @@ class CubicadorApp {
             this.animate();
             this.createFullUnit();
             this.updateStats();
+            // Precargar todos los modelos únicos en segundo plano
+            this.preloadAllModels();
         } catch (e) { console.error(e); }
     }
 
+
+    preloadAllModels() {
+        if (!this.loader) return;
+        // Obtener lista de modelos únicos
+        const uniqueModels = [...new Set(UNITS.filter(u => u.model).map(u => u.model))];
+        uniqueModels.forEach(modelPath => {
+            if (!this.modelCache[modelPath]) {
+                this.loader.load(modelPath, (gltf) => {
+                    this.modelCache[modelPath] = gltf;
+                    console.log('[Preload] Listo en caché:', modelPath);
+                }, null, (err) => {
+                    console.warn('[Preload] Error al precargar:', modelPath, err);
+                });
+            }
+        });
+    }
+
     initThree() {
+
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(0x0b141d); // Dark background for high-fidelity look
-        this.scene.fog = new THREE.Fog(0x0b141d, 20, 100);
+        this.scene.background = new THREE.Color(0x829598); // Grey
+        this.scene.fog = new THREE.Fog(0x829598, 20, 100);
         this.camera = new THREE.PerspectiveCamera(45, this.container.clientWidth / this.container.clientHeight, 0.1, 1000);
         this.camera.position.set(15, 10, 15);
         this.renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
@@ -137,12 +158,12 @@ class CubicadorApp {
         fillLight.position.set(0, 5, 10);
         this.scene.add(fillLight);
 
-        const ground = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.8 }));
+        const ground = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.MeshStandardMaterial({ color: 0x829598, roughness: 0.8 }));
         ground.rotation.x = -Math.PI / 2;
         ground.position.y = -0.01;
         this.scene.add(ground);
         
-        const grid = new THREE.GridHelper(200, 100, 0x1e293b, 0x0f172a);
+        const grid = new THREE.GridHelper(200, 100, 0x163A45, 0x163A45); // Night Ocean grid
         grid.position.y = 0;
         this.scene.add(grid);
         window.addEventListener('resize', () => this.onWindowResize());
@@ -601,7 +622,7 @@ class CubicadorApp {
         this.createBoxUnit(config);
 
         if (config.model && this.loader) {
-            this.loader.load(config.model, (gltf) => {
+            const onModelLoaded = (gltf) => {
                 // Prevenir que cargas asíncronas antiguas se agreguen a la unidad actual
                 if (this.currentUnit.key !== config.key) return;
                 
@@ -613,7 +634,8 @@ class CubicadorApp {
                 // Volver a dibujar la caja azul porque el loop anterior la borró
                 this.createBoxUnit(config);
                 
-                const model = gltf.scene;
+                // Clonar el modelo desde caché para no mutar el original
+                const model = gltf.scene.clone(true);
                 
                 // Asegurar visibilidad de materiales
                 model.traverse(n => { 
@@ -621,6 +643,7 @@ class CubicadorApp {
                         n.castShadow = true; 
                         n.receiveShadow = true;
                         if (n.material) {
+                            n.material = n.material.clone();
                             n.material.depthWrite = true;
                             n.material.transparent = false;
                             n.material.opacity = 1;
@@ -638,15 +661,24 @@ class CubicadorApp {
                     const s = config.scale || 1;
                     model.scale.set(s, s, s);
                 }
-                console.log('Modelo cargado exitosamente:', config.name);
+                console.log('Modelo listo:', config.name);
                 this.vehicleGroup.add(model);
-                this.onWindowResize(); // Forzar ajuste tras carga
-            }, 
-            (xhr) => { console.log((xhr.loaded / xhr.total * 100) + '% cargado'); },
-            (error) => { 
-                console.error('Error crítico al cargar modelo:', error);
-                alert("ERROR: No se pudo cargar el modelo 3D en: " + config.model + ". Verifica que la carpeta 'assets/models' exista en el servidor.");
-            });
+                this.onWindowResize();
+            };
+
+            // Si ya está en caché, usar instantáneamente
+            if (this.modelCache[config.model]) {
+                onModelLoaded(this.modelCache[config.model]);
+            } else {
+                this.loader.load(config.model, (gltf) => {
+                    this.modelCache[config.model] = gltf; // Guardar en caché
+                    onModelLoaded(gltf);
+                }, 
+                (xhr) => { console.log((xhr.loaded / xhr.total * 100).toFixed(0) + '% cargado'); },
+                (error) => { 
+                    console.error('Error al cargar modelo:', error);
+                });
+            }
 
         } else if (!this.loader) {
             alert("SISTEMA: El motor 3D no pudo inicializar el cargador de modelos.");
@@ -2194,10 +2226,25 @@ saveCurrentShipment() {
                     }
                     if (loadingScreen) loadingScreen.style.display = 'none';
                     
+                    // Verificar Suscripción Activa (RevenueCat Mock / Paywall)
+                    const hasActiveSub = await this.checkSubscriptionStatus(user.uid);
+                    
                     const modeSelection = document.getElementById('mode-selection-screen');
-                    if (modeSelection) {
-                        modeSelection.style.display = 'flex';
-                        modeSelection.style.animation = 'fadeIn 0.5s ease-out';
+                    const paywall = document.getElementById('paywall-screen');
+                    
+                    if (!hasActiveSub && storedTenant !== 'ADMON' && storedTenant !== 'INTERNO') {
+                        // Mostrar Muro de Pago
+                        if (paywall) {
+                            paywall.style.display = 'flex';
+                            paywall.style.animation = 'fadeIn 0.5s ease-out';
+                        }
+                    } else {
+                        // Usuario Premium o Admin: Mostrar Menú
+                        if (modeSelection) {
+                            modeSelection.style.display = 'flex';
+                            modeSelection.style.animation = 'fadeIn 0.5s ease-out';
+                        }
+                    }
                         
                         // Show admin button only for admin
                         const adminModeBtnContainer = document.getElementById('admin-mode-container');
@@ -2208,7 +2255,6 @@ saveCurrentShipment() {
                                 adminModeBtnContainer.style.display = 'none';
                             }
                         }
-                    }
                     
                     if (typeof this.onWindowResize === 'function') {
                         this.onWindowResize();
@@ -2338,6 +2384,25 @@ saveCurrentShipment() {
                 loginBtn.innerHTML = 'INGRESAR AL SISTEMA <i data-lucide="arrow-right"></i>';
                 loginBtn.disabled = false;
             }
+        }
+    }
+
+    async checkSubscriptionStatus(uid) {
+        // En una app real de Capacitor, aquí se usaría:
+        // import { Purchases } from '@revenuecat/purchases-capacitor';
+        // const customerInfo = await Purchases.getCustomerInfo();
+        // return customerInfo.entitlements.active['pro'] !== undefined;
+        
+        // Mock de verificación contra Firebase para Web/Pruebas
+        try {
+            const doc = await db.collection('user_subscriptions').doc(uid).get();
+            if (doc.exists && doc.data().status === 'active') {
+                return true;
+            }
+            return false;
+        } catch (e) {
+            console.warn("Error verificando suscripción", e);
+            return false;
         }
     }
 
