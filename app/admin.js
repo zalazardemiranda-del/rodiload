@@ -60,17 +60,32 @@ class AdminPanel {
                 
                 tr.innerHTML = `
                     <td style="padding: 12px 10px;">${data.email}</td>
-                    <td style="padding: 12px 10px; font-weight: bold; color: #52b5d4;">${data.tenant}</td>
-                    <td style="padding: 12px 10px; text-align: right;">
-                        <button class="btn-delete-user" data-id="${doc.id}" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.5); padding: 5px 10px; border-radius: 6px; cursor: pointer;">Eliminar</button>
+                    <td style="padding: 12px 10px; font-weight: bold; color: #52b5d4;">
+                        <span id="tenant-text-${doc.id}">${data.tenant}</span>
+                        <input type="text" id="tenant-input-${doc.id}" value="${data.tenant}" style="display:none; width: 120px; background: #ffffff; border: 1px solid var(--border); color: var(--text-main); padding: 4px 8px; border-radius: 4px; text-transform: uppercase;">
+                    </td>
+                    <td style="padding: 12px 10px; text-align: right; min-width: 200px;">
+                        <button class="btn-edit-user" data-id="${doc.id}" id="btn-edit-${doc.id}" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.5); padding: 5px 10px; border-radius: 6px; cursor: pointer; margin-right: 5px;">Editar</button>
+                        <button class="btn-save-user" data-id="${doc.id}" id="btn-save-${doc.id}" style="display:none; background: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.5); padding: 5px 10px; border-radius: 6px; cursor: pointer; margin-right: 5px;">Guardar</button>
+                        <button class="btn-cancel-edit" data-id="${doc.id}" id="btn-cancel-${doc.id}" style="display:none; background: rgba(160, 174, 192, 0.2); color: #a0aec0; border: 1px solid rgba(160, 174, 192, 0.5); padding: 5px 10px; border-radius: 6px; cursor: pointer; margin-right: 5px;">Cancelar</button>
+                        <button class="btn-delete-user" data-id="${doc.id}" id="btn-delete-${doc.id}" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.5); padding: 5px 10px; border-radius: 6px; cursor: pointer;">Eliminar</button>
                     </td>
                 `;
                 this.usersList.appendChild(tr);
             });
 
-            // Add delete listeners
+            // Add event listeners
             document.querySelectorAll('.btn-delete-user').forEach(btn => {
                 btn.addEventListener('click', (e) => this.deleteUser(e.target.getAttribute('data-id')));
+            });
+            document.querySelectorAll('.btn-edit-user').forEach(btn => {
+                btn.addEventListener('click', (e) => this.startEditUser(e.target.getAttribute('data-id')));
+            });
+            document.querySelectorAll('.btn-cancel-edit').forEach(btn => {
+                btn.addEventListener('click', (e) => this.cancelEditUser(e.target.getAttribute('data-id')));
+            });
+            document.querySelectorAll('.btn-save-user').forEach(btn => {
+                btn.addEventListener('click', (e) => this.saveEditUser(e.target.getAttribute('data-id')));
             });
 
         } catch (error) {
@@ -113,6 +128,59 @@ class AdminPanel {
             submitBtn.innerHTML = 'ASIGNAR <i data-lucide="plus"></i>';
             submitBtn.disabled = false;
             if (window.lucide) window.lucide.createIcons();
+        }
+    }
+
+    startEditUser(docId) {
+        document.getElementById(`tenant-text-${docId}`).style.display = 'none';
+        document.getElementById(`tenant-input-${docId}`).style.display = 'inline-block';
+        
+        document.getElementById(`btn-edit-${docId}`).style.display = 'none';
+        document.getElementById(`btn-delete-${docId}`).style.display = 'none';
+        
+        document.getElementById(`btn-save-${docId}`).style.display = 'inline-block';
+        document.getElementById(`btn-cancel-${docId}`).style.display = 'inline-block';
+    }
+
+    cancelEditUser(docId) {
+        document.getElementById(`tenant-text-${docId}`).style.display = 'inline-block';
+        document.getElementById(`tenant-input-${docId}`).style.display = 'none';
+        
+        document.getElementById(`btn-edit-${docId}`).style.display = 'inline-block';
+        document.getElementById(`btn-delete-${docId}`).style.display = 'inline-block';
+        
+        document.getElementById(`btn-save-${docId}`).style.display = 'none';
+        document.getElementById(`btn-cancel-${docId}`).style.display = 'none';
+        
+        // Reset input value to original
+        const originalValue = document.getElementById(`tenant-text-${docId}`).textContent;
+        document.getElementById(`tenant-input-${docId}`).value = originalValue;
+    }
+
+    async saveEditUser(docId) {
+        const input = document.getElementById(`tenant-input-${docId}`);
+        const newTenant = input.value.trim().toUpperCase();
+        
+        if (!newTenant) {
+            alert("La clave de empresa no puede estar vacía.");
+            return;
+        }
+        
+        const saveBtn = document.getElementById(`btn-save-${docId}`);
+        const originalText = saveBtn.textContent;
+        saveBtn.textContent = '...';
+        saveBtn.disabled = true;
+
+        try {
+            await db.collection('company_users').doc(docId).update({
+                tenant: newTenant
+            });
+            this.loadUsers();
+        } catch (error) {
+            console.error("Error updating user:", error);
+            alert("Error al actualizar la clave del usuario.");
+            saveBtn.textContent = originalText;
+            saveBtn.disabled = false;
         }
     }
 

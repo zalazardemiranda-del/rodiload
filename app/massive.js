@@ -94,6 +94,10 @@ document.addEventListener('DOMContentLoaded', () => {
         listenToShipments();
     });
 
+    document.getElementById('btn-mode-game')?.addEventListener('click', () => {
+        window.location.href = '../CUBICADORGAME/index.html';
+    });
+
     document.getElementById('btn-menu-principal')?.addEventListener('click', () => {
         document.getElementById('massive-cubing-container').style.display = 'none';
         document.getElementById('mode-selection-screen').style.display = 'flex';
@@ -346,24 +350,24 @@ function renderMassiveUnits() {
         const checked = isChecked === 'checked';
         item.style.cssText = `
             display: flex; align-items: center; justify-content: space-between;
-            background: ${checked ? 'rgba(0, 229, 255, 0.07)' : 'rgba(255,255,255,0.03)'};
-            border: 1px solid ${checked ? 'rgba(0, 229, 255, 0.35)' : 'rgba(255,255,255,0.07)'};
+            background: ${checked ? 'var(--primary-light)' : '#ffffff'};
+            border: 1px solid ${checked ? 'var(--primary)' : 'var(--border)'};
             border-radius: 8px; padding: 8px 12px; transition: all 0.2s; cursor: pointer;
         `;
-        item.onmouseover = () => { if (!item.querySelector('.unit-cb').checked) item.style.background = 'rgba(255,255,255,0.06)'; };
-        item.onmouseout  = () => { if (!item.querySelector('.unit-cb').checked) item.style.background = 'rgba(255,255,255,0.03)'; };
+        item.onmouseover = () => { if (!item.querySelector('.unit-cb').checked) item.style.background = 'var(--bg-hover)'; };
+        item.onmouseout  = () => { if (!item.querySelector('.unit-cb').checked) item.style.background = '#ffffff'; };
 
         item.innerHTML = `
             <label style="display:flex; align-items:center; gap:10px; cursor:pointer; flex:1; min-width:0;">
-                <input type="checkbox" class="unit-cb" data-key="${u.key}" ${isChecked}>
-                <span style="font-size:12px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:#e2e8f0;">${u.name} <span style="color:#94a3b8; font-weight:400;">(Max: ${u.maxPayload.toLocaleString()}kg)</span></span>
+                <input type="checkbox" class="unit-cb" data-key="${u.key}" ${isChecked} style="accent-color: var(--primary);">
+                <span style="font-size:12px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color: var(--text-main);">${u.name} <span style="color: var(--text-muted); font-weight:400;">(Max: ${u.maxPayload.toLocaleString()}kg)</span></span>
             </label>
         `;
 
         // Resaltar borde al marcar/desmarcar
         item.querySelector('.unit-cb').addEventListener('change', function() {
-            item.style.background    = this.checked ? 'rgba(0, 229, 255, 0.07)' : 'rgba(255,255,255,0.03)';
-            item.style.borderColor   = this.checked ? 'rgba(0, 229, 255, 0.35)' : 'rgba(255,255,255,0.07)';
+            item.style.background    = this.checked ? 'var(--primary-light)' : '#ffffff';
+            item.style.borderColor   = this.checked ? 'var(--primary)' : 'var(--border)';
         });
 
         list.appendChild(item);

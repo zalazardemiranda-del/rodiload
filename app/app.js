@@ -2313,6 +2313,87 @@ saveCurrentShipment() {
 
         // Lucide icons for the new elements
         if (window.lucide) window.lucide.createIcons();
+
+        // Configuración de Recuperación de Contraseña (Zoho Mail: contacto@rodiload.com)
+        const btnForgot = document.getElementById('btn-forgot-password');
+        const forgotModal = document.getElementById('forgot-modal');
+        const forgotForm = document.getElementById('forgot-form');
+        const forgotEmailInput = document.getElementById('forgot-email');
+        const forgotStatusMsg = document.getElementById('forgot-status-msg');
+        const btnCloseForgot = document.getElementById('btn-close-forgot');
+        const btnSubmitForgot = document.getElementById('btn-submit-forgot');
+
+        if (btnForgot && forgotModal) {
+            btnForgot.onclick = (e) => {
+                e.preventDefault();
+                const userField = document.getElementById('login-username');
+                if (userField && userField.value.trim().includes('@')) {
+                    forgotEmailInput.value = userField.value.trim().toLowerCase();
+                }
+                if (forgotStatusMsg) forgotStatusMsg.style.display = 'none';
+                forgotModal.style.display = 'flex';
+                if (window.lucide) window.lucide.createIcons();
+            };
+        }
+
+        if (btnCloseForgot && forgotModal) {
+            btnCloseForgot.onclick = () => {
+                forgotModal.style.display = 'none';
+            };
+        }
+
+        if (forgotForm) {
+            forgotForm.onsubmit = async (e) => {
+                e.preventDefault();
+                const email = forgotEmailInput.value.trim().toLowerCase();
+                if (!email) return;
+
+                if (btnSubmitForgot) {
+                    btnSubmitForgot.disabled = true;
+                    btnSubmitForgot.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ENVIANDO...';
+                }
+                if (forgotStatusMsg) forgotStatusMsg.style.display = 'none';
+
+                try {
+                    await auth.sendPasswordResetEmail(email);
+                    if (forgotStatusMsg) {
+                        forgotStatusMsg.style.display = 'block';
+                        forgotStatusMsg.style.background = 'rgba(16, 185, 129, 0.15)';
+                        forgotStatusMsg.style.border = '1px solid #10b981';
+                        forgotStatusMsg.style.color = '#34d399';
+                        forgotStatusMsg.innerHTML = '<strong>¡Enlace de recuperación enviado!</strong><br>Revisa la bandeja de entrada o spam de <b>' + email + '</b> para restablecer tu contraseña.';
+                    }
+                    forgotEmailInput.value = '';
+                    if (btnSubmitForgot) {
+                        btnSubmitForgot.innerHTML = 'REENVIAR ENLACE <i data-lucide="send"></i>';
+                        btnSubmitForgot.disabled = false;
+                    }
+                } catch (error) {
+                    console.error("Error al solicitar restablecimiento de contraseña:", error);
+                    let errMsg = 'Ocurrió un error al enviar el enlace. Intenta de nuevo más tarde.';
+                    if (error.code === 'auth/user-not-found') {
+                        errMsg = 'No existe una cuenta registrada con este correo electrónico.';
+                    } else if (error.code === 'auth/invalid-email') {
+                        errMsg = 'El formato del correo electrónico ingresado no es válido.';
+                    } else if (error.code === 'auth/too-many-requests') {
+                        errMsg = 'Demasiados intentos. Espera unos minutos antes de volver a intentar.';
+                    }
+
+                    if (forgotStatusMsg) {
+                        forgotStatusMsg.style.display = 'block';
+                        forgotStatusMsg.style.background = 'rgba(239, 68, 68, 0.15)';
+                        forgotStatusMsg.style.border = '1px solid #ef4444';
+                        forgotStatusMsg.style.color = '#f87171';
+                        forgotStatusMsg.innerHTML = errMsg;
+                    }
+                    if (btnSubmitForgot) {
+                        btnSubmitForgot.innerHTML = 'ENVIAR ENLACE <i data-lucide="send"></i>';
+                        btnSubmitForgot.disabled = false;
+                    }
+                }
+                if (window.lucide) window.lucide.createIcons();
+            };
+        }
     }
 
     handleLogout() {
