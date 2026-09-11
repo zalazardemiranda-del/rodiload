@@ -2117,19 +2117,17 @@ saveCurrentShipment() {
             
             if (user) {
                 // Set global tenant for real-time listeners on page refresh
-                let storedTenant = localStorage.getItem('rodiload_tenant');
-                if (!storedTenant) {
-                    let emailBase = user.email.split('@')[0];
-                    storedTenant = emailBase.replace(/[0-9]/g, '').toUpperCase();
-                    localStorage.setItem('rodiload_tenant', storedTenant);
-                }
+                // Obtener automáticamente la clave de empresa asignada desde el Backend (Firestore)
+                let storedTenant = null;
+                const loginBtn = document.querySelector('.btn-login');
 
-                // Validar permisos contra Firebase para todos EXCEPTO para el ADMIN
-                if (user.email !== 'zalazardemiranda@gmail.com' || storedTenant !== 'ADMON') {
+                if (user.email === 'zalazardemiranda@gmail.com') {
+                    storedTenant = 'ADMON';
+                } else {
                     try {
                         const userDoc = await db.collection('company_users').doc(user.email).get();
                         if (!userDoc.exists) {
-                            alert("ACCESO DENEGADO: Este correo no tiene una clave asignada por el administrador.");
+                            alert("ACCESO DENEGADO: Tu cuenta (" + user.email + ") no tiene una clave de empresa asignada por el administrador.");
                             await auth.signOut();
                             if (loginBtn) {
                                 loginBtn.innerHTML = 'INGRESAR AL SISTEMA <i data-lucide="arrow-right"></i>';
@@ -2137,10 +2135,10 @@ saveCurrentShipment() {
                             }
                             return;
                         }
-                        
-                        const assignedTenant = userDoc.data().tenant;
-                        if (assignedTenant !== storedTenant) {
-                            alert("ACCESO DENEGADO: La clave de empresa ingresada no corresponde a este correo.");
+
+                        const userData = userDoc.data();
+                        if (!userData.tenant || userData.tenant.trim() === "") {
+                            alert("ACCESO DENEGADO: Tu cuenta no tiene una clave de empresa válida asignada en el sistema.");
                             await auth.signOut();
                             if (loginBtn) {
                                 loginBtn.innerHTML = 'INGRESAR AL SISTEMA <i data-lucide="arrow-right"></i>';
@@ -2148,9 +2146,11 @@ saveCurrentShipment() {
                             }
                             return;
                         }
+
+                        storedTenant = userData.tenant.trim().toUpperCase();
                     } catch (err) {
-                        console.error("Error al validar permisos de empresa:", err);
-                        alert("Error validando permisos de acceso.");
+                        console.error("Error al obtener clave de empresa desde Firestore:", err);
+                        alert("Error validando permisos de acceso. Por favor verifica tu conexión e intenta de nuevo.");
                         await auth.signOut();
                         if (loginBtn) {
                             loginBtn.innerHTML = 'INGRESAR AL SISTEMA <i data-lucide="arrow-right"></i>';
@@ -2159,6 +2159,10 @@ saveCurrentShipment() {
                         return;
                     }
                 }
+
+                localStorage.setItem('rodiload_tenant', storedTenant);
+                this.currentTenant = storedTenant;
+                window.appTenant = storedTenant;
 
                 // Generar un ID de sesión para este dispositivo si no existe, guardado en localStorage
                 if (!window.currentSessionId) {
@@ -2399,6 +2403,7 @@ saveCurrentShipment() {
     handleLogout() {
         if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
             // El logout real de Firebase dispara onAuthStateChanged que maneja la UI
+            localStorage.removeItem('rodiload_tenant');
             auth.signOut();
             
             // Limpiar campos de login para mayor seguridad
@@ -2412,15 +2417,13 @@ saveCurrentShipment() {
     async handleLogin() {
         const userField = document.getElementById('login-username');
         const passField = document.getElementById('login-password');
-        const tenantField = document.getElementById('login-tenant');
         const loginBtn = document.querySelector('.btn-login');
 
         const rawUser = userField ? userField.value.trim() : "";
         const pass = passField ? passField.value : "";
-        const rawTenant = tenantField ? tenantField.value.trim().toUpperCase() : "";
 
-        if (rawUser === "" || pass === "" || rawTenant === "") {
-            alert("ERROR: Ingresa correo, clave de empresa y contraseña.");
+        if (rawUser === "" || pass === "") {
+            alert("ERROR: Ingresa tu correo y contraseña.");
             return;
         }
 
@@ -2429,12 +2432,8 @@ saveCurrentShipment() {
         if (!email.includes('@')) {
             email += "@rodiload.app";
         }
-        
-        let tenant = rawTenant.replace(/\s+/g, '');
 
-        this.currentTenant = tenant;
         this.currentUserName = rawUser;
-        localStorage.setItem('rodiload_tenant', tenant);
 
         try {
             if (loginBtn) {
@@ -2451,16 +2450,22 @@ saveCurrentShipment() {
             window.currentSessionId = existingSession;
             localStorage.setItem('rodiload_session_id', existingSession);
 
-            // Add global access to db and tenant for massive.js
-            window.appTenant = this.currentTenant;
             window.appUserName = this.currentUserName;
 
-            // Autenticación Real con Firebase (esto disparará onAuthStateChanged donde está la lógica visual y de sesión)
+            // Autenticación Real con Firebase (esto disparará onAuthStateChanged donde se obtiene la empresa desde Firestore)
             await auth.signInWithEmailAndPassword(email, pass);
 
         } catch (error) {
             console.error("Error en login:", error);
-            alert("Error al iniciar sesión: " + error.message);
+            let msg = error.message;
+            if (error.code === 'auth/wrong-password') {
+                msg = "Contraseña incorrecta. Por favor verifica e intenta nuevamente.";
+            } else if (error.code === 'auth/user-not-found') {
+                msg = "No existe ningún usuario registrado con este correo electrónico.";
+            } else if (error.code === 'auth/invalid-credential') {
+                msg = "Credenciales incorrectas. Verifica tu correo y contraseña.";
+            }
+            alert("Error al iniciar sesión: " + msg);
             if (loginBtn) {
                 loginBtn.innerHTML = 'INGRESAR AL SISTEMA <i data-lucide="arrow-right"></i>';
                 loginBtn.disabled = false;
