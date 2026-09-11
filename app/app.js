@@ -107,42 +107,45 @@ class CubicadorApp {
         this.renderer.outputEncoding = THREE.sRGBEncoding;
         this.container.appendChild(this.renderer.domElement);
 
-        const OrbitCtrl = (THREE.OrbitControls || OrbitControls);
+        const OrbitCtrl = (typeof THREE !== 'undefined' && THREE.OrbitControls) ? THREE.OrbitControls : (typeof OrbitControls !== 'undefined' ? OrbitControls : null);
         if (OrbitCtrl) {
             this.controls = new OrbitCtrl(this.camera, this.renderer.domElement);
             this.controls.enableDamping = true;
         }
 
         // Inicializar TransformControls
-        this.transformControls = new THREE.TransformControls(this.camera, this.renderer.domElement);
-        this.transformControls.addEventListener('dragging-changed', (event) => {
-            if (this.controls) this.controls.enabled = !event.value;
-            if (event.value && this.transformControls.object) {
-                this.transformControls.object.userData.lastValidPos = this.transformControls.object.position.clone();
-            }
-            if (!event.value) {
-                this.checkAllBounds();
-                this.updateStats();
-            }
-        });
-
-        // Real-time Physics & Snapping & Collision Prevention
-        this.transformControls.addEventListener('change', () => {
-            if (this.transformControls.object && this.transformControls.dragging) {
-                const mesh = this.transformControls.object;
-                const oldPos = mesh.userData.lastValidPos;
-                
-                this.applyPhysics(mesh);
-                
-                if (this.hasCollision(mesh)) {
-                    if (oldPos) mesh.position.copy(oldPos);
-                } else {
-                    mesh.userData.lastValidPos = mesh.position.clone();
+        const TransformCtrl = (typeof THREE !== 'undefined' && THREE.TransformControls) ? THREE.TransformControls : (typeof TransformControls !== 'undefined' ? TransformControls : null);
+        if (TransformCtrl) {
+            this.transformControls = new TransformCtrl(this.camera, this.renderer.domElement);
+            this.transformControls.addEventListener('dragging-changed', (event) => {
+                if (this.controls) this.controls.enabled = !event.value;
+                if (event.value && this.transformControls.object) {
+                    this.transformControls.object.userData.lastValidPos = this.transformControls.object.position.clone();
                 }
-            }
-        });
+                if (!event.value) {
+                    this.checkAllBounds();
+                    this.updateStats();
+                }
+            });
 
-        this.scene.add(this.transformControls);
+            // Real-time Physics & Snapping & Collision Prevention
+            this.transformControls.addEventListener('change', () => {
+                if (this.transformControls.object && this.transformControls.dragging) {
+                    const mesh = this.transformControls.object;
+                    const oldPos = mesh.userData.lastValidPos;
+                    
+                    this.applyPhysics(mesh);
+                    
+                    if (this.hasCollision(mesh)) {
+                        if (oldPos) mesh.position.copy(oldPos);
+                    } else {
+                        mesh.userData.lastValidPos = mesh.position.clone();
+                    }
+                }
+            });
+
+            this.scene.add(this.transformControls);
+        }
 
         this.scene.add(new THREE.AmbientLight(0xffffff, 0.7));
         const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.8);
