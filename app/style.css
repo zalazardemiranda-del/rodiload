@@ -2036,15 +2036,42 @@ input[type=number] {
     padding: 40px;
     overflow-y: auto;
     background: transparent;
+    isolation: isolate;
 }
 .massive-container::before {
     content: "";
     position: fixed;
-    top: 0; left: 0; width: 100vw; height: 100vh;
+    top: -20px; left: -20px; width: calc(100vw + 40px); height: calc(100vh + 40px);
     background: url('fondo-sistema.png') no-repeat center center;
     background-size: cover;
     background-attachment: fixed;
+    filter: blur(10px);
+    transform: scale(1.02);
     z-index: -1;
+    pointer-events: none;
+}
+
+/* --- ADMIN PANEL SCREEN --- */
+.admin-container {
+    position: relative;
+    z-index: 100;
+    isolation: isolate;
+    min-height: 100vh;
+    max-height: 100vh;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+.admin-container::before {
+    content: "";
+    position: fixed;
+    top: -20px; left: -20px; width: calc(100vw + 40px); height: calc(100vh + 40px);
+    background: url('fondo-sistema.png') no-repeat center center;
+    background-size: cover;
+    background-attachment: fixed;
+    filter: blur(10px);
+    transform: scale(1.02);
+    z-index: -1;
+    pointer-events: none;
 }
 .massive-header {
     display: flex;
@@ -2300,3 +2327,189 @@ input[type=number] {
 #logo-link-header:hover {
     opacity: 0.85;
 }
+
+/* --- ESTILOS REGISTRO DE CARGA Y CUBICACIÓN MASIVA (IMÁGENES 1, 2 Y 3) --- */
+.massive-nav-pill {
+    padding: 8px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    border: 1px solid var(--border);
+    background: #ffffff;
+    color: var(--text-main);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: inherit;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+.massive-nav-pill:hover {
+    background: var(--bg-hover);
+    border-color: var(--primary);
+}
+.massive-nav-pill.active {
+    background: var(--primary) !important;
+    color: #ffffff !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 3px 12px rgba(222, 139, 42, 0.35) !important;
+}
+
+/* Menú Desplegable Unidades Disponibles (Imagen 2) */
+.units-dropdown-container {
+    position: relative;
+    user-select: none;
+}
+.btn-units-dropdown {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-main);
+    box-shadow: none;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+.btn-units-dropdown:hover {
+    border-color: var(--primary);
+    background: var(--bg-hover);
+}
+.units-dropdown-menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 8px);
+    width: 350px;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    padding: 16px;
+    z-index: 2500;
+    max-height: 480px;
+    overflow-y: auto;
+}
+.unit-dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.unit-dropdown-item:hover {
+    border-color: var(--primary);
+    background: var(--bg-hover);
+}
+.unit-dropdown-item.checked {
+    background: #fdf0e2 !important;
+    border-color: var(--primary) !important;
+}
+.unit-dropdown-item input[type="checkbox"] {
+    accent-color: var(--primary);
+    width: 17px;
+    height: 17px;
+    margin-right: 12px;
+    cursor: pointer;
+}
+
+/* Tabla Registro de Carga (Imagen 1) */
+.massive-table-card {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+}
+#table-cargo-registry {
+    width: 100%;
+    border-collapse: collapse;
+}
+#table-cargo-registry thead tr {
+    background: #133E4D;
+    color: #ffffff;
+    border-bottom: 3px solid #DE8B2A;
+}
+#table-cargo-registry th {
+    padding: 12px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+#table-cargo-registry tbody tr {
+    border-bottom: 1px solid #f1f5f9;
+    transition: background-color 0.15s ease;
+}
+#table-cargo-registry tbody tr:nth-child(even) {
+    background-color: #f8fafc;
+}
+#table-cargo-registry tbody tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+#table-cargo-registry tbody tr:hover {
+    background-color: #f1f5f9;
+}
+#table-cargo-registry td {
+    padding: 5px 6px;
+    vertical-align: middle;
+}
+.cell-input {
+    width: 100%;
+    box-sizing: border-box;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    padding: 9px 10px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-main);
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+.cell-input:focus {
+    background: #ffffff;
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(222, 139, 42, 0.2);
+}
+.cell-input::placeholder {
+    color: #cbd5e1;
+    font-weight: 400;
+}
+
+/* Fila de mercancía sobredimensionada / en naranja (Requerimiento de usuario) */
+#table-cargo-registry tbody tr.row-orange {
+    background-color: #ffedd5 !important;
+    border-left: 4px solid #ea580c !important;
+}
+#table-cargo-registry tbody tr.row-orange td {
+    background-color: #ffedd5 !important;
+}
+#table-cargo-registry tbody tr.row-orange .cell-input {
+    color: #9a3412 !important;
+    font-weight: 600 !important;
+}
+.nota-text {
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #475569;
+}
+.nota-text.oversized {
+    color: #c2410c;
+}
+

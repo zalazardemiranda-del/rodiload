@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RODILOAD | Cubicador Premium</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=3">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -78,6 +78,7 @@
                 <div class="login-input-group">
                     <label><i data-lucide="lock"></i> CONTRASEÑA</label>
                     <input type="password" id="login-password" placeholder="••••••••" required>
+                    <div id="login-attempt-warning" style="display: none; color: #f87171; font-size: 11px; margin-top: 6px; font-weight: 500; align-items: center; gap: 5px;"></div>
                     <div class="login-forgot-wrapper">
                         <a href="javascript:void(0)" id="btn-forgot-password" class="forgot-password-link">¿Olvidaste tu contraseña?</a>
                     </div>
@@ -222,7 +223,7 @@
     
     <!-- Massive Cubing Screen -->
     <div id="massive-cubing-container" class="massive-container" style="display: none;">
-          <header class="main-header" style="background: var(--bg-card); border-bottom: 1px solid var(--border); margin: -40px -40px 30px -40px; padding: 15px 40px;">
+          <header class="main-header" style="background: var(--bg-card); border-bottom: 1px solid var(--border); margin: -40px -40px 25px -40px; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center;">
               <div class="logo-area" style="cursor: default;">
                   <img src="assets/logo_rodiload.png" alt="RODILOAD Logo" class="logo-img">
                   <div class="brand-details">
@@ -232,6 +233,17 @@
                       </div>
                   </div>
               </div>
+
+              <!-- Píldoras de Navegación de Modo Masivo (Imagen 1 y 3) -->
+              <div class="massive-nav-tabs" style="display: flex; gap: 10px; align-items: center;">
+                  <button type="button" id="btn-tab-registro" class="massive-nav-pill active">
+                      Registro de Carga
+                  </button>
+                  <button type="button" id="btn-tab-cubicados" class="massive-nav-pill">
+                      Embarques cubicados
+                  </button>
+              </div>
+
               <div class="header-right">
                   <div class="user-profile-area">
                       <button id="btn-massive-back" class="btn-menu-back" title="Cambiar de Modo">
@@ -246,85 +258,115 @@
                   </div>
               </div>
           </header>
-          
-          <h2 style="margin-bottom: 25px; color: var(--text-main); display: flex; align-items: center; gap: 10px;">
-            <i data-lucide="layers" style="color: var(--primary);"></i> CUBICACIÓN MASIVA
-          </h2>
-        
-        <!-- Contenedor Principal a Dos Columnas -->
-        <div id="massive-two-column-layout" style="display: flex; gap: 30px; align-items: flex-start; width: 100%; max-width: 1600px; margin: 0 auto; flex: 1; min-height: 0;">
-        
-        <!-- Step 1: Upload and Configure -->
-        <div id="massive-setup-section" style="flex: 0 0 380px; width: 100%; display: flex; flex-direction: column; min-height: 0; height: 100%;">
-            <div class="massive-compact-card" style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 20px 25px; width: 100%; box-shadow: var(--shadow); display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; box-sizing: border-box;">
 
-                <!-- Contenido scrollable -->
-                <div style="flex: 1; overflow-y: auto; min-height: 0; padding-right: 4px;">
+          <!-- VISTA 1: REGISTRO DE CARGA (Imagen 1) -->
+          <div id="massive-view-registro" style="display: flex; flex-direction: column; width: 100%; max-width: 1600px; margin: 0 auto; flex: 1; min-height: 0;">
+              <!-- Barra superior con Título y Controles a la derecha (Recuadro rojo) -->
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 15px;">
+                  <h2 style="margin: 0; color: var(--text-main); display: flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 700; letter-spacing: 0.5px;">
+                      <i data-lucide="layers" style="color: var(--primary);"></i> EMBARQUES CUBICADOS
+                  </h2>
 
-                <!-- Step 1 -->
-                <div class="step-container" style="margin-bottom: 20px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <h3 style="font-size: 13px; color: var(--text-main); margin: 0; font-weight: 600;">1. Archivo de Carga (Excel)</h3>
-                        <button id="btn-download-template" style="background: transparent; border: none; color: var(--primary); cursor: pointer; font-size: 12px; display: flex; align-items: center; gap: 5px; transition: color 0.3s; padding: 0;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--primary)'">
-                            <i data-lucide="download" style="width: 14px; height: 14px;"></i> Plantilla
-                        </button>
-                    </div>
-                    <div class="drop-zone" id="excel-drop-zone" style="padding: 18px 15px; border-radius: 12px; background: #ffffff; border: 1px dashed var(--border); text-align: center; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.borderColor='var(--border-active)'; this.style.background='var(--bg-hover)';" onmouseout="this.style.borderColor='var(--border)'; this.style.background='#ffffff';">
-                        <i data-lucide="upload-cloud" style="color: var(--primary); width: 26px; height: 26px; margin-bottom: 8px;"></i>
-                        <p style="margin: 0; font-size: 12px; color: var(--text-muted);">Arrastra o haz clic para subir archivo</p>
-                        <input type="file" id="excel-file-input" accept=".xlsx, .xls, .csv" style="display: none;">
-                    </div>
-                    <div id="excel-file-info" style="margin-top: 8px; color: var(--primary); font-size: 12px; text-align: center; display: none; background: var(--bg-hover); padding: 7px; border-radius: 6px; font-weight: 500;"></div>
-                </div>
+                  <!-- Menú Desplegable de Unidades y Acciones (Ubicado en el recuadro rojo de Imagen 1) -->
+                  <div style="display: flex; align-items: center; gap: 12px; position: relative;">
+                      <!-- Menú desplegable para selección de unidades disponibles (Imagen 2) -->
+                      <div class="units-dropdown-container" id="units-dropdown-container">
+                          <button type="button" id="btn-units-dropdown-toggle" class="btn-units-dropdown">
+                              <i data-lucide="truck" style="color: var(--primary); width: 16px; height: 16px;"></i>
+                              <span>Unidades Disponibles (<strong id="units-selected-count" style="color: var(--primary);">1</strong>)</span>
+                              <i data-lucide="chevron-down" id="units-dropdown-chevron" style="width: 14px; height: 14px; color: var(--text-muted); transition: transform 0.2s;"></i>
+                          </button>
+                          
+                          <div id="units-dropdown-menu" class="units-dropdown-menu" style="display: none;">
+                              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #f1f5f9;">
+                                  <span style="font-weight: 700; font-size: 13px; color: var(--text-main); display: flex; align-items: center; gap: 6px;">
+                                      <i data-lucide="truck" style="width: 16px; height: 16px; color: var(--primary);"></i> 2. Unidades Disponibles
+                                  </span>
+                                  <button type="button" id="btn-toggle-all-units" style="background: none; border: none; font-size: 11px; color: var(--primary); cursor: pointer; font-weight: 600;">Marcar todas</button>
+                              </div>
+                              <div id="massive-units-list-dropdown" style="display: flex; flex-direction: column; gap: 6px;">
+                                  <!-- Inyectado por JS según Imagen 2 -->
+                              </div>
+                          </div>
+                      </div>
 
-                <!-- Step 2 -->
-                <div class="step-container" style="margin-bottom: 15px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <h3 style="font-size: 13px; color: var(--text-main); margin: 0; font-weight: 600; display: flex; align-items: center; gap: 7px;">
-                            <i data-lucide="truck" style="width:15px; height:15px; color: var(--primary);"></i> 2. Unidades Disponibles
-                        </h3>
-                        <div class="unit-toggle" style="background: var(--bg-card); padding: 4px; border-radius: 8px; display: none; gap: 4px; align-items: center;">
-                        </div>
-                    </div>
-                    <!-- Lista plana de unidades — sin dropdown, sin scrollbar interno -->
-                    <div id="massive-units-list" style="display: flex; flex-direction: column; gap: 4px;">
-                        <!-- Checkboxes inyectados por JS -->
-                    </div>
-                </div>
+                      <button type="button" id="btn-add-table-row" style="display: flex; align-items: center; gap: 6px; background: #ffffff; border: 1px solid var(--border); padding: 12px 24px; border-radius: 8px; font-weight: 600; font-size: 13px; color: var(--text-main); cursor: pointer; white-space: nowrap; box-shadow: none; transition: all 0.2s;">
+                          <i data-lucide="plus" style="width: 15px; height: 15px; color: var(--primary);"></i> Agregar fila
+                      </button>
+                      <button type="button" id="btn-clear-table-rows" style="display: flex; align-items: center; gap: 6px; background: #ffffff; border: 1px solid rgba(239, 68, 68, 0.4); padding: 12px 24px; border-radius: 8px; font-weight: 600; font-size: 13px; color: #ef4444; cursor: pointer; white-space: nowrap; box-shadow: none; transition: all 0.2s;">
+                          <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i> Limpiar tabla
+                      </button>
 
-                </div><!-- fin scrollable -->
+                      <button type="button" id="btn-process-massive" class="btn-process" style="margin: 0; padding: 12px 24px; font-size: 13px; font-weight: 700; border-radius: 8px; background: var(--primary); color: #060b13; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; white-space: nowrap; box-shadow: none; transition: all 0.2s;">
+                          <i data-lucide="play-circle" style="width: 18px; height: 18px;"></i> COMENZAR CUBICACIÓN
+                      </button>
+                  </div>
+              </div>
 
-                <!-- Action Button (siempre visible al fondo) -->
-                <button id="btn-process-massive" class="btn-process" disabled style="flex-shrink: 0; width: 100%; box-sizing: border-box; padding: 16px 15px; font-size: 15px; font-weight: bold; letter-spacing: 1px; border-radius: 12px; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 15px; box-shadow: var(--shadow); background: var(--primary); color: #060b13; border: none; cursor: pointer; transition: all 0.3s;">
-                    <i data-lucide="play-circle" style="width: 22px; height: 22px;"></i> COMENZAR CUBICACIÓN
-                </button>
-            </div>
-        </div>
+              <!-- Tabla interactiva Registro de Carga (Imagen 1) -->
+              <div class="massive-table-card" style="display: flex; flex-direction: column; flex: 1; min-height: 420px; max-height: calc(100vh - 220px); overflow: hidden;">
+                  <div style="overflow-x: auto; overflow-y: auto; flex: 1;">
+                      <table id="table-cargo-registry" style="width: 100%; border-collapse: collapse; text-align: center; font-size: 12px;">
+                          <thead>
+                              <tr style="background: #133E4D; color: #ffffff; border-bottom: 3px solid #DE8B2A;">
+                                  <th style="padding: 12px 10px; font-weight: 700; width: 100px;">SKU</th>
+                                  <th style="padding: 12px 10px; font-weight: 700; width: 110px;">Origen</th>
+                                  <th style="padding: 12px 10px; font-weight: 700; width: 110px;">Destino</th>
+                                  <th style="padding: 12px 10px; font-weight: 700; width: 85px;">Largo</th>
+                                  <th style="padding: 12px 10px; font-weight: 700; width: 85px;">Ancho</th>
+                                  <th style="padding: 12px 10px; font-weight: 700; width: 85px;">Alto</th>
+                                  <th style="padding: 12px 10px; font-weight: 700; width: 85px;">Peso</th>
+                                  <th style="padding: 12px 10px; font-weight: 700; width: 80px;">Cantidad</th>
+                                  <th style="padding: 12px 10px; font-weight: 700; min-width: 140px;">Descripción</th>
+                                  <th style="padding: 12px 10px; font-weight: 700; width: 180px;">Propiedades</th>
+                                  <th style="padding: 12px 14px; font-weight: 700; min-width: 260px; text-align: left;">COMPATIBILIDAD</th>
+                              </tr>
+                          </thead>
+                          <tbody id="cargo-table-body">
+                              <!-- Filas dinámicas -->
+                          </tbody>
+                      </table>
+                  </div>
+              </div>
+          </div>
 
-        <!-- Step 2: Results -->
-        <div id="massive-results-section" style="display: none; flex: 1; width: 100%; padding-bottom: 50px; overflow-y: auto; padding-right: 15px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 style="font-size: 16px; font-weight: 600; margin: 0;">Resultados (Viajes Asignados)</h3>
-                <div style="display: flex; align-items: center; gap: 20px;">
-                    <button id="btn-new-massive" style="background: transparent; border: 1px solid #F43F5E; color: #F43F5E; margin-right: 0; padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(244, 63, 94, 0.1)';" onmouseout="this.style.background='transparent';">
-                        <i data-lucide="trash-2"></i> LIMPIAR RESULTADOS
-                    </button>
-                </div>
-            </div>
-            <div id="massive-results-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
-            </div>
-            
-            <!-- Paginator -->
-            <div style="display: flex; justify-content: center; margin-top: 30px;">
-                <div id="massive-paginator" style="display: none; align-items: center; gap: 15px; background: rgba(255,255,255,0.05); padding: 5px 15px; border-radius: 20px; border: 1px solid var(--border);">
-                    <button id="btn-prev-page" style="background: transparent; border: none; color: var(--primary); cursor: pointer; padding: 5px; display: flex; align-items: center; justify-content: center; transition: 0.2s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--primary)'"><i data-lucide="chevron-left"></i></button>
-                    <span id="page-indicator" style="color: var(--text-main); font-size: 13px; font-weight: 600; min-width: 90px; text-align: center;">Página 1 de 1</span>
-                    <button id="btn-next-page" style="background: transparent; border: none; color: var(--primary); cursor: pointer; padding: 5px; display: flex; align-items: center; justify-content: center; transition: 0.2s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--primary)'"><i data-lucide="chevron-right"></i></button>
-                </div>
-            </div>
-        </div>
-        
-        </div> <!-- Fin de Contenedor Dos Columnas -->
+          <!-- VISTA 2: EMBARQUES CUBICADOS (Imagen 3) -->
+          <div id="massive-view-cubicados" style="display: none; flex-direction: column; width: 100%; max-width: 1600px; margin: 0 auto; flex: 1; min-height: 0; overflow-y: auto; padding-bottom: 50px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                  <h2 style="margin: 0; color: var(--text-main); display: flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 700;">
+                      <i data-lucide="layers" style="color: var(--primary);"></i> EMBARQUES CUBICADOS
+                  </h2>
+                  <div style="display: flex; align-items: center; gap: 15px;">
+                      <button type="button" id="btn-back-to-registro-view" style="background: #ffffff; border: 1px solid var(--border); color: var(--text-main); padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px; box-shadow: var(--shadow);">
+                          <i data-lucide="arrow-left" style="width: 15px; height: 15px; color: var(--primary);"></i> Volver al Registro de Carga
+                      </button>
+                      <button type="button" id="btn-new-massive" style="background: transparent; border: 1px solid #F43F5E; color: #F43F5E; padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(244, 63, 94, 0.1)';" onmouseout="this.style.background='transparent';">
+                          <i data-lucide="trash-2" style="width: 15px; height: 15px;"></i> LIMPIAR RESULTADOS
+                      </button>
+                  </div>
+              </div>
+              
+              <div id="massive-empty-results-msg" style="display: none; text-align: center; padding: 60px 20px; background: #ffffff; border-radius: 16px; border: 1px solid var(--border); box-shadow: var(--shadow); margin-top: 10px;">
+                  <i data-lucide="package-search" style="width: 48px; height: 48px; color: var(--primary); margin-bottom: 15px;"></i>
+                  <h3 style="font-size: 18px; color: var(--text-main); margin-bottom: 8px; font-weight: 700;">Aún no hay unidades cubicadas</h3>
+                  <p style="color: var(--text-muted); font-size: 13px; max-width: 500px; margin: 0 auto 20px auto;">Ingresa tus mercancías en la sección <strong>Registro de Carga</strong>, selecciona las unidades disponibles en el menú desplegable y presiona <strong>COMENZAR CUBICACIÓN</strong>.</p>
+                  <button type="button" id="btn-empty-go-registro" class="massive-nav-pill active" style="margin: 0 auto; display: inline-flex;">
+                      Ir al Registro de Carga
+                  </button>
+              </div>
+
+              <div id="massive-results-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;">
+              </div>
+              
+              <!-- Paginator -->
+              <div style="display: flex; justify-content: center; margin-top: 30px;">
+                  <div id="massive-paginator" style="display: none; align-items: center; gap: 15px; background: #ffffff; padding: 6px 18px; border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow);">
+                      <button id="btn-prev-page" style="background: transparent; border: none; color: var(--primary); cursor: pointer; padding: 5px; display: flex; align-items: center; justify-content: center;"><i data-lucide="chevron-left"></i></button>
+                      <span id="page-indicator" style="color: var(--text-main); font-size: 13px; font-weight: 600; min-width: 90px; text-align: center;">Página 1 de 1</span>
+                      <button id="btn-next-page" style="background: transparent; border: none; color: var(--primary); cursor: pointer; padding: 5px; display: flex; align-items: center; justify-content: center;"><i data-lucide="chevron-right"></i></button>
+                  </div>
+              </div>
+          </div>
     </div>
 
     <!-- Pantalla de Carga -->
@@ -700,8 +742,24 @@
             <button onclick="window.app.deleteSelectedBox()" class="btn-delete-manual">
                 <i data-lucide="trash-2"></i> ELIMINAR PIEZA SELECCIONADA
             </button>
-    <script src="app.js?v=11"></script>
-    <script src="massive.js?v=11"></script>
+        </div>
+    </div>
+
+    <!-- Custom Alerts & Confirms -->
+    <div id="custom-alert-overlay" class="modal-overlay" style="display: none; align-items: center; justify-content: center; z-index: 10000; padding: 20px;">
+        <div class="modal-content" style="max-width: 420px; text-align: center; border: 1px solid rgba(82, 181, 212, 0.4); box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 20px rgba(82, 181, 212, 0.15); background: #0c1522;">
+            <i id="custom-alert-icon" data-lucide="info" style="width: 48px; height: 48px; color: #52b5d4; margin-bottom: 15px; display: inline-block;"></i>
+            <h3 id="custom-alert-title" style="color: #ffffff; margin-bottom: 12px; font-size: 20px;">Mensaje del Sistema</h3>
+            <p id="custom-alert-message" style="color: #cbd5e1; font-size: 14px; line-height: 1.5; margin-bottom: 25px;"></p>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button id="custom-alert-btn-cancel" class="btn-cancel" style="display: none;">Cancelar</button>
+                <button id="custom-alert-btn-ok" class="btn-confirm" style="background: var(--primary); color: #163A45; width: 130px; border: none; font-weight: 700;">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js?v=13"></script>
+    <script src="massive.js?v=12"></script>
     <script src="admin.js?v=11"></script>
     <script>lucide.createIcons();</script>
 </body>

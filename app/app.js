@@ -2167,11 +2167,12 @@ saveCurrentShipment() {
                 this.currentTenant = storedTenant;
                 window.appTenant = storedTenant;
 
-                // Generar un ID de sesión para este dispositivo si no existe, guardado en localStorage
+                // Generar o recuperar un ID de sesión para este dispositivo si no existe
                 if (!window.currentSessionId) {
-                    let savedSession = localStorage.getItem('rodiload_session_id');
+                    let savedSession = sessionStorage.getItem('rodiload_session_id') || localStorage.getItem('rodiload_session_id');
                     if (!savedSession) {
-                        savedSession = Math.random().toString(36).substring(2, 15);
+                        savedSession = Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+                        sessionStorage.setItem('rodiload_session_id', savedSession);
                         localStorage.setItem('rodiload_session_id', savedSession);
                     }
                     window.currentSessionId = savedSession;
@@ -2179,23 +2180,8 @@ saveCurrentShipment() {
 
                 try {
                     const sessionRef = db.collection('users_sessions').doc(user.email);
-                    const doc = await sessionRef.get();
 
-                    if (doc.exists && doc.data().sessionId && doc.data().sessionId !== window.currentSessionId) {
-                        // Alguien más está usando la cuenta
-                        const forceLogin = confirm("Esta cuenta se encuentra en uso en otra computadora.\n\n¿Deseas cerrar la otra sesión e ingresar aquí?");
-                        if (!forceLogin) {
-                            if (window.sessionListener) window.sessionListener();
-                            await auth.signOut();
-                            if (loginBtn) {
-                                loginBtn.innerHTML = 'INGRESAR AL SISTEMA <i data-lucide="arrow-right"></i>';
-                                loginBtn.disabled = false;
-                            }
-                            return; // El usuario canceló, abortamos el login
-                        }
-                    }
-
-                    // Registrar ESTA sesión
+                    // Registrar directamente ESTA sesión como la activa (cierra automáticamente la otra sesión previa sin alertas ni confirmación)
                     await sessionRef.set({
                         sessionId: window.currentSessionId,
                         lastLogin: firebase.firestore.FieldValue.serverTimestamp()
@@ -2330,16 +2316,41 @@ saveCurrentShipment() {
         const btnCloseForgot = document.getElementById('btn-close-forgot');
         const btnSubmitForgot = document.getElementById('btn-submit-forgot');
 
+        const loginUserInput = document.getElementById('login-username');
+        if (loginUserInput) {
+            loginUserInput.addEventListener('input', () => {
+                const val = loginUserInput.value.trim().toLowerCase();
+                let checkEmail = val;
+                if (checkEmail && !checkEmail.includes('@')) checkEmail += '@rodiload.app';
+                const warningEl = document.getElementById('login-attempt-warning');
+                if (checkEmail && warningEl) {
+                    const attempts = this.getLoginAttempts(checkEmail);
+                    if (attempts.blocked) {
+                        warningEl.style.display = 'flex';
+                        warningEl.innerHTML = '<i data-lucide="shield-alert" style="width:14px;height:14px;"></i> Acceso bloqueado (4 intentos fallidos). Restablece tu contraseña.';
+                        if (window.lucide) window.lucide.createIcons();
+                    } else if (attempts.count > 0) {
+                        warningEl.style.display = 'flex';
+                        warningEl.innerHTML = '<i data-lucide="alert-circle" style="width:14px;height:14px;"></i> Intentos restantes: ' + (4 - attempts.count) + ' de 4.';
+                        if (window.lucide) window.lucide.createIcons();
+                    } else {
+                        warningEl.style.display = 'none';
+                    }
+                } else if (warningEl) {
+                    warningEl.style.display = 'none';
+                }
+            });
+        }
+
         if (btnForgot && forgotModal) {
             btnForgot.onclick = (e) => {
                 e.preventDefault();
                 const userField = document.getElementById('login-username');
+                let email = '';
                 if (userField && userField.value.trim().includes('@')) {
-                    forgotEmailInput.value = userField.value.trim().toLowerCase();
+                    email = userField.value.trim().toLowerCase();
                 }
-                if (forgotStatusMsg) forgotStatusMsg.style.display = 'none';
-                forgotModal.style.display = 'flex';
-                if (window.lucide) window.lucide.createIcons();
+                this.openForgotPasswordModal(email);
             };
         }
 
@@ -2363,12 +2374,13 @@ saveCurrentShipment() {
 
                 try {
                     await auth.sendPasswordResetEmail(email);
+                    this.resetLoginAttempts(email);
                     if (forgotStatusMsg) {
                         forgotStatusMsg.style.display = 'block';
                         forgotStatusMsg.style.background = 'rgba(16, 185, 129, 0.15)';
                         forgotStatusMsg.style.border = '1px solid #10b981';
                         forgotStatusMsg.style.color = '#34d399';
-                        forgotStatusMsg.innerHTML = '<strong>¡Enlace de recuperación enviado!</strong><br>Revisa la bandeja de entrada o spam de <b>' + email + '</b> para restablecer tu contraseña.';
+                        forgotStatusMsg.innerHTML = '<strong>¡Enlace de recuperación enviado!</strong><br>Revisa la bandeja de entrada o spam de <b>' + email + '</b> para restablecer tu contraseña. El bloqueo de intentos ha sido reestablecido.';
                     }
                     forgotEmailInput.value = '';
                     if (btnSubmitForgot) {
@@ -2401,6 +2413,100 @@ saveCurrentShipment() {
                 if (window.lucide) window.lucide.createIcons();
             };
         }
+    }
+
+    getLoginAttempts(email) {
+        if (!email) return { count: 0, blocked: false };
+        try {
+            const data = localStorage.getItem('rodiload_attempts_' + email);
+            if (data) {
+                const parsed = JSON.parse(data);
+                // Si estuvo bloqueado pero ya pasaron más de 30 minutos, desbloquear automáticamente
+                if (parsed.blocked && parsed.timestamp && (Date.now() - parsed.timestamp > 30 * 60 * 1000)) {
+                    this.resetLoginAttempts(email);
+                    return { count: 0, blocked: false };
+                }
+                return { count: parsed.count || 0, blocked: !!parsed.blocked };
+            }
+        } catch (e) {
+            console.error("Error leyendo intentos de login:", e);
+        }
+        return { count: 0, blocked: false };
+    }
+
+    recordFailedAttempt(email) {
+        const current = this.getLoginAttempts(email);
+        const newCount = current.count + 1;
+        const isBlocked = newCount >= 4;
+        const data = {
+            count: newCount,
+            blocked: isBlocked,
+            timestamp: Date.now()
+        };
+        try {
+            localStorage.setItem('rodiload_attempts_' + email, JSON.stringify(data));
+        } catch (e) {
+            console.error("Error guardando intentos de login:", e);
+        }
+
+        const warningEl = document.getElementById('login-attempt-warning');
+        if (warningEl) {
+            if (isBlocked) {
+                warningEl.style.display = 'flex';
+                warningEl.innerHTML = '<i data-lucide="shield-alert" style="width:14px;height:14px;"></i> Acceso bloqueado: 4 intentos fallidos.';
+            } else {
+                warningEl.style.display = 'flex';
+                warningEl.innerHTML = '<i data-lucide="alert-circle" style="width:14px;height:14px;"></i> Intentos restantes: ' + (4 - newCount) + ' de 4.';
+            }
+            if (window.lucide) window.lucide.createIcons();
+        }
+
+        return {
+            count: newCount,
+            blocked: isBlocked,
+            remaining: Math.max(0, 4 - newCount)
+        };
+    }
+
+    resetLoginAttempts(email) {
+        if (!email) return;
+        try {
+            localStorage.removeItem('rodiload_attempts_' + email);
+            const warningEl = document.getElementById('login-attempt-warning');
+            if (warningEl) {
+                warningEl.style.display = 'none';
+                warningEl.innerHTML = '';
+            }
+        } catch (e) {
+            console.error("Error reseteando intentos de login:", e);
+        }
+    }
+
+    openForgotPasswordModal(email = '', reason = '') {
+        const forgotModal = document.getElementById('forgot-modal');
+        const forgotEmailInput = document.getElementById('forgot-email');
+        const forgotStatusMsg = document.getElementById('forgot-status-msg');
+
+        if (forgotEmailInput && email) {
+            forgotEmailInput.value = email;
+        }
+
+        if (forgotStatusMsg) {
+            if (reason) {
+                forgotStatusMsg.style.display = 'block';
+                forgotStatusMsg.style.background = 'rgba(239, 68, 68, 0.15)';
+                forgotStatusMsg.style.border = '1px solid #ef4444';
+                forgotStatusMsg.style.color = '#f87171';
+                forgotStatusMsg.innerHTML = '<div style="font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;"><i data-lucide="shield-alert" style="width:16px;height:16px;"></i> ACCESO BLOQUEADO</div>' + reason;
+            } else {
+                forgotStatusMsg.style.display = 'none';
+            }
+        }
+
+        if (forgotModal) {
+            forgotModal.style.display = 'flex';
+        }
+        if (window.lucide) window.lucide.createIcons();
     }
 
     handleLogout() {
@@ -2438,41 +2544,60 @@ saveCurrentShipment() {
 
         this.currentUserName = rawUser;
 
+        // VERIFICAR RATE LIMIT (MÁXIMO 4 INTENTOS)
+        const attemptsInfo = this.getLoginAttempts(email);
+        if (attemptsInfo.blocked || attemptsInfo.count >= 4) {
+            alert("⚠️ ACCESO BLOQUEADO:\nHas alcanzado el límite máximo de 4 intentos incorrectos de contraseña.\nPor tu seguridad, tu acceso ha sido bloqueado. Restablece tu contraseña a continuación.");
+            this.openForgotPasswordModal(email, "Acceso bloqueado: Has superado el límite de 4 intentos fallidos. Ingresa tu correo para recibir las instrucciones de recuperación.");
+            return;
+        }
+
         try {
             if (loginBtn) {
                 loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> AUTENTICANDO...';
                 loginBtn.disabled = true;
             }
 
-            // Reutilizar el ID de sesión existente para este dispositivo (no generar uno nuevo en cada login)
-            // Esto evita que el sistema piense que hay otra sesión activa cuando el mismo usuario vuelve a entrar
-            let existingSession = localStorage.getItem('rodiload_session_id') || sessionStorage.getItem('rodiload_session_id');
-            if (!existingSession) {
-                existingSession = Math.random().toString(36).substring(2, 15);
-            }
-            window.currentSessionId = existingSession;
-            localStorage.setItem('rodiload_session_id', existingSession);
+            // Generar siempre un nuevo ID de sesión único al iniciar sesión
+            // para que si había otra sesión abierta en otro dispositivo o pestaña, se cierre automáticamente
+            const newSession = Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+            window.currentSessionId = newSession;
+            sessionStorage.setItem('rodiload_session_id', newSession);
+            localStorage.setItem('rodiload_session_id', newSession);
 
             window.appUserName = this.currentUserName;
 
             // Autenticación Real con Firebase (esto disparará onAuthStateChanged donde se obtiene la empresa desde Firestore)
             await auth.signInWithEmailAndPassword(email, pass);
 
+            // Login exitoso: Limpiar intentos fallidos
+            this.resetLoginAttempts(email);
+
         } catch (error) {
             console.error("Error en login:", error);
             let msg = error.message;
-            if (error.code === 'auth/wrong-password') {
-                msg = "Contraseña incorrecta. Por favor verifica e intenta nuevamente.";
+            const isPasswordError = (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential');
+
+            if (isPasswordError) {
+                const res = this.recordFailedAttempt(email);
+                if (res.blocked) {
+                    alert("⚠️ ¡LÍMITE DE INTENTOS SUPERADO!\nHas fallado 4 veces tu contraseña.\nEl sistema ha bloqueado tus intentos por seguridad. A continuación se abrirá el panel para que restablezcas tu contraseña.");
+                    this.openForgotPasswordModal(email, "Acceso bloqueado: Has alcanzado el límite máximo de 4 intentos de contraseña. Ingresa tu correo para recibir el enlace de restablecimiento.");
+                    if (passField) passField.value = '';
+                } else {
+                    alert("Contraseña incorrecta.\nTe quedan " + res.remaining + " de 4 intentos antes de que el acceso sea bloqueado.");
+                }
             } else if (error.code === 'auth/user-not-found') {
-                msg = "No existe ningún usuario registrado con este correo electrónico.";
-            } else if (error.code === 'auth/invalid-credential') {
-                msg = "Credenciales incorrectas. Verifica tu correo y contraseña.";
+                alert("No existe ningún usuario registrado con este correo electrónico.");
+            } else {
+                alert("Error al iniciar sesión: " + msg);
             }
-            alert("Error al iniciar sesión: " + msg);
+
             if (loginBtn) {
                 loginBtn.innerHTML = 'INGRESAR AL SISTEMA <i data-lucide="arrow-right"></i>';
                 loginBtn.disabled = false;
             }
+            if (window.lucide) window.lucide.createIcons();
         }
     }
 

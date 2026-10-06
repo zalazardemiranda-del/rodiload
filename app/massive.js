@@ -4,6 +4,72 @@ let availableUnitsConfig = {};
 let generatedTrips = [];
 let shipmentsUnsubscribe = null;
 
+window.rodiloadAlert = function(message, type = 'info') {
+    return new Promise((resolve) => {
+        const overlay = document.getElementById('custom-alert-overlay');
+        const title = document.getElementById('custom-alert-title');
+        const msg = document.getElementById('custom-alert-message');
+        const btnOk = document.getElementById('custom-alert-btn-ok');
+        const btnCancel = document.getElementById('custom-alert-btn-cancel');
+        const icon = document.getElementById('custom-alert-icon');
+        if (!overlay) { alert(message); return resolve(true); }
+        
+        let iconName = 'info';
+        let iconColor = '#52b5d4';
+        let titleText = 'Información';
+        
+        if (message.includes('⚠️')) {
+            iconName = 'alert-triangle';
+            iconColor = '#f59e0b';
+            titleText = 'Atención';
+            message = message.replace(/⚠️/g, '').trim();
+        } else if (message.includes('✅')) {
+            iconName = 'check-circle';
+            iconColor = '#10b981';
+            titleText = 'Éxito';
+            message = message.replace(/✅/g, '').trim();
+        } else if (type === 'confirm') {
+            iconName = 'help-circle';
+            iconColor = '#DE8B2A';
+            titleText = 'Confirmar Acción';
+        }
+        
+        msg.innerHTML = message.replace(/\n/g, '<br>');
+        title.textContent = titleText;
+        icon.setAttribute('data-lucide', iconName);
+        icon.style.color = iconColor;
+        
+        if (window.lucide) window.lucide.createIcons();
+        
+        if (type === 'confirm') {
+            btnCancel.style.display = 'block';
+            btnOk.textContent = 'Sí, Continuar';
+        } else {
+            btnCancel.style.display = 'none';
+            btnOk.textContent = 'Aceptar';
+        }
+        
+        overlay.style.display = 'flex';
+        
+        const cleanup = () => {
+            overlay.style.display = 'none';
+            btnOk.removeEventListener('click', onOk);
+            btnCancel.removeEventListener('click', onCancel);
+        };
+        
+        const onOk = () => { cleanup(); resolve(true); };
+        const onCancel = () => { cleanup(); resolve(false); };
+        
+        btnOk.addEventListener('click', onOk);
+        btnCancel.addEventListener('click', onCancel);
+    });
+};
+
+window.rodiloadConfirm = function(message) {
+    return window.rodiloadAlert(message, 'confirm');
+};
+
+
 function listenToShipments() {
     const tenant = window.appTenant || "default";
     if (shipmentsUnsubscribe) shipmentsUnsubscribe();
@@ -90,7 +156,9 @@ document.addEventListener('DOMContentLoaded', () => {
         window.modeSelected = true;
         document.getElementById('mode-selection-screen').style.display = 'none';
         document.getElementById('massive-cubing-container').style.display = 'flex';
-        renderMassiveUnits();
+        renderMassiveUnitsDropdown();
+        initMassiveTable();
+        switchMassiveTab('registro');
         listenToShipments();
     });
 
@@ -130,9 +198,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('mode-selection-screen').style.display = 'flex';
     });
 
-    document.getElementById('btn-new-massive')?.addEventListener('click', () => {
+    document.getElementById('btn-new-massive')?.addEventListener('click', async () => {
         // Action: Limpiar Resultados
-        if (confirm("¿Estás seguro de que deseas limpiar TODOS los resultados compartidos? Esto borrará los embarques para todos los usuarios de la empresa.")) {
+        if (await window.rodiloadConfirm("¿Estás seguro de que deseas limpiar TODOS los resultados compartidos? Esto borrará los embarques para todos los usuarios de la empresa.")) {
             const tenant = window.appTenant || "default";
             generatedTrips.forEach(trip => {
                 if (trip.id && window.db) {
@@ -141,8 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             generatedTrips = [];
             currentPage = 1;
-            document.getElementById('massive-results-grid').innerHTML = '';
-            document.getElementById('massive-results-section').style.display = 'none';
+            renderResults();
         }
     });
 
@@ -193,326 +260,332 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('mode-selection-screen').style.display = 'flex';
     });
 
-    // 3. Download Template
-    document.getElementById('btn-download-template')?.addEventListener('click', async () => {
-        if (typeof ExcelJS === 'undefined') {
-            alert('La librería para crear la plantilla aún se está cargando. Intenta de nuevo en unos segundos.');
-            return;
-        }
+    // 3. Navegación por pestañas (Registro de Carga vs Embarques cubicados)
+    document.getElementById('btn-tab-registro')?.addEventListener('click', () => switchMassiveTab('registro'));
+    document.getElementById('btn-tab-cubicados')?.addEventListener('click', () => switchMassiveTab('cubicados'));
+    document.getElementById('btn-back-to-registro-view')?.addEventListener('click', () => switchMassiveTab('registro'));
+    document.getElementById('btn-empty-go-registro')?.addEventListener('click', () => switchMassiveTab('registro'));
 
-        const workbook = new ExcelJS.Workbook();
-        const worksheet = workbook.addWorksheet('Carga');
+    // 4. Menú Desplegable de Unidades Disponibles (Imagen 1 y 2)
+    const btnUnitsToggle = document.getElementById('btn-units-dropdown-toggle');
+    const unitsDropdown = document.getElementById('units-dropdown-menu');
+    const unitsChevron = document.getElementById('units-dropdown-chevron');
 
-        // Definir columnas
-        worksheet.columns = [
-            { header: 'SKU', key: 'sku', width: 15 },
-            { header: 'Origen', key: 'origen', width: 15 },
-            { header: 'Destino', key: 'destino', width: 15 },
-            { header: 'Largo', key: 'largo', width: 12 },
-            { header: 'Ancho', key: 'ancho', width: 12 },
-            { header: 'Alto', key: 'alto', width: 12 },
-            { header: 'Peso', key: 'peso', width: 12 },
-            { header: 'Cantidad', key: 'cantidad', width: 12 },
-            { header: 'Descripcion', key: 'descripcion', width: 30 }
-        ];
-
-        // Estilos de la cabecera
-        const headerRow = worksheet.getRow(1);
-        headerRow.eachCell((cell) => {
-            cell.fill = {
-                type: 'pattern',
-                pattern: 'solid',
-                fgColor: { argb: 'FFBDD7EE' } // Azul claro similar a la imagen
-            };
-            cell.alignment = { vertical: 'middle', horizontal: 'center' };
-            cell.border = {
-                top: { style: 'thin' },
-                left: { style: 'thin' },
-                bottom: { style: 'thin' },
-                right: { style: 'thin' }
-            };
-        });
-
-        // Agregar 12 filas en blanco con bordes
-        for (let i = 0; i < 12; i++) {
-            worksheet.addRow([]);
-        }
-
-        // Aplicar bordes y centrado a las filas de datos
-        for (let i = 2; i <= 13; i++) {
-            const row = worksheet.getRow(i);
-            for (let col = 1; col <= 9; col++) {
-                const cell = row.getCell(col);
-                cell.border = {
-                    top: { style: 'thin' },
-                    left: { style: 'thin' },
-                    bottom: { style: 'thin' },
-                    right: { style: 'thin' }
-                };
-                cell.alignment = { vertical: 'middle', horizontal: 'center' };
-            }
-        }
-
-        // Generar archivo y descargar
-        const buffer = await workbook.xlsx.writeBuffer();
-        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'Plantilla_Cubicacion_Masiva.xlsx';
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-    });
-
-    // 4. File Upload
-    const dropZone = document.getElementById('excel-drop-zone');
-    const fileInput = document.getElementById('excel-file-input');
-    
-    dropZone?.addEventListener('click', () => fileInput.click());
-    
-    dropZone?.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropZone.style.borderColor = '#00e5ff';
-    });
-    dropZone?.addEventListener('dragleave', (e) => {
-        e.preventDefault();
-        dropZone.style.borderColor = 'rgba(82, 181, 212, 0.5)';
-    });
-    dropZone?.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropZone.style.borderColor = 'rgba(82, 181, 212, 0.5)';
-        if(e.dataTransfer.files.length > 0) {
-            handleExcelFile(e.dataTransfer.files[0]);
-        }
-    });
-    
-    fileInput?.addEventListener('change', (e) => {
-        if(e.target.files.length > 0) {
-            handleExcelFile(e.target.files[0]);
-        }
-    });
-
-    // 5. Process Button
-    document.getElementById('btn-process-massive')?.addEventListener('click', runMassiveCubing);
-
-    // 6. Save Fleet Default Toggle
-    const btnFleetSave = document.getElementById('btn-fleet-save');
-    const btnFleetClear = document.getElementById('btn-fleet-clear');
-    
-    btnFleetSave?.addEventListener('click', (e) => {
-        e.stopPropagation(); // Avoid closing dropdown
-        const fleetConfig = [];
-        document.querySelectorAll('.unit-cb').forEach(cb => {
-            if (cb.checked) {
-                const key = cb.getAttribute('data-key');
-                const qtyInput = document.querySelector(`.unit-qty[data-key="${key}"]`);
-                fleetConfig.push({ key: key, qty: parseInt(qtyInput.value) || 0 });
-            }
-        });
-        localStorage.setItem('rodiload_default_fleet', JSON.stringify(fleetConfig));
-        
-        btnFleetSave.classList.add('active');
-        btnFleetSave.style.background = 'var(--primary)';
-        btnFleetSave.style.color = '#060b13';
-        
-        btnFleetClear.classList.remove('active');
-        btnFleetClear.style.background = 'transparent';
-        btnFleetClear.style.color = '#94a3b8';
-    });
-
-    btnFleetClear?.addEventListener('click', (e) => {
+    btnUnitsToggle?.addEventListener('click', (e) => {
         e.stopPropagation();
-        localStorage.removeItem('rodiload_default_fleet');
-        
-        btnFleetClear.classList.add('active');
-        btnFleetClear.style.background = 'var(--primary)';
-        btnFleetClear.style.color = '#060b13';
-        
-        btnFleetSave.classList.remove('active');
-        btnFleetSave.style.background = 'transparent';
-        btnFleetSave.style.color = '#94a3b8';
+        const isOpen = unitsDropdown.style.display === 'block';
+        unitsDropdown.style.display = isOpen ? 'none' : 'block';
+        if (unitsChevron) unitsChevron.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
     });
+
+    document.addEventListener('click', (e) => {
+        const container = document.getElementById('units-dropdown-container');
+        if (container && !container.contains(e.target)) {
+            if (unitsDropdown) unitsDropdown.style.display = 'none';
+            if (unitsChevron) unitsChevron.style.transform = 'rotate(0deg)';
+        }
+    });
+
+    // Seleccionar / deseleccionar todas las unidades
+    document.getElementById('btn-toggle-all-units')?.addEventListener('click', () => {
+        const checkboxes = document.querySelectorAll('#massive-units-list-dropdown .unit-cb');
+        const anyUnchecked = Array.from(checkboxes).some(cb => !cb.checked);
+        checkboxes.forEach(cb => {
+            cb.checked = anyUnchecked;
+            const parentItem = cb.closest('.unit-dropdown-item');
+            if (parentItem) {
+                if (anyUnchecked) parentItem.classList.add('checked');
+                else parentItem.classList.remove('checked');
+            }
+        });
+        updateSelectedUnitsCount();
+        evaluateAllRows();
+    });
+
+    // 5. Botones de Tabla: Agregar Fila y Limpiar
+    document.getElementById('btn-add-table-row')?.addEventListener('click', () => {
+        addTableRow();
+    });
+
+    document.getElementById('btn-clear-table-rows')?.addEventListener('click', async () => {
+        if (await window.rodiloadConfirm("¿Deseas limpiar todos los registros de la tabla?")) {
+            const tbody = document.getElementById('cargo-table-body');
+            if (tbody) {
+                tbody.innerHTML = '';
+                for (let i = 0; i < 20; i++) addTableRow();
+            }
+        }
+    });
+
+    // Pegar contenido desde Excel / Portapapeles (Ctrl + V en cualquier celda)
+    document.getElementById('cargo-table-body')?.addEventListener('paste', (e) => {
+        const text = e.clipboardData?.getData('text');
+        if (!text || (!text.includes('\t') && !text.includes('\n'))) return;
+        e.preventDefault();
+
+        const lines = text.trim().split(/\r?\n/).map(line => line.split('\t'));
+        const activeInput = document.activeElement;
+        const currentTr = activeInput ? activeInput.closest('tr') : null;
+        let startRowIndex = currentTr ? Array.from(currentTr.parentNode.children).indexOf(currentTr) : 0;
+
+        const allTrs = Array.from(document.querySelectorAll('#cargo-table-body tr'));
+
+        lines.forEach((cols, rIdx) => {
+            let targetTr = allTrs[startRowIndex + rIdx];
+            if (!targetTr) {
+                targetTr = addTableRow();
+            }
+            const inputs = [
+                targetTr.querySelector('.col-sku'),
+                targetTr.querySelector('.col-origen'),
+                targetTr.querySelector('.col-destino'),
+                targetTr.querySelector('.col-largo'),
+                targetTr.querySelector('.col-ancho'),
+                targetTr.querySelector('.col-alto'),
+                targetTr.querySelector('.col-peso'),
+                targetTr.querySelector('.col-cantidad'),
+                targetTr.querySelector('.col-desc')
+            ];
+            cols.forEach((val, cIdx) => {
+                if (inputs[cIdx] && val !== undefined) inputs[cIdx].value = val.trim();
+            });
+            evaluateRow(targetTr);
+        });
+        evaluateAllRows();
+    });
+
+    // 6. Botón Comenzar Cubicación
+    document.getElementById('btn-process-massive')?.addEventListener('click', runMassiveCubing);
 });
 
-function renderMassiveUnits() {
-    const list = document.getElementById('massive-units-list');
+// --- NAVEGACIÓN ENTRE VISTAS ---
+function switchMassiveTab(tab) {
+    const tabRegistro = document.getElementById('btn-tab-registro');
+    const tabCubicados = document.getElementById('btn-tab-cubicados');
+    const viewRegistro = document.getElementById('massive-view-registro');
+    const viewCubicados = document.getElementById('massive-view-cubicados');
+
+    if (tab === 'registro') {
+        if (tabRegistro) tabRegistro.classList.add('active');
+        if (tabCubicados) tabCubicados.classList.remove('active');
+        if (viewRegistro) viewRegistro.style.display = 'flex';
+        if (viewCubicados) viewCubicados.style.display = 'none';
+    } else {
+        if (tabCubicados) tabCubicados.classList.add('active');
+        if (tabRegistro) tabRegistro.classList.remove('active');
+        if (viewRegistro) viewRegistro.style.display = 'none';
+        if (viewCubicados) viewCubicados.style.display = 'flex';
+        renderResults();
+    }
+    if (window.lucide) lucide.createIcons();
+}
+
+// --- MENÚ DESPLEGABLE DE UNIDADES DISPONIBLES (IMAGEN 2) ---
+function renderMassiveUnitsDropdown() {
+    const list = document.getElementById('massive-units-list-dropdown');
+    if (!list) return;
     list.innerHTML = '';
 
-    UNITS.forEach((u, index) => {
+    // Leer unidades guardadas o default
+    let defaultKeys = [];
+    const savedFleet = localStorage.getItem('rodiload_default_fleet');
+    if (savedFleet) {
+        try {
+            defaultKeys = JSON.parse(savedFleet).map(f => f.key);
+        } catch(e) {}
+    }
+    if (defaultKeys.length === 0) {
+        defaultKeys = [UNITS[0].key]; // Por defecto la primera unidad (20' Standard)
+    }
+
+    UNITS.forEach((u) => {
         const item = document.createElement('div');
-        item.className = 'unit-select-item';
-        
-        let isChecked = index === 0 ? 'checked' : '';
-        
-        const checked = isChecked === 'checked';
-        item.style.cssText = `
-            display: flex; align-items: center; justify-content: space-between;
-            background: ${checked ? 'var(--primary-light)' : '#ffffff'};
-            border: 1px solid ${checked ? 'var(--primary)' : 'var(--border)'};
-            border-radius: 8px; padding: 8px 12px; transition: all 0.2s; cursor: pointer;
-        `;
-        item.onmouseover = () => { if (!item.querySelector('.unit-cb').checked) item.style.background = 'var(--bg-hover)'; };
-        item.onmouseout  = () => { if (!item.querySelector('.unit-cb').checked) item.style.background = '#ffffff'; };
+        item.className = 'unit-dropdown-item';
+        const isChecked = defaultKeys.includes(u.key);
+        if (isChecked) item.classList.add('checked');
 
         item.innerHTML = `
-            <label style="display:flex; align-items:center; gap:10px; cursor:pointer; flex:1; min-width:0;">
-                <input type="checkbox" class="unit-cb" data-key="${u.key}" ${isChecked} style="accent-color: var(--primary);">
-                <span style="font-size:12px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color: var(--text-main);">${u.name} <span style="color: var(--text-muted); font-weight:400;">(Max: ${u.maxPayload.toLocaleString()}kg)</span></span>
+            <label style="display:flex; align-items:center; width:100%; cursor:pointer; user-select:none;">
+                <input type="checkbox" class="unit-cb" data-key="${u.key}" ${isChecked ? 'checked' : ''} style="accent-color: var(--primary);">
+                <div style="display:flex; flex-direction:column; line-height:1.2;">
+                    <span style="font-size:13px; font-weight:700; color: #163A45;">${u.name} <span style="font-size:11px; color:#829598; font-weight:400; margin-left:4px;">(Max: ${u.maxPayload.toLocaleString()}kg)</span></span>
+                </div>
             </label>
         `;
 
-        // Resaltar borde al marcar/desmarcar
-        item.querySelector('.unit-cb').addEventListener('change', function() {
-            item.style.background    = this.checked ? 'var(--primary-light)' : '#ffffff';
-            item.style.borderColor   = this.checked ? 'var(--primary)' : 'var(--border)';
+        const cb = item.querySelector('.unit-cb');
+        cb.addEventListener('change', (e) => {
+            e.stopPropagation();
+            if (cb.checked) {
+                item.classList.add('checked');
+            } else {
+                item.classList.remove('checked');
+            }
+            updateSelectedUnitsCount();
+            evaluateAllRows();
+        });
+
+        item.addEventListener('click', (e) => {
+            if (e.target !== cb) {
+                cb.checked = !cb.checked;
+                cb.dispatchEvent(new Event('change'));
+            }
         });
 
         list.appendChild(item);
     });
 
-    updateSelectedUnitText();
-
-    document.querySelectorAll('.unit-cb').forEach(cb => {
-        cb.addEventListener('change', updateSelectedUnitText);
-    });
+    updateSelectedUnitsCount();
 }
 
-function updateSelectedUnitText() {
-    // Ya no cambiamos el texto porque está estático en "Tipo de Unidad", 
-    // pero mantenemos la lógica si es necesaria en el futuro, o para controlar UI.
-    const checkedBoxes = document.querySelectorAll('.unit-cb:checked');
-    const btnCalc = document.getElementById('btn-process-massive');
-    
-    if (btnCalc && massiveData && massiveData.length > 0) {
-        btnCalc.disabled = checkedBoxes.length === 0;
+function updateSelectedUnitsCount() {
+    const checked = document.querySelectorAll('#massive-units-list-dropdown .unit-cb:checked');
+    const badge = document.getElementById('units-selected-count');
+    if (badge) badge.textContent = checked.length;
+}
+
+function getSelectedUnits() {
+    const checked = Array.from(document.querySelectorAll('#massive-units-list-dropdown .unit-cb:checked'));
+    const keys = checked.map(cb => cb.getAttribute('data-key'));
+    return UNITS.filter(u => keys.includes(u.key));
+}
+
+// --- EVALUACIÓN DE FILA Y NOTA (SUGERENCIA DE SOBREDIMENSIONADO) ---
+function evaluateRow(tr) {
+    if (!tr) return;
+    const inputLargo = tr.querySelector('.col-largo');
+    const inputAncho = tr.querySelector('.col-ancho');
+    const inputAlto  = tr.querySelector('.col-alto');
+    const inputPeso  = tr.querySelector('.col-peso');
+    const cellNota   = tr.querySelector('.col-nota');
+
+    if (!inputLargo || !inputAncho || !inputAlto || !inputPeso || !cellNota) return;
+
+    const largo = parseFloat(inputLargo.value) || 0;
+    const ancho = parseFloat(inputAncho.value) || 0;
+    const alto  = parseFloat(inputAlto.value)  || 0;
+    const peso  = parseFloat(inputPeso.value)  || 0;
+
+    // Si los campos están vacíos o incompletos
+    if (largo <= 0 || ancho <= 0 || alto <= 0 || peso <= 0) {
+        tr.classList.remove('row-orange');
+        cellNota.innerHTML = '<span class="nota-text">—</span>';
+        return;
+    }
+
+    const item = {
+        l: largo / 100,
+        w: ancho / 100,
+        h: alto / 100,
+        weight: peso
+    };
+
+    const selectedUnits = getSelectedUnits();
+    const fitsInSelected = selectedUnits.some(u => itemFitsUnit(item, u));
+
+    if (fitsInSelected) {
+        tr.classList.remove('row-orange');
+        cellNota.innerHTML = '<span class="nota-text" style="color:#059669; font-weight: 600;">✓ Compatible</span>';
+    } else {
+        // No cabe en las unidades seleccionadas -> fila en naranja
+        tr.classList.add('row-orange');
+
+        // Buscar unidades del sistema donde SÍ quepa
+        const candidateUnits = UNITS.filter(u => itemFitsUnit(item, u));
+
+        if (candidateUnits.length > 0) {
+            candidateUnits.sort((a, b) => a.volume - b.volume);
+            const suggested = candidateUnits[0].name;
+            cellNota.innerHTML = `
+                <span class="nota-text oversized" style="color: #c2410c; display: flex; align-items: center; gap: 5px;">
+                    <i data-lucide="alert-triangle" style="width: 14px; height: 14px; color: #ea580c; flex-shrink: 0;"></i>
+                    <span>Sobredimensionado · Sugerencia: <strong>${suggested}</strong></span>
+                </span>`;
+        } else {
+            cellNota.innerHTML = `
+                <span class="nota-text oversized" style="color: #dc2626; display: flex; align-items: center; gap: 5px;">
+                    <i data-lucide="alert-circle" style="width: 14px; height: 14px; color: #dc2626; flex-shrink: 0;"></i>
+                    <span>Sobredimensionado · Excede capacidades del sistema</span>
+                </span>`;
+        }
+        if (window.lucide) lucide.createIcons();
+    }
+
+    // Auto-expand table by 20 rows if the last row is being typed in
+    if (tr === tr.parentNode.lastElementChild) {
+        if (largo > 0 || ancho > 0 || alto > 0 || peso > 0) {
+            for (let i = 0; i < 20; i++) {
+                addTableRow();
+            }
+        }
     }
 }
 
-function handleExcelFile(file) {
-    const info = document.getElementById('excel-file-info');
-    info.style.display = 'block';
-    info.innerHTML = `Leyendo ${file.name}...`;
-    
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        try {
-            const data = new Uint8Array(e.target.result);
-            const workbook = XLSX.read(data, {type: 'array'});
+function evaluateAllRows() {
+    const rows = document.querySelectorAll('#cargo-table-body tr');
+    rows.forEach(tr => evaluateRow(tr));
+}
 
-            // Leer TODAS las hojas y combinar sus registros
-            let allRows = [];
-            const sheetSummary = [];
+// --- GESTIÓN DE TABLA (REGISTRO DE CARGA) ---
+function addTableRow(data = {}) {
+    const tbody = document.getElementById('cargo-table-body');
+    if (!tbody) return;
 
-            workbook.SheetNames.forEach(sheetName => {
-                const sheet = workbook.Sheets[sheetName];
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+        <td><input type="text" class="cell-input col-sku" placeholder="" value="${data.sku || ''}"></td>
+        <td><input type="text" class="cell-input col-origen" placeholder="" value="${data.origen || ''}"></td>
+        <td><input type="text" class="cell-input col-destino" placeholder="" value="${data.destino || ''}"></td>
+        <td><input type="number" step="any" min="0" class="cell-input col-largo" placeholder="" value="${data.largo || ''}"></td>
+        <td><input type="number" step="any" min="0" class="cell-input col-ancho" placeholder="" value="${data.ancho || ''}"></td>
+        <td><input type="number" step="any" min="0" class="cell-input col-alto" placeholder="" value="${data.alto || ''}"></td>
+        <td><input type="number" step="any" min="0" class="cell-input col-peso" placeholder="" value="${data.peso || ''}"></td>
+        <td><input type="number" min="1" class="cell-input col-cantidad" placeholder="" value="${data.cantidad || ''}"></td>
+        <td><input type="text" class="cell-input col-desc" placeholder="" value="${data.descripcion || ''}"></td>
+        <td>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; text-align: left; margin: 0 auto; width: 100%; max-width: 170px;">
+                <label style="font-size: 10px; font-weight: 700; display: flex; align-items: center; gap: 4px; cursor: pointer; color: var(--text-main);">
+                    <input type="checkbox" class="cb-fragil" ${data.fragil ? 'checked' : ''} style="accent-color: var(--primary);"> FRÁGIL
+                </label>
+                <label style="font-size: 10px; font-weight: 700; display: flex; align-items: center; gap: 4px; cursor: pointer; color: var(--text-main);">
+                    <input type="checkbox" class="cb-apilable" ${data.apilable === false ? '' : 'checked'} style="accent-color: var(--primary);"> APILABLE
+                </label>
+                <label style="font-size: 10px; font-weight: 700; display: flex; align-items: center; gap: 4px; cursor: pointer; color: var(--text-main);">
+                    <input type="checkbox" class="cb-peligroso" ${data.peligroso ? 'checked' : ''} style="accent-color: var(--primary);"> PELIGROSO
+                </label>
+                <label style="font-size: 10px; font-weight: 700; display: flex; align-items: center; gap: 4px; cursor: pointer; color: var(--text-main);">
+                    <input type="checkbox" class="cb-refrigerado" ${data.refrigerado ? 'checked' : ''} style="accent-color: var(--primary);"> REFRIG.
+                </label>
+            </div>
+        </td>
+        <td class="col-nota" style="text-align: left; padding: 6px 12px;"><span class="nota-text"></span></td>
+    `;
 
-                // Estrategia robusta: leer fila por fila usando el rango real de celdas
-                const ref = sheet['!ref'];
-                if (!ref) return;
-                
-                // Obtener todos los datos sin filas en blanco
-                const rawData = XLSX.utils.sheet_to_json(sheet, { 
-                    header: 1,      // Array de arrays, sin cabeceras
-                    defval: '',
-                    blankrows: false
-                });
-                
-                if (rawData.length < 2) return; // Sin datos o solo cabecera
-                
-                // Primera fila = cabeceras
-                const headers = rawData[0].map(h => String(h).trim());
-                console.log(`[RODILOAD] Hoja "${sheetName}" - Cabeceras detectadas:`, headers);
-                console.log(`[RODILOAD] Total filas brutas (incluyendo cabecera):`, rawData.length);
-                
-                const findHeader = (possibleNames) => {
-                    const upperNames = possibleNames.map(n => n.toUpperCase());
-                    return headers.findIndex(h => upperNames.includes(String(h).toUpperCase()));
-                };
+    // Listeners para evaluar en vivo
+    tr.querySelectorAll('.col-largo, .col-ancho, .col-alto, .col-peso').forEach(input => {
+        input.addEventListener('input', () => evaluateRow(tr));
+        input.addEventListener('change', () => evaluateRow(tr));
+    });
 
-                const idxLargo = findHeader(['Largo', 'LARGO_CM']);
-                const idxAncho = findHeader(['Ancho', 'ANCHO_CM']);
-                const idxAlto  = findHeader(['Alto', 'ALTO_CM']);
-                const idxPeso  = findHeader(['Peso', 'PESO_KG']);
-                
-                if (idxLargo === -1 || idxAncho === -1 || idxAlto === -1 || idxPeso === -1) {
-                    console.warn('[RODILOAD] No se encontraron las columnas requeridas (Largo, Ancho, Alto, Peso)');
-                    return;
-                }
+    tbody.appendChild(tr);
+    if (window.lucide) lucide.createIcons();
 
-                const colMap = {
-                    SKU:        findHeader(['SKU']),
-                    Origen:     findHeader(['Origen']),
-                    Destino:    findHeader(['Destino']),
-                    Largo:      idxLargo,
-                    Ancho:      idxAncho,
-                    Alto:       idxAlto,
-                    Peso:       idxPeso,
-                    Cantidad:   findHeader(['Cantidad']),
-                    Descripcion:findHeader(['Descripcion'])
-                };
+    // Evaluar si vino con datos
+    if (data.largo && data.ancho && data.alto && data.peso) {
+        evaluateRow(tr);
+    }
 
-                const sheetRows = [];
-                // Iterar filas de datos (saltando cabecera)
-                for (let i = 1; i < rawData.length; i++) {
-                    const row = rawData[i];
-                    const largo = parseFloat(row[colMap.Largo]);
-                    const ancho = parseFloat(row[colMap.Ancho]);
-                    const alto  = parseFloat(row[colMap.Alto]);
-                    const peso  = parseFloat(row[colMap.Peso]);
-                    
-                    // Solo aceptar filas con valores numéricos reales y positivos en las 4 columnas clave
-                    if (!isNaN(largo) && largo > 0 &&
-                        !isNaN(ancho) && ancho > 0 &&
-                        !isNaN(alto)  && alto  > 0 &&
-                        !isNaN(peso)  && peso  > 0) {
-                        sheetRows.push({
-                            SKU:         colMap.SKU         >= 0 ? String(row[colMap.SKU]         || '').trim() : '',
-                            Origen:      colMap.Origen      >= 0 ? String(row[colMap.Origen]      || '').trim() : '',
-                            Destino:     colMap.Destino     >= 0 ? String(row[colMap.Destino]     || '').trim() : '',
-                            Largo:       largo,
-                            Ancho:       ancho,
-                            Alto:        alto,
-                            Peso:        peso,
-                            Cantidad:    colMap.Cantidad    >= 0 ? Math.max(1, parseInt(row[colMap.Cantidad]) || 1) : 1,
-                            Descripcion: colMap.Descripcion >= 0 ? String(row[colMap.Descripcion] || '').trim() : ''
-                        });
-                    }
-                }
-                
-                console.log(`[RODILOAD] Filas válidas en hoja "${sheetName}":`, sheetRows.length, sheetRows);
-                
-                if (sheetRows.length > 0) {
-                    allRows = allRows.concat(sheetRows);
-                    sheetSummary.push(`${sheetName}: ${sheetRows.length}`);
-                }
-            });
+    return tr;
+}
 
-            massiveData = allRows;
-
-            // Auto-limpiar resultados anteriores al cargar nuevo archivo
-            generatedTrips = [];
-            currentPage = 1;
-            document.getElementById('massive-results-grid').innerHTML = '';
-            document.getElementById('massive-results-section').style.display = 'none';
-
-            const totalSheets = sheetSummary.length;
-            const detailText = totalSheets > 1
-                ? ` (${sheetSummary.join(' | ')})`
-                : '';
-
-            info.innerHTML = `<i data-lucide="check-circle"></i> Archivo cargado: ${massiveData.length} registros válidos encontrados${detailText}.`;
-            lucide.createIcons();
-            document.getElementById('btn-process-massive').disabled = massiveData.length === 0;
-        } catch(err) {
-            console.error(err);
-            info.innerHTML = `<i data-lucide="alert-triangle"></i> Error al leer el archivo. Asegúrate de usar la plantilla.`;
-            info.style.color = '#F43F5E';
+function initMassiveTable() {
+    const tbody = document.getElementById('cargo-table-body');
+    if (!tbody) return;
+    if (tbody.children.length === 0) {
+        for (let i = 0; i < 20; i++) {
+            addTableRow();
         }
-    };
-    reader.readAsArrayBuffer(file);
+    }
 }
 
 function showAddUnitsModal(route) {
@@ -556,31 +629,104 @@ function showAddUnitsModal(route) {
 }
 
 async function runMassiveCubing() {
-    // Gather selected units config
-    availableUnitsConfig = {};
-    document.querySelectorAll('.unit-cb').forEach(cb => {
-        if(cb.checked) {
-            const key = cb.getAttribute('data-key');
-            availableUnitsConfig[key] = 999; // Set a high quantity since there is no limit now
-        }
-    });
+    evaluateAllRows();
 
-    if(Object.keys(availableUnitsConfig).length === 0) {
-        alert("Selecciona al menos un tipo de unidad disponible.");
+    // 1. Obtener unidades seleccionadas en el menú desplegable
+    const selectedUnits = getSelectedUnits();
+    if (selectedUnits.length === 0) {
+        await window.rodiloadAlert("⚠️ Por favor selecciona al menos un tipo de unidad disponible en el menú desplegable.");
+        const menu = document.getElementById('units-dropdown-menu');
+        if (menu) menu.style.display = 'block';
         return;
     }
 
-    // Show loading
+    availableUnitsConfig = {};
+    selectedUnits.forEach(u => {
+        availableUnitsConfig[u.key] = 999; // Disponibilidad ilimitada de unidades seleccionadas
+    });
+
+    // 2. Extraer datos directamente de la tabla (Registro de Carga)
+    const rows = document.querySelectorAll('#cargo-table-body tr');
+    const validItems = [];
+    const oversizedItems = [];
+
+    rows.forEach((tr, idx) => {
+        const sku = tr.querySelector('.col-sku')?.value.trim() || `SKU-${String(idx + 1).padStart(2, '0')}`;
+        const origen = tr.querySelector('.col-origen')?.value.trim() || 'Planta Origen';
+        const destino = tr.querySelector('.col-destino')?.value.trim() || 'Destino General';
+        const largo = parseFloat(tr.querySelector('.col-largo')?.value) || 0;
+        const ancho = parseFloat(tr.querySelector('.col-ancho')?.value) || 0;
+        const alto = parseFloat(tr.querySelector('.col-alto')?.value) || 0;
+        const peso = parseFloat(tr.querySelector('.col-peso')?.value) || 0;
+        const cantidad = Math.max(1, parseInt(tr.querySelector('.col-cantidad')?.value) || 1);
+        const desc = tr.querySelector('.col-desc')?.value.trim() || 'Mercancía';
+        const fragil = tr.querySelector('.cb-fragil')?.checked || false;
+        const apilable = tr.querySelector('.cb-apilable')?.checked ?? true;
+        const peligroso = tr.querySelector('.cb-peligroso')?.checked || false;
+        const refrigerado = tr.querySelector('.cb-refrigerado')?.checked || false;
+
+        if (largo > 0 && ancho > 0 && alto > 0 && peso > 0) {
+            const rawItem = {
+                SKU: sku,
+                Origen: origen,
+                Destino: destino,
+                Largo: largo,
+                Ancho: ancho,
+                Alto: alto,
+                Peso: peso,
+                Cantidad: cantidad,
+                Descripcion: desc,
+                Fragil: fragil,
+                Apilable: apilable,
+                Peligroso: peligroso,
+                Refrigerado: refrigerado
+            };
+
+            const fitsAny = selectedUnits.some(u => itemFitsUnit({
+                l: largo / 100,
+                w: ancho / 100,
+                h: alto / 100,
+                weight: peso
+            }, u));
+
+            if (fitsAny) {
+                validItems.push(rawItem);
+            } else {
+                oversizedItems.push(rawItem);
+            }
+        }
+    });
+
+    if (validItems.length === 0 && oversizedItems.length === 0) {
+        await window.rodiloadAlert("⚠️ Por favor ingresa al menos una mercancía en la tabla con dimensiones (Largo, Ancho, Alto) y Peso.");
+        return;
+    }
+
+    if (validItems.length === 0) {
+        await window.rodiloadAlert("⚠️ Ninguna de las mercancías cabe en las unidades seleccionadas actualmente.\nRevisa las filas marcadas en naranja y las sugerencias en la columna 'Nota' para añadir la unidad adecuada en el menú desplegable.");
+        return;
+    }
+
+    massiveData = validItems;
+
+    // Mostrar loader
     const loader = document.getElementById('loading-screen');
-    const loaderText = loader.querySelector('.loader-text');
-    loaderText.innerText = "Cubicando masivamente...";
+    const loaderText = loader.querySelector('.loader-title') || loader.querySelector('.loader-text');
+    if (loaderText) loaderText.innerText = "Cubicando embarques...";
     loader.style.display = 'flex';
-    
-    // Small delay to let the loading screen render, then run async calculation
-    await new Promise(r => setTimeout(r, 100));
+
+    await new Promise(r => setTimeout(r, 120));
     await calculateTrips();
     loader.style.display = 'none';
-    document.getElementById('massive-results-section').style.display = 'block';
+
+    // Cambiar a la vista "Embarques cubicados" (Imagen 3)
+    switchMassiveTab('cubicados');
+
+    if (oversizedItems.length > 0) {
+        setTimeout(async () => {
+            await window.rodiloadAlert(`✅ Carga cubicada con éxito.\n\n⚠️ Atención: ${oversizedItems.length} mercancía(s) no cupieron en las unidades seleccionadas y aparecen resaltadas en naranja con su sugerencia en la pestaña 'Registro de Carga'.`);
+        }, 300);
+    }
 }
 
 function itemFitsUnit(item, u) {
@@ -660,7 +806,7 @@ function simulate3DPacking(items, unit) {
             remainingItemsList.push(item);
             continue;
         }
-        const success = window.app.calculatePositionAndAdd(item.w, item.l, item.h, item.weight, true, item.sku || "");
+        const success = window.app.calculatePositionAndAdd(item.w, item.l, item.h, item.weight, item.stackable !== false, item.sku || "");
         if (success) {
             packedItemsList.push(item);
             totalWeight += item.weight;
@@ -711,7 +857,11 @@ async function calculateTrips() {
                 h:      parseFloat(row.Alto)  / 100,
                 weight: parseFloat(row.Peso),
                 desc:   row.Descripcion || 'Pieza Masiva',
-                sku:    sku
+                sku:    sku,
+                fragile: row.Fragil || false,
+                stackable: row.Apilable !== false, // defaults to true
+                dangerous: row.Peligroso || false,
+                refrigerated: row.Refrigerado || false
             });
         }
     });
@@ -778,7 +928,7 @@ async function calculateTrips() {
             // 3. Truly nothing works → skip remaining items with an error
             if (bestUnitIndex === -1 || !bestSimulation || bestSimulation.packedItems.length === 0) {
                 const skipped = [...new Set(remainingItems.map(it => it.sku || it.desc))].join(', ');
-                alert(`⚠️ Las siguientes piezas de la ruta "${route}" no caben en ninguna de las unidades seleccionadas y serán omitidas:\n${skipped}`);
+                await window.rodiloadAlert(`⚠️ Las siguientes piezas de la ruta "${route}" no caben en ninguna de las unidades seleccionadas y serán omitidas:\n${skipped}`);
                 remainingItems = [];
                 continue;
             }
@@ -819,13 +969,15 @@ function renderResults() {
     const grid = document.getElementById('massive-results-grid');
     const paginator = document.getElementById('massive-paginator');
     const pageIndicator = document.getElementById('page-indicator');
-    const section = document.getElementById('massive-results-section');
+    const emptyMsg = document.getElementById('massive-empty-results-msg');
+    if (!grid) return;
     grid.innerHTML = '';
     
     const totalPages = Math.ceil(generatedTrips.length / ITEMS_PER_PAGE);
     
     if (generatedTrips.length > 0) {
-        if (section) section.style.display = 'block';
+        if (emptyMsg) emptyMsg.style.display = 'none';
+        grid.style.display = 'grid';
         if (paginator) paginator.style.display = 'flex';
         if (pageIndicator) pageIndicator.textContent = `Página ${currentPage} de ${totalPages || 1}`;
         
@@ -840,6 +992,8 @@ function renderResults() {
             btnNext.style.pointerEvents = currentPage === totalPages || totalPages === 0 ? 'none' : 'auto';
         }
     } else {
+        if (emptyMsg) emptyMsg.style.display = 'block';
+        grid.style.display = 'none';
         if (paginator) paginator.style.display = 'none';
     }
     
@@ -931,8 +1085,8 @@ function renderResults() {
     lucide.createIcons();
 }
 
-window.deleteTrip = function(index) {
-    if(confirm("¿Estás seguro de que deseas eliminar este viaje?")) {
+window.deleteTrip = async function(index) {
+    if(await window.rodiloadConfirm("¿Estás seguro de que deseas eliminar este viaje?")) {
         const trip = generatedTrips[index];
         if (trip.id && window.db) {
             const tenant = window.appTenant || "default";
@@ -962,7 +1116,7 @@ window.acquireLockAndLoad = async function(tripIndex) {
             loadShipmentDataIntoApp(tripIndex);
         } catch(e) {
             console.error("Error adquiriendo bloqueo", e);
-            alert("No se pudo acceder al embarque. Es posible que alguien más haya entrado en este instante.");
+            await window.rodiloadAlert("No se pudo acceder al embarque. Es posible que alguien más haya entrado en este instante.");
         }
     } else {
         loadShipmentDataIntoApp(tripIndex);
@@ -1037,8 +1191,10 @@ window.loadShipmentDataIntoApp = function(tripIndex) {
                     weight: item.weight,
                     desc: item.desc,
                     qty: 1,
-                    fragile: false,
-                    stackable: true,
+                    fragile: item.fragile || false,
+                    stackable: item.stackable !== false,
+                    dangerous: item.dangerous || false,
+                    refrigerated: item.refrigerated || false,
                     sku: item.sku || 'MASIVO'
                 });
             }
@@ -1064,8 +1220,8 @@ window.loadShipmentDataIntoApp = function(tripIndex) {
         if (btnMenu) {
             if (!btnMenu.dataset.originalHtml) btnMenu.dataset.originalHtml = btnMenu.innerHTML;
             btnMenu.innerHTML = '<i data-lucide="arrow-left"></i> Panel';
-            btnMenu.style.borderColor = '#00e5ff';
-            btnMenu.style.color = '#00e5ff';
+            btnMenu.style.borderColor = '#ffffff';
+            btnMenu.style.color = '#ffffff';
             if (window.lucide) window.lucide.createIcons();
         }
 

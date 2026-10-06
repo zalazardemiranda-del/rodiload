@@ -1,4 +1,4 @@
-$port = 8080
+$port = 8085
 $listener = New-Object System.Net.HttpListener
 $listener.Prefixes.Add("http://localhost:$port/")
 try {
@@ -26,11 +26,19 @@ try {
             elseif ($path.EndsWith(".css")) { $response.ContentType = "text/css" }
             elseif ($path.EndsWith(".glb")) { $response.ContentType = "model/gltf-binary" }
             
-            $response.OutputStream.Write($content, 0, $content.Length)
+            try {
+                $response.OutputStream.Write($content, 0, $content.Length)
+            } catch {
+                # Ignore client disconnect errors
+            }
         } else {
             $response.StatusCode = 404
         }
-        $response.Close()
+        try {
+            $response.Close()
+        } catch {
+            # Ignore close errors
+        }
     }
 } finally {
     $listener.Stop()
