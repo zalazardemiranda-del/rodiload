@@ -8,7 +8,7 @@ const UNITS = [
     { key: 'rabon_4.5m',  name: 'TORTON',                width: 2.40, height: 2.10, length: 4.30, maxPayload: 3500,  volume: 21.0,  model: 'assets/models/modelo torton.glb?v=20261026_v2', scale: 4.10,  bedHeight: 1.30, offset: { x: -1.00, y: 1.30, z: 0.00 }, modelOffset: { x: -0.35, y: 1.82, z: 0.00 } },
     { key: 'rabon_10ton', name: 'RABON 10 TON',          width: 2.50, height: 2.50, length: 7.30, maxPayload: 10000, volume: 45.0,  model: 'assets/models/rabon 10 ton.glb?v=20261026_v2', scale: { x: 5.55, y: 5.20, z: 4.60 },  bedHeight: 1.20, offset: { x: -2.60, y: 1.20, z: 0.00 }, modelOffset: { x: -0.14, y: 1.89, z: 0.06 } },
     { key: 'trailer_53ft',name: 'Trailer 53 FT',         width: 2.45, height: 2.72, length: 15.50,maxPayload: 20000, volume: 102.0, model: 'assets/models/trailer 53 ft.glb?v=20261026_v2', rotation: { x: 0, y: 0, z: 0 }, scale: { x: 9.88, y: 13.38, z: 9.14 }, bedHeight: 1.58, offset: { x: -7.25, y: 1.58, z: 0.00 }, modelOffset: { x: -1.93, y: 2.10, z: -0.10 }, trailerStretch: { splitX: -0.56, factorX: 1.08, splitY: -0.039, factorY: 1.08, factorZ: 1.07 } },
-    { key: 'lowboy_3ejes',name: 'LOWBOY 3 EJES',         width: 2.59, height: 6.00, length: 12.485,maxPayload: 40000, volume: 250.0, model: 'assets/models/MODELO LOWBOY.glb?v=20261026_v2',  scale: 18.40, bedHeight: 1.50, offset: { x: -4.40,y: 1.50, z: -0.55 }, modelOffset: { x: -3.10, y: 2.85, z: -0.50 }, openDeck: true, secondaryDeck: { length: 3.65, width: 2.59, bedHeightOffset: 0.8, offsetX: 12.485 } },
+    { key: 'lowboy_3ejes',name: 'LOWBOY 3 EJES',         width: 2.59, height: 6.00, length: 12.485,maxPayload: 40000, volume: 250.0, model: 'assets/models/LOW BOY.glb?v=20261027_v2',  scale: { x: 12.50, y: 14.00, z: 9.05 }, bedHeight: 1.40, offset: { x: -6.50, y: 1.40, z: 0.00 }, modelOffset: { x: -4.25, y: 2.51, z: 0.00 }, openDeck: true, secondaryDeck: { length: 3.65, width: 2.59, bedHeightOffset: 0.33, offsetX: 12.485 }, trailerStretch: { splitX: -0.180, factorX: 1.5133, splitX2: 0.480, factorX2: 0.6215 } },
     { key: 'plataforma_40ft', name: 'PLATAFORMA DE 40 FT', width: 2.35, height: 2.40, length: 12.03, maxPayload: 28750, volume: 67.8, doorHeight: 2.40, model: 'assets/models/plataforma 40ft.glb?v=20261026_v2', scale: 9.65, bedHeight: 1.78, offset: { x: -6.25, y: 1.78, z: 0.00 }, modelOffset: { x: -3.35, y: 2.18, z: -0.06 }, openDeck: true }
 ];
 
@@ -982,13 +982,13 @@ class CubicadorApp {
 
     getCalibStorageKey(unit = this.currentUnit) {
         if (!unit) return 'calib_v9_default';
-        return 'calib_v9_' + unit.key;
+        return 'calib_v11_' + unit.key;
     }
 
     updateBlueBoxPosition() {
         if (this.blueBoxEdges) {
             const config = this.currentUnit;
-            this.blueBoxEdges.position.set(this.currentCargoOffset.x + config.length/2, this.currentCargoOffset.y + config.height/2, this.currentCargoOffset.z);
+            this.blueBoxEdges.position.set(this.currentCargoOffset.x + config.length/2, this.currentCargoOffset.y + config.height/2, this.currentCargoOffset.z); if (this.secondaryBlueBoxEdges && config.secondaryDeck) { const { length: sdLen, bedHeightOffset, offsetX } = config.secondaryDeck; const sdHeight = config.height - bedHeightOffset; this.secondaryBlueBoxEdges.position.set(this.currentCargoOffset.x + offsetX + sdLen/2, this.currentCargoOffset.y + bedHeightOffset + sdHeight/2, this.currentCargoOffset.z); }
         }
     }
 
@@ -1071,6 +1071,8 @@ class CubicadorApp {
                 if (config.trailerStretch) {
                     const splitX = config.trailerStretch.splitX ?? -0.56;
                     const factorX = config.trailerStretch.factorX ?? config.trailerStretch.factor ?? 1.0;
+                    const splitX2 = config.trailerStretch.splitX2;
+                    const factorX2 = config.trailerStretch.factorX2 ?? factorX;
                     const splitY = config.trailerStretch.splitY ?? -0.039;
                     const factorY = config.trailerStretch.factorY ?? 1.0;
                     const factorZ = config.trailerStretch.factorZ ?? 1.0;
@@ -1084,7 +1086,12 @@ class CubicadorApp {
                             for (let i = 0; i < pos.count; i++) {
                                 const px = pos.getX(i);
                                 if (px > splitX) {
-                                    pos.setX(i, splitX + (px - splitX) * factorX);
+                                    if (splitX2 !== undefined && px > splitX2) {
+                                        const newSplitX2 = splitX + (splitX2 - splitX) * factorX;
+                                        pos.setX(i, newSplitX2 + (px - splitX2) * factorX2);
+                                    } else {
+                                        pos.setX(i, splitX + (px - splitX) * factorX);
+                                    }
                                     const py = pos.getY(i);
                                     if (py > splitY) {
                                         pos.setY(i, splitY + (py - splitY) * factorY);
