@@ -4,8 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>RODILOAD | Cubicador Premium</title>
-    <link rel="stylesheet" href="style.css?v=3">
+    <link rel="stylesheet" href="style.css?v=20261026_v2">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -77,7 +80,7 @@
                 </div>
                 <div class="login-input-group">
                     <label><i data-lucide="lock"></i> CONTRASEÑA</label>
-                    <input type="password" id="login-password" placeholder="••••••••" required>
+                    <input type="password" id="login-password" placeholder="" required>
                     <div id="login-attempt-warning" style="display: none; color: #f87171; font-size: 11px; margin-top: 6px; font-weight: 500; align-items: center; gap: 5px;"></div>
                     <div class="login-forgot-wrapper">
                         <a href="javascript:void(0)" id="btn-forgot-password" class="forgot-password-link">¿Olvidaste tu contraseña?</a>
@@ -268,7 +271,17 @@
                   </h2>
 
                   <!-- Menú Desplegable de Unidades y Acciones (Ubicado en el recuadro rojo de Imagen 1) -->
-                  <div style="display: flex; align-items: center; gap: 12px; position: relative;">
+                  <div style="display: flex; align-items: center; gap: 12px; position: relative; flex-wrap: wrap;">
+                      <!-- Sección Peso Legal (Límite máximo por unidad) -->
+                      <div class="legal-weight-container" style="display: flex; align-items: center; gap: 8px; background: #ffffff; border: 1px solid var(--border); padding: 7px 14px; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+                          <i data-lucide="scale" style="width: 16px; height: 16px; color: var(--primary); flex-shrink: 0;"></i>
+                          <span style="font-size: 12px; font-weight: 700; color: var(--text-main); white-space: nowrap;">PESO LEGAL:</span>
+                          <div style="display: flex; align-items: center; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 3px 8px;">
+                              <input type="text" id="input-massive-legal-weight" placeholder="" inputmode="numeric" style="width: 90px; border: none; background: transparent; font-size: 13px; font-weight: 700; color: #163A45; outline: none; text-align: right;" title="Límite máximo de peso legal por unidad (ej. 20,000 kg)">
+                              <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); margin-left: 4px;">KG</span>
+                          </div>
+                      </div>
+
                       <!-- Menú desplegable para selección de unidades disponibles (Imagen 2) -->
                       <div class="units-dropdown-container" id="units-dropdown-container">
                           <button type="button" id="btn-units-dropdown-toggle" class="btn-units-dropdown">
@@ -498,7 +511,7 @@
                     <h3 class="panel-title"><i data-lucide="settings"></i> CARACTERÍSTICAS</h3>
                     <div class="features-grid">
                         <label class="cb-item"><input type="checkbox" id="cb-fragile"> FRÁGIL</label>
-                        <label class="cb-item"><input type="checkbox" id="cb-stackable" checked> APILABLE</label>
+                        <label class="cb-item"><input type="checkbox" id="cb-stackable"> APILABLE</label>
                         <label class="cb-item"><input type="checkbox" id="cb-dangerous"> PELIGROSO</label>
                         <label class="cb-item"><input type="checkbox" id="cb-refrigerated"> REFRIGERADO</label>
                     </div>
@@ -521,7 +534,7 @@
                         </div>
 
                         <button id="btn-calculate" class="btn-action-pill"><i data-lucide="zap"></i> CUBICAR</button>
-                        <button id="btn-clear-cargo" class="btn-action-pill" style="margin-bottom: 0;">↺ LIMPIAR</button>
+                        <button id="btn-clear-cargo" class="btn-action-pill" style="margin-bottom: 0;"><i data-lucide="rotate-ccw"></i> LIMPIAR</button>
 
                     </div>
                 </div>
@@ -634,7 +647,7 @@
                         <span id="detail-date" class="detail-subtext"></span>
                     </div>
                 </div>
-                <button id="close-detail" class="close-btn">×</button>
+                <button id="close-detail" class="close-btn">&times;</button>
             </header>
             <div class="detail-body">
                 <div id="detail-items-list" class="detail-section">
@@ -673,73 +686,286 @@
         </div>
     </div>
 
-    <!-- PANEL DE CALIBRACIÓN -->
-    <div id="calibration-panel" class="calibration-panel" style="display: none;">
-        <div class="calib-header">
-            <span><i data-lucide="sliders"></i> CALIBRACIÓN DE UNIDAD</span>
-            <button id="btn-close-calibration" class="close-btn">×</button>
+    <!-- PANEL DE CALIBRACIÓN AVANZADA -->
+    <div id="calibration-panel" class="calibration-panel" style="display: none; position: fixed; top: 75px; right: 20px; width: 340px; background: rgba(11, 20, 29, 0.98); backdrop-filter: blur(25px); border: 1px solid #38bdf8; border-radius: 20px; box-shadow: 0 25px 60px rgba(0,0,0,0.8), 0 0 20px rgba(56, 189, 248, 0.2); z-index: 99999; color: #fff; font-family: 'Outfit', sans-serif;">
+        <div class="calib-header" style="background: rgba(56, 189, 248, 0.1); padding: 12px 16px; border-bottom: 1px solid rgba(56, 189, 248, 0.2); display: flex; justify-content: space-between; align-items: center; border-radius: 20px 20px 0 0;">
+            <span style="font-weight: 800; font-size: 11px; letter-spacing: 0.5px; color: #38bdf8; display: flex; align-items: center; gap: 8px;">
+                <i data-lucide="sliders" style="width: 16px; height: 16px;"></i> CALIBRADOR 3D: <span id="calib-unit-name" style="color: #fff;">PLATAFORMA</span>
+            </span>
+            <button id="btn-close-calibration" class="close-btn" style="background: none; border: none; color: #94a3b8; font-size: 20px; cursor: pointer; padding: 0 4px; line-height: 1;">&times;</button>
         </div>
-        <div class="calib-body">
-            <!-- Calibración Modelo 3D -->
-            <div class="calib-section">
-                <label>MODELO 3D (CAMIÓN/TRAILER)</label>
-                <div class="calib-controls">
-                    <button id="calib-move-left" title="Izquierda"><i data-lucide="arrow-left"></i></button>
-                    <button id="calib-move-right" title="Derecha"><i data-lucide="arrow-right"></i></button>
-                    <button id="calib-move-back" title="Atrás"><i data-lucide="arrow-up"></i></button>
-                    <button id="calib-move-front" title="Adelante"><i data-lucide="arrow-down"></i></button>
-                    <button id="calib-move-up" title="Subir"><i data-lucide="chevron-up"></i></button>
-                    <button id="calib-move-down" title="Bajar"><i data-lucide="chevron-down"></i></button>
+        
+        <div class="calib-body" style="padding: 14px; max-height: 75vh; overflow-y: auto;">
+            
+            <!-- SECCIÓN 1: MODELO 3D (CAMIÓN) -->
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <label style="font-weight: 800; font-size: 11px; color: #38bdf8; text-transform: uppercase; display: flex; align-items: center; gap: 6px;">
+                        <i data-lucide="truck" style="width: 14px; height: 14px;"></i> 1. Ajuste del Camión
+                    </label>
+                    <span id="calib-truck-status" style="font-size: 10px; color: #22c55e; font-weight: 700;">● Activo</span>
                 </div>
-                <div class="calib-row">
-                    <span>ESCALA:</span>
-                    <div>
-                        <button id="calib-scale-down" style="padding:4px 8px; border-radius:4px; background: #ffffff; border: 1px solid var(--border); color: var(--text-main); cursor: pointer;">-</button>
-                        <button id="calib-scale-up" style="padding:4px 8px; border-radius:4px; background: #ffffff; border: 1px solid var(--border); color: var(--text-main); cursor: pointer;">+</button>
+
+                <!-- ALTURA Y (SUBIR/BAJAR) -->
+                <div style="margin-bottom: 12px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; color: #e2e8f0;">
+                        <span>ALTURA (Y):</span>
+                        <b id="val-truck-y" style="color: #38bdf8; font-family: monospace; font-size: 12px;">+2.70 m</b>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 4px; margin-bottom: 6px;">
+                        <button id="calib-y-subir-05" style="padding: 6px 2px; font-size: 10px; font-weight: 800; background: #0284c7; color: white; border: none; border-radius: 6px; cursor: pointer;">▲ +0.5m</button>
+                        <button id="calib-y-subir-01" style="padding: 6px 2px; font-size: 10px; font-weight: 800; background: #0369a1; color: white; border: none; border-radius: 6px; cursor: pointer;">▲ +0.1m</button>
+                        <button id="calib-y-bajar-01" style="padding: 6px 2px; font-size: 10px; font-weight: 800; background: #334155; color: white; border: none; border-radius: 6px; cursor: pointer;">▼ -0.1m</button>
+                        <button id="calib-y-bajar-05" style="padding: 6px 2px; font-size: 10px; font-weight: 800; background: #1e293b; color: #cbd5e1; border: none; border-radius: 6px; cursor: pointer;">▼ -0.5m</button>
+                    </div>
+                    <input type="range" id="slider-truck-y" min="-2.0" max="10.0" step="0.02" value="2.7" style="width: 100%; accent-color: #38bdf8; cursor: pointer;">
+                </div>
+
+                <!-- ESCALA / TAMAÑO -->
+                <div style="margin-bottom: 12px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; color: #e2e8f0;">
+                        <span>TAMAÑO / ESCALA:</span>
+                        <b id="val-truck-scale" style="color: #38bdf8; font-family: monospace; font-size: 12px;">8.50</b>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 4px; margin-bottom: 6px;">
+                        <button id="calib-scale-mas-1" style="padding: 6px 2px; font-size: 10px; font-weight: 800; background: #0284c7; color: white; border: none; border-radius: 6px; cursor: pointer;">+ 1.0</button>
+                        <button id="calib-scale-mas-02" style="padding: 6px 2px; font-size: 10px; font-weight: 800; background: #0369a1; color: white; border: none; border-radius: 6px; cursor: pointer;">+ 0.2</button>
+                        <button id="calib-scale-menos-02" style="padding: 6px 2px; font-size: 10px; font-weight: 800; background: #334155; color: white; border: none; border-radius: 6px; cursor: pointer;">- 0.2</button>
+                        <button id="calib-scale-menos-1" style="padding: 6px 2px; font-size: 10px; font-weight: 800; background: #1e293b; color: #cbd5e1; border: none; border-radius: 6px; cursor: pointer;">- 1.0</button>
+                    </div>
+                                        <input type="range" id="slider-truck-scale" min="1.0" max="25.0" step="0.05" value="8.5" style="width: 100%; accent-color: #38bdf8; cursor: pointer;">
+                </div>
+
+                <!-- ANCHO / ESCALA Z (PROFUNDIDAD CAJA) -->
+                <div style="margin-bottom: 12px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; color: #e2e8f0;">
+                        <span>ANCHO / PROFUNDIDAD CAJA (ESCALA Z):</span>
+                        <b id="val-truck-scale-z" style="color: #38bdf8; font-family: monospace; font-size: 12px;">5.20</b>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 4px; margin-bottom: 6px;">
+                        <button id="calib-scalez-mas-05" style="padding: 6px 2px; font-size: 10px; font-weight: 800; background: #0284c7; color: white; border: none; border-radius: 6px; cursor: pointer;">+ 0.5</button>
+                        <button id="calib-scalez-mas-01" style="padding: 6px 2px; font-size: 10px; font-weight: 800; background: #0369a1; color: white; border: none; border-radius: 6px; cursor: pointer;">+ 0.1</button>
+                        <button id="calib-scalez-menos-01" style="padding: 6px 2px; font-size: 10px; font-weight: 800; background: #334155; color: white; border: none; border-radius: 6px; cursor: pointer;">- 0.1</button>
+                        <button id="calib-scalez-menos-05" style="padding: 6px 2px; font-size: 10px; font-weight: 800; background: #1e293b; color: #cbd5e1; border: none; border-radius: 6px; cursor: pointer;">- 0.5</button>
+                    </div>
+                    <input type="range" id="slider-truck-scale-z" min="0.5" max="25.0" step="0.05" value="5.2" style="width: 100%; accent-color: #38bdf8; cursor: pointer;">
+                </div>
+
+                <!-- LARGO / ESCALA X (LARGO CAJA) -->
+                <div style="margin-bottom: 12px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; color: #e2e8f0;">
+                        <span>LARGO DE CAJA (ESCALA X):</span>
+                        <b id="val-truck-scale-x" style="color: #38bdf8; font-family: monospace; font-size: 12px;">5.55</b>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 4px; margin-bottom: 6px;">
+                        <button id="calib-scalex-mas-05" style="padding: 6px 2px; font-size: 10px; font-weight: 800; background: #0284c7; color: white; border: none; border-radius: 6px; cursor: pointer;">+ 0.5</button>
+                        <button id="calib-scalex-mas-01" style="padding: 6px 2px; font-size: 10px; font-weight: 800; background: #0369a1; color: white; border: none; border-radius: 6px; cursor: pointer;">+ 0.1</button>
+                        <button id="calib-scalex-menos-01" style="padding: 6px 2px; font-size: 10px; font-weight: 800; background: #334155; color: white; border: none; border-radius: 6px; cursor: pointer;">- 0.1</button>
+                        <button id="calib-scalex-menos-05" style="padding: 6px 2px; font-size: 10px; font-weight: 800; background: #1e293b; color: #cbd5e1; border: none; border-radius: 6px; cursor: pointer;">- 0.5</button>
+                    </div>
+                    <input type="range" id="slider-truck-scale-x" min="0.5" max="25.0" step="0.05" value="5.55" style="width: 100%; accent-color: #38bdf8; cursor: pointer;">
+                </div>
+
+                <!-- INCLINACIÓN / NIVELACIÓN (ROTACIÓN X) -->
+                <div style="margin-bottom: 12px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; color: #e2e8f0;">
+                        <span>NIVELAR / INCLINACIÓN (ROT X):</span>
+                        <b id="val-truck-rot-x" style="color: #38bdf8; font-family: monospace; font-size: 12px;">0.000 rad</b>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 4px; margin-bottom: 6px;">
+                        <button id="calib-rotx-menos-02" style="padding: 6px 2px; font-size: 10px; font-weight: 800; background: #0284c7; color: white; border: none; border-radius: 6px; cursor: pointer;">- 0.02</button>
+                        <button id="calib-rotx-menos-005" style="padding: 6px 2px; font-size: 10px; font-weight: 800; background: #0369a1; color: white; border: none; border-radius: 6px; cursor: pointer;">- 0.005</button>
+                        <button id="calib-rotx-mas-005" style="padding: 6px 2px; font-size: 10px; font-weight: 800; background: #334155; color: white; border: none; border-radius: 6px; cursor: pointer;">+ 0.005</button>
+                        <button id="calib-rotx-mas-02" style="padding: 6px 2px; font-size: 10px; font-weight: 800; background: #1e293b; color: #cbd5e1; border: none; border-radius: 6px; cursor: pointer;">+ 0.02</button>
+                    </div>
+                    <input type="range" id="slider-truck-rot-x" min="-0.25" max="0.25" step="0.005" value="0.0" style="width: 100%; accent-color: #38bdf8; cursor: pointer;">
+                </div>
+
+                <!-- POSICIÓN X (LARGO) -->
+                <div style="margin-bottom: 10px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; color: #e2e8f0;">
+                        <span>POSICIÓN LARGO (X):</span>
+                        <b id="val-truck-x" style="color: #38bdf8; font-family: monospace; font-size: 12px;">-2.00 m</b>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px;">
+                        <button id="calib-x-atras" style="padding: 6px; font-size: 10px; font-weight: 800; background: #1e293b; color: white; border: 1px solid #334155; border-radius: 6px; cursor: pointer;">◀ Atrás (-0.2m)</button>
+                        <button id="calib-x-adelante" style="padding: 6px; font-size: 10px; font-weight: 800; background: #1e293b; color: white; border: 1px solid #334155; border-radius: 6px; cursor: pointer;">▶ Adelante (+0.2m)</button>
+                    </div>
+                    <input type="range" id="slider-truck-x" min="-15.0" max="15.0" step="0.05" value="-2.0" style="width: 100%; accent-color: #38bdf8; cursor: pointer;">
+                </div>
+
+                <!-- POSICIÓN Z (ANCHO) -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; color: #e2e8f0;">
+                        <span>POSICIÓN ANCHO (Z):</span>
+                        <b id="val-truck-z" style="color: #38bdf8; font-family: monospace; font-size: 12px;">0.00 m</b>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px;">
+                        <button id="calib-z-izq" style="padding: 6px; font-size: 10px; font-weight: 800; background: #1e293b; color: white; border: 1px solid #334155; border-radius: 6px; cursor: pointer;">◀ Izquierda (-0.1m)</button>
+                        <button id="calib-z-der" style="padding: 6px; font-size: 10px; font-weight: 800; background: #1e293b; color: white; border: 1px solid #334155; border-radius: 6px; cursor: pointer;">▶ Derecha (+0.1m)</button>
+                    </div>
+                    <input type="range" id="slider-truck-z" min="-5.0" max="5.0" step="0.02" value="0.0" style="width: 100%; accent-color: #38bdf8; cursor: pointer;">
+                </div>
+            </div>
+
+            <!-- SECCIÓN 2: ÁREA DE CARGA (CAJA AZUL) -->
+            <div style="background: rgba(0, 240, 255, 0.04); border: 1px solid rgba(0, 240, 255, 0.2); border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <label style="font-weight: 800; font-size: 11px; color: #00f0ff; text-transform: uppercase; display: flex; align-items: center; gap: 6px;">
+                        <i data-lucide="box" style="width: 14px; height: 14px;"></i> 2. Área de Carga (Caja Azul)
+                    </label>
+                    <span style="font-size: 10px; color: #00f0ff; font-weight: 700;">12.03m × 2.35m</span>
+                </div>
+
+                <!-- ALTURA PISO (Y) -->
+                <div style="margin-bottom: 10px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; color: #e2e8f0;">
+                        <span>PISO DE CARGA (Y):</span>
+                        <b id="val-box-y" style="color: #00f0ff; font-family: monospace; font-size: 12px;">+1.50 m</b>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px;">
+                        <button id="calib-box-y-subir" style="padding: 6px; font-size: 10px; font-weight: 800; background: rgba(0,240,255,0.15); color: #00f0ff; border: 1px solid #00f0ff; border-radius: 6px; cursor: pointer;">▲ Subir Caja (+0.05m)</button>
+                        <button id="calib-box-y-bajar" style="padding: 6px; font-size: 10px; font-weight: 800; background: rgba(0,240,255,0.15); color: #00f0ff; border: 1px solid #00f0ff; border-radius: 6px; cursor: pointer;">▼ Bajar Caja (-0.05m)</button>
+                    </div>
+                    <input type="range" id="slider-box-y" min="0.0" max="5.0" step="0.02" value="1.5" style="width: 100%; accent-color: #00f0ff; cursor: pointer;">
+                </div>
+
+                <!-- POSICIÓN X DE LA CAJA -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; color: #e2e8f0;">
+                        <span>POSICIÓN LARGO (X):</span>
+                        <b id="val-box-x" style="color: #00f0ff; font-family: monospace; font-size: 12px;">-6.00 m</b>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px;">
+                        <button id="calib-box-x-atras" style="padding: 6px; font-size: 10px; font-weight: 800; background: #1e293b; color: white; border: 1px solid #334155; border-radius: 6px; cursor: pointer;">◀ Hacia Cabina (-0.1m)</button>
+                        <button id="calib-box-x-adelante" style="padding: 6px; font-size: 10px; font-weight: 800; background: #1e293b; color: white; border: 1px solid #334155; border-radius: 6px; cursor: pointer;">▶ Hacia Atrás (+0.1m)</button>
+                    </div>
+                    <input type="range" id="slider-box-x" min="-15.0" max="5.0" step="0.05" value="-6.0" style="width: 100%; accent-color: #00f0ff; cursor: pointer;">
+                </div>
+            </div>
+
+            <!-- SECCIÓN 3: CÓDIGO GENERADO & COPIAR -->
+            <div style="background: rgba(0,0,0,0.5); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+                <label style="display: block; font-size: 10px; font-weight: 800; color: #38bdf8; text-transform: uppercase; margin-bottom: 6px;">
+                    <i data-lucide="code" style="width: 12px; height: 12px; vertical-align: middle;"></i> CÓDIGO CON LAS COORDENADAS:
+                </label>
+                <textarea id="calib-code-output" readonly rows="6" style="width: 100%; background: #060911; color: #38bdf8; font-family: monospace; font-size: 11px; padding: 8px; border-radius: 8px; border: 1px solid #1e293b; resize: none; box-sizing: border-box;"></textarea>
+                
+                <button id="btn-copy-calib-code" style="width: 100%; margin-top: 8px; padding: 12px; background: linear-gradient(135deg, #0284c7, #00f0ff); color: #020617; font-weight: 900; font-size: 12px; border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 15px rgba(0,240,255,0.3); transition: all 0.2s;">
+                    <i data-lucide="copy" style="width: 16px; height: 16px;"></i> COPIAR CÓDIGO PARA EL CHAT
+                </button>
+            </div>
+
+            <!-- ACCIONES: GUARDAR / REINICIAR -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <button id="btn-lock-calibration" style="padding: 10px; background: #22c55e; color: #020617; font-weight: 800; font-size: 11px; border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    <i data-lucide="save" style="width: 14px; height: 14px;"></i> GUARDAR LOCAL
+                </button>
+                <button id="btn-reset-calibration" style="padding: 10px; background: #334155; color: #f8fafc; font-weight: 700; font-size: 11px; border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    <i data-lucide="rotate-ccw" style="width: 14px; height: 14px;"></i> REINICIAR
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANEL DE CONTROL MANUAL DE CARGA INTUITIVO -->
+    <div id="manual-control-panel" class="manual-panel" style="display: none;">
+        <div class="manual-header">
+            <span><i data-lucide="move-3d"></i> AJUSTE DE CARGA</span>
+            <button id="close-manual" class="close-btn">&times;</button>
+        </div>
+        <div class="manual-body">
+            <!-- Tarjeta de Pieza Seleccionada -->
+            <div id="manual-selected-info" class="manual-piece-card">
+                <div class="manual-info-empty" id="manual-empty-state">
+                    <i data-lucide="mouse-pointer-click"></i>
+                    <span>Toca una pieza 3D para moverla</span>
+                </div>
+                <div class="manual-info-details" id="manual-details-state" style="display: none;">
+                    <div class="manual-piece-header">
+                        <strong id="manual-piece-desc">Caja</strong>
+                        <span id="manual-piece-sku" class="manual-sku-tag">SKU</span>
+                    </div>
+                    <div class="manual-piece-meta">
+                        <span id="manual-piece-dims">0.00 × 0.00 × 0.00 m</span>
+                        <span id="manual-piece-weight">0 kg</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Calibración Caja Azul -->
-            <div id="box-calibration-section" class="calib-section">
-                <label>ÁREA DE CARGA (CAJA AZUL)</label>
-                <div class="calib-controls">
-                    <button id="box-move-left" title="Izquierda"><i data-lucide="arrow-left"></i></button>
-                    <button id="box-move-right" title="Derecha"><i data-lucide="arrow-right"></i></button>
-                    <button id="box-move-back" title="Atrás"><i data-lucide="arrow-up"></i></button>
-                    <button id="box-move-front" title="Adelante"><i data-lucide="arrow-down"></i></button>
-                    <button id="box-move-up" title="Subir"><i data-lucide="chevron-up"></i></button>
-                    <button id="box-move-down" title="Bajar"><i data-lucide="chevron-down"></i></button>
+            <!-- Selector de Distancia de Movimiento -->
+            <div class="manual-step-bar">
+                <span class="manual-step-label">PASO:</span>
+                <div class="manual-step-group">
+                    <button type="button" class="btn-step-chip" data-step="0.05" onclick="window.app.setManualStep(0.05)">5 cm</button>
+                    <button type="button" class="btn-step-chip active" data-step="0.10" onclick="window.app.setManualStep(0.10)">10 cm</button>
+                    <button type="button" class="btn-step-chip" data-step="0.25" onclick="window.app.setManualStep(0.25)">25 cm</button>
+                    <button type="button" class="btn-step-chip" data-step="0.50" onclick="window.app.setManualStep(0.50)">50 cm</button>
                 </div>
             </div>
 
-            <button id="btn-lock-calibration" class="btn-lock">
-                <i data-lucide="lock"></i> GUARDAR CALIBRACIÓN
-            </button>
-        </div>
-    </div>
-
-    <!-- PANELES FLOTANTES MOVIDOS FUERA DEL CONTENEDOR PARA EVITAR CLIPPING -->
-    <!-- PANEL DE CONTROL MANUAL DE CARGA -->
-    <div id="manual-control-panel" class="manual-panel" style="display: none;">
-        <div class="manual-header">
-            <span><i data-lucide="move"></i> AJUSTE DE CARGA</span>
-            <button id="close-manual" class="close-btn">×</button>
-        </div>
-        <div class="manual-body">
-            <div class="ctrl-group">
-                <label>DESPLAZAR PIEZA</label>
-                <div class="ctrl-grid">
-                    <button onclick="window.app.moveBoxManual('x', -0.05)" title="Izquierda"><i data-lucide="arrow-left"></i></button>
-                    <button onclick="window.app.moveBoxManual('x', 0.05)" title="Derecha"><i data-lucide="arrow-right"></i></button>
-                    <button onclick="window.app.moveBoxManual('z', -0.05)" title="Arriba"><i data-lucide="chevron-up"></i></button>
-                    <button onclick="window.app.moveBoxManual('z', 0.05)" title="Abajo"><i data-lucide="chevron-down"></i></button>
-                    <button onclick="window.app.moveBoxManual('y', 0.05)" class="btn-up" title="Subir"><i data-lucide="arrow-up"></i></button>
-                    <button onclick="window.app.moveBoxManual('y', -0.05)" class="btn-up" title="Bajar"><i data-lucide="arrow-down"></i></button>
+            <!-- Control de Movimiento en Piso: D-PAD Universal -->
+            <div class="manual-ctrl-group">
+                <div class="manual-group-title">
+                    <span>DESPLAZAMIENTO EN PISO</span>
+                </div>
+                <div class="dpad-wrapper">
+                    <!-- ADELANTE (FRENTE / CABINA) -->
+                    <button type="button" class="dpad-key dpad-fwd" onclick="window.app.moveBoxIntuitive('forward')" title="Mover hacia el frente / cabina">
+                        <i data-lucide="arrow-up"></i>
+                        <span class="dpad-txt">FRENTE (Cabina)</span>
+                    </button>
+                    
+                    <div class="dpad-mid">
+                        <!-- IZQUIERDA -->
+                        <button type="button" class="dpad-key dpad-left" onclick="window.app.moveBoxIntuitive('left')" title="Mover hacia el costado izquierdo">
+                            <i data-lucide="arrow-left"></i>
+                            <span class="dpad-txt">COSTADO IZQ</span>
+                        </button>
+                        
+                        <!-- BOTÓN CENTRAL: GIRAR 90° -->
+                        <button type="button" class="dpad-key dpad-rot" onclick="window.app.rotateBoxManual(90)" title="Girar pieza 90 grados">
+                            <i data-lucide="rotate-cw"></i>
+                            <span class="dpad-txt">GIRAR 90°</span>
+                        </button>
+                        
+                        <!-- DERECHA -->
+                        <button type="button" class="dpad-key dpad-right" onclick="window.app.moveBoxIntuitive('right')" title="Mover hacia el costado derecho">
+                            <i data-lucide="arrow-right"></i>
+                            <span class="dpad-txt">COSTADO DER</span>
+                        </button>
+                    </div>
+                    
+                    <!-- ATRÁS (PUERTAS) -->
+                    <button type="button" class="dpad-key dpad-back" onclick="window.app.moveBoxIntuitive('back')" title="Mover hacia atrás / puertas">
+                        <i data-lucide="arrow-down"></i>
+                        <span class="dpad-txt">ATRÁS (Puertas)</span>
+                    </button>
                 </div>
             </div>
 
-            <button onclick="window.app.deleteSelectedBox()" class="btn-delete-manual">
+            <!-- Control de Altura (Elevar / Bajar) -->
+            <div class="manual-ctrl-group" style="margin-top: 10px;">
+                <div class="manual-group-title">
+                    <span>ALTURA (NIVEL / PISO)</span>
+                </div>
+                <div class="height-dual-grid">
+                    <button type="button" class="btn-elevate-key" onclick="window.app.moveBoxIntuitive('up')" title="Elevar al siguiente nivel">
+                        <i data-lucide="chevrons-up"></i>
+                        <span>SUBIR (Nivel)</span>
+                    </button>
+                    <button type="button" class="btn-elevate-key" onclick="window.app.moveBoxIntuitive('down')" title="Bajar hacia el piso">
+                        <i data-lucide="chevrons-down"></i>
+                        <span>BAJAR (Piso)</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Feedback de Tope o Colisión -->
+            <div id="manual-feedback-msg" class="manual-feedback-toast" style="display: none;"></div>
+
+            <!-- Botón Eliminar Pieza -->
+            <button type="button" onclick="window.app.deleteSelectedBox()" class="btn-delete-manual" style="margin-top: 14px;">
                 <i data-lucide="trash-2"></i> ELIMINAR PIEZA SELECCIONADA
             </button>
         </div>
@@ -758,9 +984,9 @@
         </div>
     </div>
 
-    <script src="app.js?v=13"></script>
-    <script src="massive.js?v=12"></script>
-    <script src="admin.js?v=11"></script>
+    <script src="app.js?v=20261026_v2"></script>
+    <script src="massive.js?v=20261026_v2"></script>
+    <script src="admin.js?v=20261026_v2"></script>
     <script>lucide.createIcons();</script>
 </body>
 

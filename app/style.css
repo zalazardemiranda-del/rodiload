@@ -2513,3 +2513,281 @@ input[type=number] {
     color: #c2410c;
 }
 
+
+/* --- NUEVO TABLERO INTUITIVO DE AJUSTE MANUAL --- */
+.manual-panel {
+    position: absolute;
+    top: 80px;
+    right: 20px;
+    width: 295px;
+    background: rgba(18, 18, 22, 0.94);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55), 0 0 24px rgba(0, 240, 255, 0.08);
+    z-index: 2000;
+    overflow: hidden;
+    color: #e2e8f0;
+}
+
+.manual-header {
+    background: rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 13px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #00f0ff;
+    font-weight: 800;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.manual-header span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.manual-body {
+    padding: 14px 16px;
+}
+
+/* Tarjeta de pieza seleccionada */
+.manual-piece-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+}
+
+.manual-info-empty {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #94a3b8;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.manual-info-empty i {
+    color: #38bdf8;
+    width: 16px;
+    height: 16px;
+}
+
+.manual-piece-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.manual-piece-header strong {
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.manual-sku-tag {
+    background: rgba(0, 240, 255, 0.15);
+    color: #00f0ff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 6px;
+}
+
+.manual-piece-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #94a3b8;
+}
+
+/* Selector de paso */
+.manual-step-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.manual-step-label {
+    font-size: 10px;
+    font-weight: 800;
+    color: #64748b;
+    letter-spacing: 0.5px;
+}
+
+.manual-step-group {
+    display: flex;
+    gap: 4px;
+}
+
+.btn-step-chip {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #cbd5e1;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 7px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.btn-step-chip:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+.btn-step-chip.active {
+    background: #00f0ff;
+    border-color: #00f0ff;
+    color: #0b111e;
+    font-weight: 800;
+}
+
+/* Título de sección */
+.manual-group-title {
+    font-size: 10px;
+    font-weight: 800;
+    color: #64748b;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* D-PAD universal */
+.dpad-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.dpad-mid {
+    display: flex;
+    gap: 6px;
+    width: 100%;
+    justify-content: center;
+}
+
+.dpad-key {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: #e2e8f0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-size: 10px;
+    font-weight: 800;
+    transition: all 0.15s ease;
+    user-select: none;
+}
+
+.dpad-key:hover {
+    background: rgba(0, 240, 255, 0.15);
+    border-color: #00f0ff;
+    color: #00f0ff;
+    transform: translateY(-1px);
+}
+
+.dpad-key:active {
+    transform: translateY(1px);
+    background: rgba(0, 240, 255, 0.25);
+}
+
+.dpad-fwd, .dpad-back {
+    width: 155px;
+    height: 36px;
+}
+
+.dpad-left, .dpad-right {
+    flex: 1;
+    height: 40px;
+}
+
+.dpad-rot {
+    width: 82px;
+    height: 40px;
+    background: rgba(222, 139, 42, 0.15);
+    border-color: rgba(222, 139, 42, 0.4);
+    color: #f59e0b;
+}
+
+.dpad-rot:hover {
+    background: rgba(222, 139, 42, 0.3);
+    border-color: #f59e0b;
+    color: #fbbf24;
+}
+
+.dpad-txt {
+    font-size: 9.5px;
+    letter-spacing: 0.2px;
+}
+
+/* Control de altura */
+.height-dual-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.btn-elevate-key {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: #e2e8f0;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 10.5px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.btn-elevate-key:hover {
+    background: rgba(14, 165, 233, 0.18);
+    border-color: #38bdf8;
+    color: #38bdf8;
+    transform: translateY(-1px);
+}
+
+.btn-elevate-key:active {
+    transform: translateY(1px);
+}
+
+/* Toast de feedback */
+.manual-feedback-toast {
+    margin-top: 10px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 10.5px;
+    font-weight: 700;
+    text-align: center;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+
+/* ELIMINACION DEFINITIVA DEL BOTON DE CALIBRAR */
+#btn-open-calibration, .btn-open-calibration {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    opacity: 0 !important;
+}

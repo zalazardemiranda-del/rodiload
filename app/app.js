@@ -1,14 +1,15 @@
 const UNITS = [
-    { key: 'cont_20gp',   name: '20\' Standard (20GP)', width: 2.35, height: 2.39, length: 5.90, maxPayload: 25000, volume: 33.0, doorHeight: 2.28, model: 'assets/models/MODELO 3D CARRO PARA CONTENEDOR 20.glb', scale: 4.79,  bedHeight: 1.45, offset: { x: -3.20,y: 1.45, z: -0.3 }, modelOffset: { x: -1.45, y: 0.90, z: -0.25 } },
-    { key: 'cont_40gp',   name: '40\' Standard (40GP)', width: 2.35, height: 2.39, length: 12.03,maxPayload: 27600, volume: 67.0, doorHeight: 2.28, model: 'assets/models/trailer 53 ft.glb', scale: 8.38,  bedHeight: 2.00, offset: { x: -5.96,y: 2.00, z: 0.0 }, modelOffset: { x: -1.78, y: 2.00, z: 0.00 } },
-    { key: 'cont_40hc',   name: '40\' High Cube (40HC)',width: 2.35, height: 2.69, length: 12.03,maxPayload: 28600, volume: 76.0, doorHeight: 2.56, model: 'assets/models/trailer 53 ft.glb', scale: 8.23,  bedHeight: 1.55, offset: { x: -5.91,y: 1.55, z: 0.0 }, modelOffset: { x: -1.73, y: 1.60, z: 0.00 } },
-    { key: 'nissan_1.5t',  name: 'PICK UP 1 TON',        width: 1.22, height: 1.12, length: 1.74, maxPayload: 1000,  volume: 2.37,  model: 'assets/models/nissan_1_5.glb',    scale: 2.15,  bedHeight: 0.68, offset: { x: -1.8, y: 0.68, z: 0.0 }, modelOffset: { x: -1.699, y: 0.957, z: 0.002 } },
-    { key: 'van_3ton',     name: 'PICK UP 1.5 TON',      width: 1.69, height: 1.78, length: 2.80, maxPayload: 1500,  volume: 8.42,  model: 'assets/models/nissan_1_5.glb',    scale: 3.50,  bedHeight: 1.09, offset: { x: -2.9, y: 1.09, z: 0.0 }, modelOffset: { x: -2.798, y: 1.529, z: 0.003 } },
-    { key: 'torton_3.5m', name: 'CAMIONETA DE CARGA',     width: 1.70, height: 1.80, length: 3.30, maxPayload: 2500,  volume: 10.0,  model: 'assets/models/nissan_1_5.glb',    scale: 3.70,  bedHeight: 1.30, offset: { x: -3.4, y: 1.30, z: 0.0 }, modelOffset: { x: -3.248, y: 1.640, z: 0.004 } },
-    { key: 'rabon_4.5m',  name: 'TORTON',                width: 2.40, height: 2.10, length: 4.30, maxPayload: 3500,  volume: 21.0,  model: 'assets/models/modelo torton.glb', scale: 3.60,  bedHeight: 1.30, offset: { x: -1.0, y: 1.3,  z: 0.0 }, modelOffset: { x: -0.148, y: 1.257, z: 0.001 } },
-    { key: 'rabon_10ton', name: 'RABON 10 TON',          width: 2.50, height: 2.50, length: 7.30, maxPayload: 10000, volume: 45.0,  model: 'assets/models/rabon 10 ton.glb', scale: 5.20,  bedHeight: 2.00, offset: { x: -2.5, y: 2.0,  z: 0.0 }, modelOffset: { x: -0.144, y: 2.387, z: 0.006 } },
-    { key: 'trailer_53ft',name: 'Trailer 53 FT',         width: 2.45, height: 2.72, length: 15.50,maxPayload: 20000, volume: 102.0, model: 'assets/models/trailer 53 ft.glb',  scale: 10.60, bedHeight: 2.00, offset: { x: -7.45,y: 2.0,  z: 0.0 }, modelOffset: { x: -1.916, y: 2.089, z: 0.049 } },
-    { key: 'lowboy_3ejes',name: 'LOWBOY 3 EJES',         width: 2.59, height: 6.00, length: 12.485,maxPayload: 40000, volume: 250.0, model: 'assets/models/MODELO LOWBOY.glb',  scale: 18.40, bedHeight: 1.50, offset: { x: -4.40,y: 1.50, z: -0.55 }, modelOffset: { x: -3.10, y: 2.85, z: -0.50 }, openDeck: true, secondaryDeck: { length: 3.65, width: 2.59, bedHeightOffset: 0.8, offsetX: 12.485 } }
+    { key: 'cont_20gp',   name: '20\' Standard (20GP)', width: 2.352, height: 2.395, length: 5.90, maxPayload: 28130, volume: 33.2, doorHeight: 2.28, model: 'assets/models/Plataforma para contenedor de 20.glb?v=20261026_v2', rotation: { x: 0, y: Math.PI, z: 0 }, scale: 4.30,  bedHeight: 1.47, offset: { x: -4.25, y: 1.47, z: 0.00 }, modelOffset: { x: 0.00, y: 0.90, z: 0.00 } },
+    { key: 'cont_40gp',   name: '40\' Standard (40GP)', width: 2.35, height: 2.39, length: 12.03, maxPayload: 27600, volume: 67.0, doorHeight: 2.28, model: 'assets/models/MODELO 40 FT.glb?v=20261026_v2', rotation: { x: 0, y: Math.PI, z: 0 }, scale: 8.40,  bedHeight: 1.95, offset: { x: -7.80, y: 1.95, z: 0.00 }, modelOffset: { x: 0.00, y: 1.17, z: 0.00 } },
+    { key: 'cont_40hc',   name: '40\' High Cube (40HC)', width: 2.352, height: 2.70, length: 12.032, maxPayload: 28600, volume: 76.3, doorHeight: 2.58, model: 'assets/models/MODELO 40 FT.glb?v=20261026_v2', rotation: { x: 0, y: Math.PI, z: 0 }, scale: 8.40,  bedHeight: 1.95, offset: { x: -7.80, y: 1.95, z: 0.00 }, modelOffset: { x: 0.00, y: 1.17, z: 0.00 } },
+    { key: 'nissan_1.5t',  name: 'PICK UP 1 TON',        width: 1.35, height: 1.10, length: 1.80, maxPayload: 1000,  volume: 2.67,  model: 'assets/models/Camioneta 1 TON.glb?v=20261026_v2', rotation: { x: 0, y: Math.PI, z: 0 }, scale: 2.30,  bedHeight: 0.79, offset: { x: -2.00, y: 0.79, z: 0.00 }, modelOffset: { x: -0.15, y: 1.00, z: 0.00 } },
+    { key: 'van_3ton',     name: 'PICK UP 1.5 TON',      width: 1.55, height: 1.30, length: 2.20, maxPayload: 1500,  volume: 4.43,  model: 'assets/models/Camioneta 1 TON.glb?v=20261026_v2', rotation: { x: 0, y: Math.PI, z: 0 }, scale: 2.70,  bedHeight: 0.93, offset: { x: -2.35, y: 0.93, z: 0.00 }, modelOffset: { x: -0.20, y: 1.17, z: 0.00 } },
+    { key: 'torton_3.5m', name: 'CAMIONETA DE CARGA 2.5 TON (CHASIS CABINA)', width: 1.58, height: 1.55, length: 2.80, maxPayload: 2500, volume: 6.8, doorHeight: 1.50, model: 'assets/models/Camioneta 2.5 Ton.glb?v=20261026_v2', rotation: { x: 0, y: Math.PI, z: 0 }, scale: 2.90, bedHeight: 0.93, offset: { x: -2.53, y: 0.93, z: 0.00 }, modelOffset: { x: -0.60, y: 1.28, z: 0.00 } },
+    { key: 'rabon_4.5m',  name: 'TORTON',                width: 2.40, height: 2.10, length: 4.30, maxPayload: 3500,  volume: 21.0,  model: 'assets/models/modelo torton.glb?v=20261026_v2', scale: 4.10,  bedHeight: 1.30, offset: { x: -1.00, y: 1.30, z: 0.00 }, modelOffset: { x: -0.35, y: 1.82, z: 0.00 } },
+    { key: 'rabon_10ton', name: 'RABON 10 TON',          width: 2.50, height: 2.50, length: 7.30, maxPayload: 10000, volume: 45.0,  model: 'assets/models/rabon 10 ton.glb?v=20261026_v2', scale: { x: 5.55, y: 5.20, z: 4.60 },  bedHeight: 1.20, offset: { x: -2.60, y: 1.20, z: 0.00 }, modelOffset: { x: -0.14, y: 1.89, z: 0.06 } },
+    { key: 'trailer_53ft',name: 'Trailer 53 FT',         width: 2.45, height: 2.72, length: 15.50,maxPayload: 20000, volume: 102.0, model: 'assets/models/trailer 53 ft.glb?v=20261026_v2', rotation: { x: 0, y: 0, z: 0 }, scale: { x: 9.88, y: 13.38, z: 9.14 }, bedHeight: 1.58, offset: { x: -7.25, y: 1.58, z: 0.00 }, modelOffset: { x: -1.93, y: 2.10, z: -0.10 }, trailerStretch: { splitX: -0.56, factorX: 1.08, splitY: -0.039, factorY: 1.08, factorZ: 1.07 } },
+    { key: 'lowboy_3ejes',name: 'LOWBOY 3 EJES',         width: 2.59, height: 6.00, length: 12.485,maxPayload: 40000, volume: 250.0, model: 'assets/models/MODELO LOWBOY.glb?v=20261026_v2',  scale: 18.40, bedHeight: 1.50, offset: { x: -4.40,y: 1.50, z: -0.55 }, modelOffset: { x: -3.10, y: 2.85, z: -0.50 }, openDeck: true, secondaryDeck: { length: 3.65, width: 2.59, bedHeightOffset: 0.8, offsetX: 12.485 } },
+    { key: 'plataforma_40ft', name: 'PLATAFORMA DE 40 FT', width: 2.35, height: 2.40, length: 12.03, maxPayload: 28750, volume: 67.8, doorHeight: 2.40, model: 'assets/models/plataforma 40ft.glb?v=20261026_v2', scale: 9.65, bedHeight: 1.78, offset: { x: -6.25, y: 1.78, z: 0.00 }, modelOffset: { x: -3.35, y: 2.18, z: -0.06 }, openDeck: true }
 ];
 
 // Configuración de Firebase
@@ -52,6 +53,7 @@ class CubicadorApp {
             this.isLocked = false;
             window.app = this;
             this.isManualMode = false;
+            this.currentManualStep = 0.10;
             this.selectedBox = null;
             this.selectedCargoIndex = null;
             this.editingIndex = null;
@@ -73,38 +75,31 @@ class CubicadorApp {
             this.animate();
             this.createFullUnit();
             this.updateStats();
-            // Precargar todos los modelos únicos en segundo plano
-            this.preloadAllModels();
+            // Optimizacion: Cargar unicamente bajo demanda (on-demand)
+            const calibBtn = document.getElementById("btn-open-calibration");
+            if (calibBtn) calibBtn.remove();
         } catch (e) { console.error(e); }
     }
 
 
     preloadAllModels() {
-        if (!this.loader) return;
-        // Obtener lista de modelos únicos
-        const uniqueModels = [...new Set(UNITS.filter(u => u.model).map(u => u.model))];
-        uniqueModels.forEach(modelPath => {
-            if (!this.modelCache[modelPath]) {
-                this.loader.load(modelPath, (gltf) => {
-                    this.modelCache[modelPath] = gltf;
-                    console.log('[Preload] Listo en caché:', modelPath);
-                }, null, (err) => {
-                    console.warn('[Preload] Error al precargar:', modelPath, err);
-                });
-            }
-        });
+        // Optimizado: No precargar 500MB en segundo plano
     }
 
     initThree() {
 
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(0x829598); // Grey
-        this.scene.fog = new THREE.Fog(0x829598, 20, 100);
+        // Entorno 3D Oscuro estilo Estudio (Meshy.ai)
+        this.scene.background = new THREE.Color(0x141416);
+        this.scene.fog = new THREE.Fog(0x141416, 25, 95);
         this.camera = new THREE.PerspectiveCamera(45, this.container.clientWidth / this.container.clientHeight, 0.1, 1000);
         this.camera.position.set(15, 10, 15);
-        this.renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+        this.renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, powerPreference: "high-performance" });
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
         this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
         this.renderer.outputEncoding = THREE.sRGBEncoding;
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFShadowMap;
         this.container.appendChild(this.renderer.domElement);
 
         const OrbitCtrl = (typeof THREE !== 'undefined' && THREE.OrbitControls) ? THREE.OrbitControls : (typeof OrbitControls !== 'undefined' ? OrbitControls : null);
@@ -147,89 +142,371 @@ class CubicadorApp {
             this.scene.add(this.transformControls);
         }
 
-        this.scene.add(new THREE.AmbientLight(0xffffff, 0.7));
-        const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.8);
-        hemiLight.position.set(0, 20, 0);
+        // Iluminación Profesional de Estudio Oscuro
+        this.scene.add(new THREE.AmbientLight(0xffffff, 0.65));
+        const hemiLight = new THREE.HemisphereLight(0xffffff, 0x141416, 0.55);
+        hemiLight.position.set(0, 25, 0);
         this.scene.add(hemiLight);
-        const sun1 = new THREE.DirectionalLight(0xffffff, 0.8);
-        sun1.position.set(10, 20, 10);
+
+        // Foco clave direccional con sombra suave (contacto en suelo)
+        const sun1 = new THREE.DirectionalLight(0xffffff, 1.1);
+        sun1.position.set(12, 25, 12);
+        sun1.castShadow = true;
+        sun1.shadow.mapSize.width = 1024;
+        sun1.shadow.mapSize.height = 1024;
+        sun1.shadow.camera.near = 0.5;
+        sun1.shadow.camera.far = 80;
+        const d = 16;
+        sun1.shadow.camera.left = -d;
+        sun1.shadow.camera.right = d;
+        sun1.shadow.camera.top = d;
+        sun1.shadow.camera.bottom = -d;
+        sun1.shadow.bias = -0.0005;
         this.scene.add(sun1);
-        const sun2 = new THREE.DirectionalLight(0xffffff, 0.5);
-        sun2.position.set(-10, 10, -10);
+
+        // Luz de rebote y contorno posterior
+        const sun2 = new THREE.DirectionalLight(0xa0b8d4, 0.5);
+        sun2.position.set(-12, 16, -12);
         this.scene.add(sun2);
-        const fillLight = new THREE.PointLight(0xffffff, 0.5);
-        fillLight.position.set(0, 5, 10);
+
+        const fillLight = new THREE.PointLight(0xffffff, 0.35);
+        fillLight.position.set(0, 6, 12);
         this.scene.add(fillLight);
 
-        const ground = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.MeshStandardMaterial({ color: 0x829598, roughness: 0.8 }));
+        // Suelo de estudio infinito grafito
+        const ground = new THREE.Mesh(
+            new THREE.PlaneGeometry(300, 300),
+            new THREE.MeshStandardMaterial({ color: 0x161619, roughness: 0.85, metalness: 0.08 })
+        );
         ground.rotation.x = -Math.PI / 2;
         ground.position.y = -0.01;
+        ground.receiveShadow = true;
         this.scene.add(ground);
         
-        const grid = new THREE.GridHelper(200, 100, 0x163A45, 0x163A45); // Night Ocean grid
+        // Cuadrícula sutil y elegante estilo oscuro (grafito oscuro)
+        const grid = new THREE.GridHelper(200, 100, 0x2a2a30, 0x1e1e24);
         grid.position.y = 0;
+        if (grid.material) {
+            grid.material.transparent = true;
+            grid.material.opacity = 0.45;
+        }
         this.scene.add(grid);
         window.addEventListener('resize', () => this.onWindowResize());
     }
 
     setupCalibrationListeners() {
         const panel = document.getElementById('calibration-panel');
-        if (panel) {
-            document.getElementById('calib-move-left').onclick = () => { if(this.selectedModel) this.selectedModel.position.x -= 0.05; };
-            document.getElementById('calib-move-right').onclick = () => { if(this.selectedModel) this.selectedModel.position.x += 0.05; };
-            document.getElementById('calib-move-up').onclick = () => { if(this.selectedModel) this.selectedModel.position.y += 0.05; };
-            document.getElementById('calib-move-down').onclick = () => { if(this.selectedModel) this.selectedModel.position.y -= 0.05; };
-            document.getElementById('calib-move-back').onclick = () => { if(this.selectedModel) this.selectedModel.position.z -= 0.05; };
-            document.getElementById('calib-move-front').onclick = () => { if(this.selectedModel) this.selectedModel.position.z += 0.05; };
-            document.getElementById('calib-scale-down').onclick = () => { if(this.selectedModel) { const s = this.selectedModel.scale.x - 0.05; this.selectedModel.scale.set(s,s,s); } };
-            document.getElementById('calib-scale-up').onclick = () => { if(this.selectedModel) { const s = this.selectedModel.scale.x + 0.05; this.selectedModel.scale.set(s,s,s); } };
-            
-            document.getElementById('btn-lock-calibration').onclick = () => { 
-                if (this.selectedModel) {
+        if (!panel) return;
+
+        // Función para actualizar UI y código generado
+        this.updateCalibUI = () => {
+            if (!this.selectedModel && this.vehicleGroup) {
+                this.selectedModel = this.truckModel || this.vehicleGroup.children.find(o => o.type === 'Group' || o.type === 'Mesh');
+            }
+            const unit = this.currentUnit;
+            const model = this.selectedModel;
+            const nameEl = document.getElementById('calib-unit-name');
+            if (nameEl && unit) nameEl.innerText = unit.name;
+
+            let curY = 0, curScale = 1, curScaleX = 1, curScaleZ = 1, curX = 0, curZ = 0, curRotX = 0;
+            if (model) {
+                curY = model.position.y;
+                curScale = model.scale.x;
+                curScaleX = model.scale.x;
+                curScaleZ = model.scale.z;
+                curRotX = model.rotation.x;
+                curX = model.position.x;
+                curZ = model.position.z;
+
+                const elY = document.getElementById('val-truck-y');
+                const elS = document.getElementById('val-truck-scale');
+                const elSZ = document.getElementById('val-truck-scale-z');
+                const elSX = document.getElementById('val-truck-scale-x');
+                const elRotX = document.getElementById('val-truck-rot-x');
+                const elX = document.getElementById('val-truck-x');
+                const elZ = document.getElementById('val-truck-z');
+                if (elY) elY.innerText = (curY >= 0 ? '+' : '') + curY.toFixed(2) + ' m';
+                if (elS) elS.innerText = curScale.toFixed(2);
+                if (elSZ) elSZ.innerText = curScaleZ.toFixed(2);
+                if (elSX) elSX.innerText = curScaleX.toFixed(2);
+                if (elRotX) elRotX.innerText = curRotX.toFixed(3) + ' rad';
+                if (elX) elX.innerText = (curX >= 0 ? '+' : '') + curX.toFixed(2) + ' m';
+                if (elZ) elZ.innerText = (curZ >= 0 ? '+' : '') + curZ.toFixed(2) + ' m';
+
+                const sY = document.getElementById('slider-truck-y');
+                const sS = document.getElementById('slider-truck-scale');
+                const sSZ = document.getElementById('slider-truck-scale-z');
+                const sSX = document.getElementById('slider-truck-scale-x');
+                const sRotX = document.getElementById('slider-truck-rot-x');
+                const sX = document.getElementById('slider-truck-x');
+                const sZ = document.getElementById('slider-truck-z');
+                if (sY && Math.abs(parseFloat(sY.value) - curY) > 0.03) sY.value = curY;
+                if (sS && Math.abs(parseFloat(sS.value) - curScale) > 0.05) sS.value = curScale;
+                if (sSZ && Math.abs(parseFloat(sSZ.value) - curScaleZ) > 0.05) sSZ.value = curScaleZ;
+                if (sSX && Math.abs(parseFloat(sSX.value) - curScaleX) > 0.05) sSX.value = curScaleX;
+                if (sRotX && Math.abs(parseFloat(sRotX.value) - curRotX) > 0.005) sRotX.value = curRotX;
+                if (sX && Math.abs(parseFloat(sX.value) - curX) > 0.05) sX.value = curX;
+                if (sZ && Math.abs(parseFloat(sZ.value) - curZ) > 0.03) sZ.value = curZ;
+            }
+
+            const boxOffset = this.currentCargoOffset || { x: 0, y: 0, z: 0 };
+            const elBoxY = document.getElementById('val-box-y');
+            const elBoxX = document.getElementById('val-box-x');
+            if (elBoxY) elBoxY.innerText = (boxOffset.y >= 0 ? '+' : '') + boxOffset.y.toFixed(2) + ' m';
+            if (elBoxX) elBoxX.innerText = (boxOffset.x >= 0 ? '+' : '') + boxOffset.x.toFixed(2) + ' m';
+
+            const sBoxY = document.getElementById('slider-box-y');
+            const sBoxX = document.getElementById('slider-box-x');
+            if (sBoxY && Math.abs(parseFloat(sBoxY.value) - boxOffset.y) > 0.03) sBoxY.value = boxOffset.y;
+            if (sBoxX && Math.abs(parseFloat(sBoxX.value) - boxOffset.x) > 0.05) sBoxX.value = boxOffset.x;
+
+            // Generar código formateado
+            const codeOutput = document.getElementById('calib-code-output');
+            if (codeOutput && model && unit) {
+                const isNonUniform = Math.abs(model.scale.x - model.scale.z) > 0.02 || Math.abs(model.scale.x - model.scale.y) > 0.02;
+                const scaleStr = isNonUniform
+                    ? `scale: { x: ${model.scale.x.toFixed(2)}, y: ${model.scale.y.toFixed(2)}, z: ${model.scale.z.toFixed(2)} },`
+                    : `scale: ${curScale.toFixed(2)},`;
+
+                const codeSnippet = `{
+  ${scaleStr}
+  bedHeight: ${boxOffset.y.toFixed(2)},
+  offset: { x: ${boxOffset.x.toFixed(2)}, y: ${boxOffset.y.toFixed(2)}, z: ${(boxOffset.z || 0).toFixed(2)} },
+  modelOffset: { x: ${curX.toFixed(2)}, y: ${curY.toFixed(2)}, z: ${curZ.toFixed(2)} }
+}`;
+                codeOutput.value = codeSnippet;
+            }
+        };
+
+        const getModel = () => {
+            if (!this.selectedModel && this.vehicleGroup) {
+                this.selectedModel = this.truckModel || this.vehicleGroup.children.find(o => o.type === 'Group' || o.type === 'Mesh');
+            }
+            return this.selectedModel;
+        };
+
+        // --- Botones y Sliders de Camión (Y) ---
+        const adjustTruckY = (delta) => {
+            const m = getModel();
+            if (m) {
+                m.position.y += delta;
+                this.updateCalibUI();
+            }
+        };
+        const elY05 = document.getElementById('calib-y-subir-05'); if (elY05) elY05.onclick = () => adjustTruckY(0.5);
+        const elY01 = document.getElementById('calib-y-subir-01'); if (elY01) elY01.onclick = () => adjustTruckY(0.1);
+        const elYB01 = document.getElementById('calib-y-bajar-01'); if (elYB01) elYB01.onclick = () => adjustTruckY(-0.1);
+        const elYB05 = document.getElementById('calib-y-bajar-05'); if (elYB05) elYB05.onclick = () => adjustTruckY(-0.5);
+        const slY = document.getElementById('slider-truck-y');
+        if (slY) slY.oninput = (e) => {
+            const m = getModel();
+            if (m) {
+                m.position.y = parseFloat(e.target.value);
+                this.updateCalibUI();
+            }
+        };
+
+        // --- Botones y Sliders de Escala ---
+        const adjustScale = (delta) => {
+            const m = getModel();
+            if (m) {
+                const oldX = m.scale.x || 1;
+                const s = Math.max(0.5, oldX + delta);
+                const ratio = s / oldX;
+                m.scale.x = s;
+                m.scale.y = Math.max(0.5, m.scale.y * ratio);
+                m.scale.z = Math.max(0.5, m.scale.z * ratio);
+                this.updateCalibUI();
+            }
+        };
+        const elS1 = document.getElementById('calib-scale-mas-1'); if (elS1) elS1.onclick = () => adjustScale(1.0);
+        const elS02 = document.getElementById('calib-scale-mas-02'); if (elS02) elS02.onclick = () => adjustScale(0.2);
+        const elSM02 = document.getElementById('calib-scale-menos-02'); if (elSM02) elSM02.onclick = () => adjustScale(-0.2);
+        const elSM1 = document.getElementById('calib-scale-menos-1'); if (elSM1) elSM1.onclick = () => adjustScale(-1.0);
+        const slS = document.getElementById('slider-truck-scale');
+        if (slS) slS.oninput = (e) => {
+            const m = getModel();
+            if (m) {
+                const oldX = m.scale.x || 1;
+                const s = parseFloat(e.target.value);
+                const ratio = s / oldX;
+                m.scale.x = s;
+                m.scale.y = Math.max(0.5, m.scale.y * ratio);
+                m.scale.z = Math.max(0.5, m.scale.z * ratio);
+                this.updateCalibUI();
+            }
+        };
+
+        // --- Botones y Sliders de Escala Z (Ancho / Profundidad Caja) ---
+        const adjustScaleZ = (delta) => {
+            const m = getModel();
+            if (m) {
+                m.scale.z = Math.max(0.5, m.scale.z + delta);
+                this.updateCalibUI();
+            }
+        };
+        const elSZ05 = document.getElementById('calib-scalez-mas-05'); if (elSZ05) elSZ05.onclick = () => adjustScaleZ(0.5);
+        const elSZ01 = document.getElementById('calib-scalez-mas-01'); if (elSZ01) elSZ01.onclick = () => adjustScaleZ(0.1);
+        const elSZM01 = document.getElementById('calib-scalez-menos-01'); if (elSZM01) elSZM01.onclick = () => adjustScaleZ(-0.1);
+        const elSZM05 = document.getElementById('calib-scalez-menos-05'); if (elSZM05) elSZM05.onclick = () => adjustScaleZ(-0.5);
+        const slSZ = document.getElementById('slider-truck-scale-z');
+        if (slSZ) slSZ.oninput = (e) => {
+            const m = getModel();
+            if (m) {
+                m.scale.z = parseFloat(e.target.value);
+                this.updateCalibUI();
+            }
+        };
+
+        // --- Botones y Sliders X ---
+        const adjustTruckX = (delta) => {
+            const m = getModel();
+            if (m) {
+                m.position.x += delta;
+                this.updateCalibUI();
+            }
+        };
+        const elXA = document.getElementById('calib-x-atras'); if (elXA) elXA.onclick = () => adjustTruckX(-0.2);
+        const elXD = document.getElementById('calib-x-adelante'); if (elXD) elXD.onclick = () => adjustTruckX(0.2);
+        const slX = document.getElementById('slider-truck-x');
+        if (slX) slX.oninput = (e) => {
+            const m = getModel();
+            if (m) {
+                m.position.x = parseFloat(e.target.value);
+                this.updateCalibUI();
+            }
+        };
+
+        // --- Botones y Sliders Z ---
+        const adjustTruckZ = (delta) => {
+            const m = getModel();
+            if (m) {
+                m.position.z += delta;
+                this.updateCalibUI();
+            }
+        };
+        const elZI = document.getElementById('calib-z-izq'); if (elZI) elZI.onclick = () => adjustTruckZ(-0.1);
+        const elZD = document.getElementById('calib-z-der'); if (elZD) elZD.onclick = () => adjustTruckZ(0.1);
+        const slZ = document.getElementById('slider-truck-z');
+        if (slZ) slZ.oninput = (e) => {
+            const m = getModel();
+            if (m) {
+                m.position.z = parseFloat(e.target.value);
+                this.updateCalibUI();
+            }
+        };
+
+        // --- Botones y Sliders Caja Azul (Y) ---
+        const adjustBoxY = (delta) => {
+            if (this.currentCargoOffset) {
+                this.currentCargoOffset.y += delta;
+                this.updateBlueBoxPosition();
+                this.updateCalibUI();
+            }
+        };
+        const elBoxYS = document.getElementById('calib-box-y-subir'); if (elBoxYS) elBoxYS.onclick = () => adjustBoxY(0.05);
+        const elBoxYB = document.getElementById('calib-box-y-bajar'); if (elBoxYB) elBoxYB.onclick = () => adjustBoxY(-0.05);
+        const slBoxY = document.getElementById('slider-box-y');
+        if (slBoxY) slBoxY.oninput = (e) => {
+            if (this.currentCargoOffset) {
+                this.currentCargoOffset.y = parseFloat(e.target.value);
+                this.updateBlueBoxPosition();
+                this.updateCalibUI();
+            }
+        };
+
+        // --- Botones y Sliders Caja Azul (X) ---
+        const adjustBoxX = (delta) => {
+            if (this.currentCargoOffset) {
+                this.currentCargoOffset.x += delta;
+                this.updateBlueBoxPosition();
+                this.updateCalibUI();
+            }
+        };
+        const elBoxXA = document.getElementById('calib-box-x-atras'); if (elBoxXA) elBoxXA.onclick = () => adjustBoxX(-0.1);
+        const elBoxXD = document.getElementById('calib-box-x-adelante'); if (elBoxXD) elBoxXD.onclick = () => adjustBoxX(0.1);
+        const slBoxX = document.getElementById('slider-box-x');
+        if (slBoxX) slBoxX.oninput = (e) => {
+            if (this.currentCargoOffset) {
+                this.currentCargoOffset.x = parseFloat(e.target.value);
+                this.updateBlueBoxPosition();
+                this.updateCalibUI();
+            }
+        };
+
+        // --- Copiar Código al Portapapeles ---
+        const btnCopy = document.getElementById('btn-copy-calib-code');
+        if (btnCopy) {
+            btnCopy.onclick = () => {
+                const ta = document.getElementById('calib-code-output');
+                const text = ta ? ta.value : '';
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(() => {
+                        const originalHTML = btnCopy.innerHTML;
+                        btnCopy.innerHTML = '<i data-lucide="check"></i> ✅ ¡CÓDIGO COPIADO! PÉGALO EN EL CHAT';
+                        btnCopy.style.background = '#22c55e';
+                        btnCopy.style.color = '#020617';
+                        setTimeout(() => {
+                            btnCopy.innerHTML = originalHTML;
+                            btnCopy.style.background = 'linear-gradient(135deg, #0284c7, #00f0ff)';
+                            btnCopy.style.color = '#020617';
+                        }, 3000);
+                    });
+                } else if (ta) {
+                    ta.select();
+                    document.execCommand('copy');
+                    alert('¡Código copiado al portapapeles! Pégalo aquí en el chat.');
+                }
+            };
+        }
+
+        // --- Guardar Calibración Local ---
+        const btnSave = document.getElementById('btn-lock-calibration');
+        if (btnSave) {
+            btnSave.onclick = () => {
+                const m = getModel();
+                if (m) {
                     const data = {
-                        posX: this.selectedModel.position.x,
-                        posY: this.selectedModel.position.y,
-                        posZ: this.selectedModel.position.z,
-                        scale: this.selectedModel.scale.x,
+                        posX: m.position.x,
+                        posY: m.position.y,
+                        posZ: m.position.z,
+                        scale: { x: m.scale.x, y: m.scale.y, z: m.scale.z },
+                        scaleZ: m.scale.z,
+                        rotX: m.rotation.x,
                         boxOffset: this.currentCargoOffset,
                         isLocked: true
                     };
-                    localStorage.setItem(`calib_v1_${this.currentUnit.key}`, JSON.stringify(data));
-                    alert(`UNIDAD BLOQUEADA: Configuración guardada para ${this.currentUnit.name}.`);
-                }
-                panel.style.display = 'none'; 
-                this.selectedModel = null; 
-            };
-
-            document.getElementById('box-move-left').onclick = () => { if(this.blueBoxEdges) { this.currentCargoOffset.x -= 0.05; this.updateBlueBoxPosition(); } };
-            document.getElementById('box-move-right').onclick = () => { if(this.blueBoxEdges) { this.currentCargoOffset.x += 0.05; this.updateBlueBoxPosition(); } };
-            document.getElementById('box-move-up').onclick = () => { if(this.blueBoxEdges) { this.currentCargoOffset.y += 0.05; this.updateBlueBoxPosition(); } };
-            document.getElementById('box-move-down').onclick = () => { if(this.blueBoxEdges) { this.currentCargoOffset.y -= 0.05; this.updateBlueBoxPosition(); } };
-            document.getElementById('box-move-back').onclick = () => { if(this.blueBoxEdges) { this.currentCargoOffset.z -= 0.05; this.updateBlueBoxPosition(); } };
-            document.getElementById('box-move-front').onclick = () => { if(this.blueBoxEdges) { this.currentCargoOffset.z += 0.05; this.updateBlueBoxPosition(); } };
-            
-            document.getElementById('btn-close-calibration').onclick = () => { panel.style.display = 'none'; };
-        }
-        
-        const openBtn = document.getElementById('btn-open-calibration');
-        if (openBtn) {
-            openBtn.onclick = () => {
-                const panel = document.getElementById('calibration-panel');
-                if (panel) {
-                    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-                    // Activar el modelo de la unidad actual para calibrar
-                    this.selectedModel = this.vehicleGroup.children.find(o => o.type === 'Group' || o.type === 'Mesh');
+                    const key = this.getCalibStorageKey();
+                    localStorage.setItem(key, JSON.stringify(data));
+                    alert(`✅ Calibración guardada localmente para ${this.currentUnit.name}.\n\n¡No olvides copiar el código y pegarlo en el chat para dejarlo fijo para siempre!`);
                 }
             };
         }
 
-        // Asegurar que el evento se dispare incluso si OrbitControls usa preventDefault en pointerdown
+        // --- Reiniciar ---
+        const btnReset = document.getElementById('btn-reset-calibration');
+        if (btnReset) {
+            btnReset.onclick = () => {
+                localStorage.removeItem(this.getCalibStorageKey());
+                this.createFullUnit();
+                setTimeout(() => this.updateCalibUI(), 100);
+            };
+        }
+
+        // --- Cerrar ---
+        const btnClose = document.getElementById('btn-close-calibration');
+        if (btnClose) btnClose.onclick = () => { panel.style.display = 'none'; };
+
+        const openBtn = document.getElementById("btn-open-calibration");
+        if (openBtn) openBtn.remove();
+
+        // Click en el modelo también abre el panel
         if (this.renderer && this.renderer.domElement) {
             this.renderer.domElement.addEventListener('pointerdown', (e) => this.onManualMouseDown(e));
-        } else {
+        } else if (this.container) {
             this.container.addEventListener('pointerdown', (e) => this.onManualMouseDown(e));
         }
-        
+
         document.getElementById('btn-manual-mode')?.addEventListener('click', () => this.toggleManualMode());
         document.getElementById('close-manual')?.addEventListener('click', () => this.toggleManualMode(false));
         document.getElementById('close-detail')?.addEventListener('click', () => {
@@ -237,9 +514,6 @@ class CubicadorApp {
             if (modal) modal.style.display = 'none';
         });
     }
-
-
-
 
     toggleManualMode(force) {
         this.isManualMode = force !== undefined ? force : !this.isManualMode;
@@ -251,6 +525,8 @@ class CubicadorApp {
             btn.classList.add('active');
             panel.style.display = 'block';
             this.controls.enabled = true; // Ahora permitimos mover la cámara libremente
+            this.updateManualInfoCard();
+            if (window.lucide) window.lucide.createIcons();
         } else {
             btn.classList.remove('active');
             panel.style.display = 'none';
@@ -323,6 +599,7 @@ class CubicadorApp {
         if (this.transformControls && this.isManualMode) {
             this.transformControls.attach(item.proxyMesh);
         }
+        this.updateManualInfoCard();
     }
 
     deselectBox() {
@@ -348,48 +625,175 @@ class CubicadorApp {
             if (this.transformControls) this.transformControls.detach();
         }
         this.selectedBox = null;
+        this.updateManualInfoCard();
+    }
+
+    setManualStep(step) {
+        this.currentManualStep = step;
+        document.querySelectorAll('.btn-step-chip').forEach(btn => {
+            const btnStep = parseFloat(btn.dataset.step);
+            btn.classList.toggle('active', Math.abs(btnStep - step) < 0.001);
+        });
+    }
+
+    updateManualInfoCard() {
+        const emptyEl = document.getElementById('manual-empty-state');
+        const detailsEl = document.getElementById('manual-details-state');
+        if (!emptyEl || !detailsEl) return;
+
+        if (!this.selectedBox) {
+            emptyEl.style.display = 'flex';
+            detailsEl.style.display = 'none';
+            return;
+        }
+
+        emptyEl.style.display = 'none';
+        detailsEl.style.display = 'block';
+
+        const descEl = document.getElementById('manual-piece-desc');
+        const skuEl = document.getElementById('manual-piece-sku');
+        const dimsEl = document.getElementById('manual-piece-dims');
+        const weightEl = document.getElementById('manual-piece-weight');
+
+        const item = this.selectedBox;
+        if (descEl) descEl.innerText = item.desc || 'Pieza';
+        if (skuEl) skuEl.innerText = item.sku || 'SKU';
+        if (dimsEl) dimsEl.innerText = `${(item.l || 0).toFixed(2)} × ${(item.w || 0).toFixed(2)} × ${(item.h || 0).toFixed(2)} m`;
+        if (weightEl) weightEl.innerText = `${(item.weight || 0).toLocaleString()} kg`;
+    }
+
+    showManualFeedback(msg, isError = false) {
+        const toast = document.getElementById('manual-feedback-msg');
+        if (!toast) return;
+        toast.innerHTML = (isError ? '⚠️ ' : 'ℹ️ ') + msg;
+        toast.style.display = 'block';
+        toast.style.borderColor = isError ? '#ef4444' : '#00f0ff';
+        toast.style.color = isError ? '#fca5a5' : '#00f0ff';
+        toast.style.background = isError ? 'rgba(239, 68, 68, 0.15)' : 'rgba(0, 240, 255, 0.12)';
+        if (this._manualToastTimer) clearTimeout(this._manualToastTimer);
+        this._manualToastTimer = setTimeout(() => {
+            if (toast) toast.style.display = 'none';
+        }, 2500);
+    }
+
+    moveBoxIntuitive(direction) {
+        if (!this.selectedBox || !this.selectedBox.proxyMesh) {
+            this.showManualFeedback("Toca primero una pieza 3D para moverla", true);
+            return;
+        }
+        const step = this.currentManualStep || 0.10;
+        switch (direction) {
+            case 'forward': // Hacia el frente / cabina (+X)
+                this.moveBoxManual('x', step);
+                break;
+            case 'back':    // Hacia atrás / puertas (-X)
+                this.moveBoxManual('x', -step);
+                break;
+            case 'left':    // Costado izquierdo (-Z)
+                this.moveBoxManual('z', -step);
+                break;
+            case 'right':   // Costado derecho (+Z)
+                this.moveBoxManual('z', step);
+                break;
+            case 'up':      // Subir / Elevar (+Y)
+                this.moveBoxManual('y', step);
+                break;
+            case 'down':    // Bajar hacia el piso (-Y)
+                this.moveBoxManual('y', -step);
+                break;
+        }
     }
 
     moveBoxManual(axis, amount) {
         if (!this.selectedBox || !this.selectedBox.proxyMesh) {
-            alert("⚠️ Selecciona primero una pieza haciendo clic sobre ella en el modelo 3D.");
+            this.showManualFeedback("Toca primero una pieza 3D para moverla", true);
             return;
         }
-        const oldPos = this.selectedBox.proxyMesh.position.clone();
-        this.selectedBox.proxyMesh.position[axis] += amount;
+        const mesh = this.selectedBox.proxyMesh;
+        const oldPos = mesh.position.clone();
+        mesh.position[axis] += amount;
         
-        if (this.hasCollision(this.selectedBox.proxyMesh)) {
-            this.selectedBox.proxyMesh.position.copy(oldPos); // Revertir si hay colisión
+        let blocked = false;
+        let reason = "";
+
+        const unit = this.currentUnit;
+        const offset = this.currentCargoOffset;
+        const box = new THREE.Box3().setFromObject(mesh);
+
+        // Validar límites del vehículo / contenedor
+        if (box.min.x < offset.x - 0.02) {
+            blocked = true;
+            reason = "Límite trasero (puertas) alcanzado";
+        } else if (box.max.x > offset.x + unit.length + 0.02) {
+            blocked = true;
+            reason = "Límite frontal (cabina) alcanzado";
+        } else if (box.min.z < offset.z - unit.width / 2 - 0.02) {
+            blocked = true;
+            reason = "Límite del costado izquierdo alcanzado";
+        } else if (box.max.z > offset.z + unit.width / 2 + 0.02) {
+            blocked = true;
+            reason = "Límite del costado derecho alcanzado";
+        } else if (box.max.y > offset.y + unit.height + 0.02) {
+            blocked = true;
+            reason = "Límite de altura máxima alcanzado";
+        } else if (box.min.y < offset.y - 0.05) {
+            blocked = true;
+            reason = "Nivel del piso alcanzado";
+        } else if (this.hasCollision(mesh)) {
+            blocked = true;
+            reason = "Tope con otra pieza de carga";
+        }
+
+        if (blocked) {
+            mesh.position.copy(oldPos);
+            this.showManualFeedback(reason, true);
         } else {
-            // Aplicar gravedad tras mover en X o Z (la caja puede quedar en el aire)
             if (axis !== 'y') {
-                this.applyGravity(this.selectedBox.proxyMesh);
+                this.applyGravity(mesh);
             }
+            const toast = document.getElementById('manual-feedback-msg');
+            if (toast && toast.style.display !== 'none') toast.style.display = 'none';
         }
         
         this.checkAllBounds();
         this.updateStats();
+        this.updateManualInfoCard();
     }
 
     rotateBoxManual(angle = 90) {
         if (!this.selectedBox || !this.selectedBox.proxyMesh) {
-            alert("⚠️ Selecciona primero una pieza haciendo clic sobre ella en el modelo 3D.");
+            this.showManualFeedback("Toca primero una pieza 3D para girarla", true);
             return;
         }
-        const oldRot = this.selectedBox.proxyMesh.rotation.clone();
+        const mesh = this.selectedBox.proxyMesh;
+        const oldRot = mesh.rotation.clone();
         const rad = (angle * Math.PI) / 180;
-        this.selectedBox.proxyMesh.rotation.y += rad;
+        mesh.rotation.y += rad;
         
-        if (this.hasCollision(this.selectedBox.proxyMesh)) {
-            this.selectedBox.proxyMesh.rotation.copy(oldRot); // Revertir si hay colisión
+        let blocked = false;
+        let reason = "";
+
+        const unit = this.currentUnit;
+        const offset = this.currentCargoOffset;
+        const box = new THREE.Box3().setFromObject(mesh);
+
+        if (box.min.x < offset.x - 0.02 || box.max.x > offset.x + unit.length + 0.02 ||
+            box.min.z < offset.z - unit.width / 2 - 0.02 || box.max.z > offset.z + unit.width / 2 + 0.02) {
+            blocked = true;
+            reason = "Espacio insuficiente para girar aquí (choca con paredes)";
+        } else if (this.hasCollision(mesh)) {
+            blocked = true;
+            reason = "Espacio insuficiente para girar (choca con otra pieza)";
+        }
+
+        if (blocked) {
+            mesh.rotation.copy(oldRot);
+            this.showManualFeedback(reason, true);
             return;
         }
 
-        // Aplicar gravedad tras rotar (el perfil cambia y puede quedar en el aire)
-        this.applyGravity(this.selectedBox.proxyMesh);
-        
-        // Actualizar dimensiones lógicas para estadísticas tras rotación
-        // Nota: Para rotaciones no-90, esto es una aproximación
+        this.applyGravity(mesh);
+
         if (angle % 180 !== 0) {
             const oldL = this.selectedBox.l;
             this.selectedBox.l = this.selectedBox.w;
@@ -398,6 +802,8 @@ class CubicadorApp {
         
         this.checkAllBounds();
         this.updateStats();
+        this.updateManualInfoCard();
+        this.showManualFeedback("Pieza girada 90°", false);
     }
 
     checkAllBounds() {
@@ -574,6 +980,11 @@ class CubicadorApp {
         return false;
     }
 
+    getCalibStorageKey(unit = this.currentUnit) {
+        if (!unit) return 'calib_v9_default';
+        return 'calib_v9_' + unit.key;
+    }
+
     updateBlueBoxPosition() {
         if (this.blueBoxEdges) {
             const config = this.currentUnit;
@@ -582,30 +993,22 @@ class CubicadorApp {
     }
 
     onModelClick(event) {
-        if (this.isLocked) return;
-        const saved = localStorage.getItem(`calib_v1_${this.currentUnit.key}`);
-        if (saved) {
-            const data = JSON.parse(saved);
-            if (data.isLocked) return;
-        }
-        const boxSection = document.getElementById('box-calibration-section');
-        if (boxSection) boxSection.style.display = 'block';
-
-        const rect = this.container.getBoundingClientRect();
-        this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-        this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-        this.raycaster.setFromCamera(this.mouse, this.camera);
-        const intersects = this.raycaster.intersectObjects(this.vehicleGroup.children, true);
-        if (intersects.length > 0) {
-            let obj = intersects[0].object;
-            if (obj.type === 'LineSegments') return;
-            document.getElementById('calibration-panel').style.display = 'block';
-            while (obj.parent && obj.parent !== this.vehicleGroup) obj = obj.parent;
-            this.selectedModel = obj;
-        }
+        // Desactivado para evitar abrir el panel al hacer clic en el camion
+        return;
     }
 
     createFullUnit() {
+        if (this.vehicleGroup) {
+            this.vehicleGroup.traverse(n => {
+                if (n.isMesh) {
+                    if (n.geometry) n.geometry.dispose();
+                    if (n.material) {
+                        if (Array.isArray(n.material)) n.material.forEach(m => m.dispose());
+                        else n.material.dispose();
+                    }
+                }
+            });
+        }
         if (this.unitGroup) this.scene.remove(this.unitGroup);
         this.unitGroup = new THREE.Group();
         this.scene.add(this.unitGroup);
@@ -614,7 +1017,7 @@ class CubicadorApp {
         this.unitGroup.add(this.vehicleGroup, this.boxesGroup);
 
         const config = this.currentUnit;
-        const saved = localStorage.getItem(`calib_v1_${config.key}`);
+        const saved = localStorage.getItem(this.getCalibStorageKey(config));
         if (saved) {
             const d = JSON.parse(saved);
             this.currentCargoOffset = d.boxOffset || { ...config.offset };
@@ -623,6 +1026,7 @@ class CubicadorApp {
         }
         
         this.createBoxUnit(config);
+        if (this.cargoList && this.cargoList.length > 0) { this.renderInstancedMeshes(); }
 
         if (config.model && this.loader) {
             const onModelLoaded = (gltf) => {
@@ -646,26 +1050,92 @@ class CubicadorApp {
                         n.castShadow = true; 
                         n.receiveShadow = true;
                         if (n.material) {
-                            n.material = n.material.clone();
-                            n.material.depthWrite = true;
-                            n.material.transparent = false;
-                            n.material.opacity = 1;
+                            if (Array.isArray(n.material)) {
+                                n.material = n.material.map(m => {
+                                    const mc = m.clone();
+                                    mc.depthWrite = true;
+                                    mc.transparent = false;
+                                    mc.opacity = 1;
+                                    return mc;
+                                });
+                            } else {
+                                n.material = n.material.clone();
+                                n.material.depthWrite = true;
+                                n.material.transparent = false;
+                                n.material.opacity = 1;
+                            }
                         }
                     } 
                 });
+                // Ajustar únicamente la caja del remolque (largo, alto y ancho) sin alterar el tractocamión:
+                if (config.trailerStretch) {
+                    const splitX = config.trailerStretch.splitX ?? -0.56;
+                    const factorX = config.trailerStretch.factorX ?? config.trailerStretch.factor ?? 1.0;
+                    const splitY = config.trailerStretch.splitY ?? -0.039;
+                    const factorY = config.trailerStretch.factorY ?? 1.0;
+                    const factorZ = config.trailerStretch.factorZ ?? 1.0;
+                    const mZ = config.modelOffset?.z || 0;
+                    const sZ = (typeof config.scale === 'object' && config.scale?.z) ? config.scale.z : (typeof config.scale === 'number' ? config.scale : 1);
+                    const shiftZ = config.trailerStretch.shiftZ ?? (mZ !== 0 && sZ !== 0 ? -mZ / sZ : 0);
+                    model.traverse(n => {
+                        if (n.isMesh && n.geometry && n.geometry.attributes && n.geometry.attributes.position) {
+                            n.geometry = n.geometry.clone();
+                            const pos = n.geometry.attributes.position;
+                            for (let i = 0; i < pos.count; i++) {
+                                const px = pos.getX(i);
+                                if (px > splitX) {
+                                    pos.setX(i, splitX + (px - splitX) * factorX);
+                                    const py = pos.getY(i);
+                                    if (py > splitY) {
+                                        pos.setY(i, splitY + (py - splitY) * factorY);
+                                    }
+                                    if (factorZ !== 1.0 || shiftZ !== 0) {
+                                        const pz = pos.getZ(i);
+                                        pos.setZ(i, pz * factorZ + shiftZ);
+                                    }
+                                }
+                            }
+                            pos.needsUpdate = true;
+                            n.geometry.computeBoundingBox();
+                        }
+                    });
+                }
                 
                 if (saved) {
                     const d = JSON.parse(saved);
                     model.position.set(d.posX, d.posY, d.posZ);
-                    model.scale.set(d.scale, d.scale, d.scale);
+                    if (typeof d.scale === 'object' && d.scale !== null) {
+                        model.scale.set(d.scale.x ?? 1, d.scale.y ?? 1, d.scale.z ?? 1);
+                    } else {
+                        const sx = d.scaleX ?? d.scale ?? 1;
+                        const sy = d.scaleY ?? d.scale ?? 1;
+                        const sz = d.scaleZ ?? d.scale ?? 1;
+                        model.scale.set(sx, sy, sz);
+                    }
                 } else {
                     const mPos = config.modelOffset || { x: 0, y: 0, z: 0 };
                     model.position.set(mPos.x, mPos.y, mPos.z);
-                    const s = config.scale || 1;
-                    model.scale.set(s, s, s);
+                    if (typeof config.scale === 'object' && config.scale !== null) {
+                        model.scale.set(config.scale.x ?? 1, config.scale.y ?? 1, config.scale.z ?? 1);
+                    } else {
+                        const s = config.scale || 1;
+                        const sx = config.scaleX ?? s;
+                        const sy = config.scaleY ?? s;
+                        const sz = config.scaleZ ?? s;
+                        model.scale.set(sx, sy, sz);
+                    }
+                }
+                if (config.rotation) {
+                    const rX = (saved && JSON.parse(saved).rotX !== undefined) ? JSON.parse(saved).rotX : (config.rotation?.x || 0);
+                    model.rotation.set(rX, config.rotation?.y || 0, config.rotation?.z || 0);
+                } else {
+                    model.rotation.set(0, 0, 0);
                 }
                 console.log('Modelo listo:', config.name);
                 this.vehicleGroup.add(model);
+                this.truckModel = model;
+                this.selectedModel = model;
+                if (this.updateCalibUI) this.updateCalibUI();
                 this.onWindowResize();
             };
 
@@ -692,7 +1162,7 @@ class CubicadorApp {
     createBoxUnit(config) {
         const { width, height, length } = config;
         const offset = this.currentCargoOffset;
-        this.blueBoxEdges = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(length, height, width)), new THREE.LineBasicMaterial({ color: 0x2563eb }));
+        this.blueBoxEdges = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(length, height, width)), new THREE.LineBasicMaterial({ color: 0x00f0ff, linewidth: 2 }));
         this.blueBoxEdges.position.set(offset.x + length/2, offset.y + height/2, offset.z);
         this.vehicleGroup.add(this.blueBoxEdges);
 
@@ -702,7 +1172,7 @@ class CubicadorApp {
             if (sdHeight > 0) {
                 this.secondaryBlueBoxEdges = new THREE.LineSegments(
                     new THREE.EdgesGeometry(new THREE.BoxGeometry(sdLen, sdHeight, sdWidth)), 
-                    new THREE.LineBasicMaterial({ color: 0x2563eb })
+                    new THREE.LineBasicMaterial({ color: 0x00f0ff, linewidth: 2 })
                 );
                 this.secondaryBlueBoxEdges.position.set(offset.x + offsetX + sdLen/2, offset.y + bedHeightOffset + sdHeight/2, offset.z);
                 this.vehicleGroup.add(this.secondaryBlueBoxEdges);
@@ -817,7 +1287,7 @@ class CubicadorApp {
             document.getElementById('input-description').value = '';
             document.getElementById('input-sku').value = '';
             document.getElementById('cb-fragile').checked = false;
-            document.getElementById('cb-stackable').checked = true;
+            document.getElementById('cb-stackable').checked = false;
             const cbDangerous2 = document.getElementById('cb-dangerous');
             if (cbDangerous2) cbDangerous2.checked = false;
             const cbRefrigerated2 = document.getElementById('cb-refrigerated');
@@ -851,7 +1321,7 @@ class CubicadorApp {
         document.getElementById('input-description').value = '';
         document.getElementById('input-sku').value = '';
         document.getElementById('cb-fragile').checked = false;
-        document.getElementById('cb-stackable').checked = true;
+        document.getElementById('cb-stackable').checked = false;
         const cbDangerous = document.getElementById('cb-dangerous');
         if (cbDangerous) cbDangerous.checked = false;
         const cbRefrigerated = document.getElementById('cb-refrigerated');
@@ -1049,7 +1519,11 @@ class CubicadorApp {
                         break;
                     }
                     
-                    if (totalWeight + item.weight > targetUnit.maxPayload) {
+                    const effectivePayload = (window.currentTripLegalWeight && window.fromMassiveResult)
+                        ? Math.min(targetUnit.maxPayload, window.currentTripLegalWeight)
+                        : targetUnit.maxPayload;
+
+                    if (totalWeight + item.weight > effectivePayload) {
                         unitFull = true;
                         packedQty = i;
                         break;
@@ -1167,20 +1641,25 @@ class CubicadorApp {
                 
                 // Gravedad en Simulación
                 let maxYUnder = startY;
+                let canStackHere = true;
                 simulatedCargo.forEach(other => {
                     const overlapX = Math.abs(posX - other.posX) < (item.l/2 + other.l/2) - 0.01;
                     const overlapZ = Math.abs(posZ - other.posZ) < (item.w/2 + other.w/2) - 0.01;
                     if (overlapX && overlapZ) {
+                        if (!other.stackable || other.fragile) canStackHere = false;
                         const topY = other.posY + other.h/2;
                         if (topY > maxYUnder) maxYUnder = topY;
                     }
                 });
+                if (maxYUnder > startY + 0.001 && (!canStackHere || !item.stackable)) {
+                    return false;
+                }
                 let posY = maxYUnder + item.h/2;
 
                 if (posX + item.l/2 > unit.offset.x + unit.length + 0.01 || posZ + item.w/2 > unit.offset.z + unit.width/2 + 0.01 || posY + item.h/2 > unit.offset.y + unit.height + 0.01) {
                     return false;
                 }
-                simulatedCargo.push({ posX, posY, posZ, l: item.l, w: item.w, h: item.h });
+                simulatedCargo.push({ posX, posY, posZ, l: item.l, w: item.w, h: item.h, stackable: item.stackable, fragile: item.fragile });
             }
         }
         return true;
@@ -1198,44 +1677,59 @@ class CubicadorApp {
             xEnd = startX + deckLength / 2;
         }
 
-        for (let xPos = xStart; xPos <= xEnd; xPos += 0.2) {
-            let zPos = platformCenterZ;
-            let maxYUnder = startY;
-            let canStackHere = true;
-            let supportPiece = null;
+        // Si la pieza cabe en ancho, permitir acomodo en múltiples carriles (ej. 2 tarimas a lo ancho); si es ancha/sobredimensionada, centrarla
+        const zStep = 0.2;
+        let zPositions = [platformCenterZ];
+        if (w <= deckWidth * 0.65) {
+            zPositions = [];
+            for (let zp = startZ + w/2; zp <= startZ + deckWidth - w/2 + 0.01; zp += zStep) {
+                zPositions.push(zp);
+            }
+            if (zPositions.length === 0) zPositions = [platformCenterZ];
+        }
 
-            for (let i=0; i<this.cargoList.length; i++) {
-                const other = this.cargoList[i];
-                const overlapX = Math.abs(xPos - other.position.x) < (l/2 + other.l/2) - 0.01;
-                if (overlapX) {
-                    const overlapZ = Math.abs(zPos - other.position.z) < (w/2 + other.w/2) - 0.01;
-                    if (overlapZ) {
-                        if (!other.stackable) {
-                            canStackHere = false;
-                            break;
-                        }
-                        const topY = other.position.y + other.h/2;
-                        if (topY > maxYUnder) {
-                            maxYUnder = topY;
-                            supportPiece = other;
+        for (let xPos = xStart; xPos <= xEnd; xPos += 0.2) {
+            for (let zPos of zPositions) {
+                let maxYUnder = startY;
+                let canStackHere = true;
+                let supportPiece = null;
+
+                for (let i=0; i<this.cargoList.length; i++) {
+                    const other = this.cargoList[i];
+                    const overlapX = Math.abs(xPos - other.position.x) < (l/2 + other.l/2) - 0.01;
+                    if (overlapX) {
+                        const overlapZ = Math.abs(zPos - other.position.z) < (w/2 + other.w/2) - 0.01;
+                        if (overlapZ) {
+                            if (!other.stackable || other.fragile) {
+                                canStackHere = false;
+                                break;
+                            }
+                            const topY = other.position.y + other.h/2;
+                            if (topY > maxYUnder) {
+                                maxYUnder = topY;
+                                supportPiece = other;
+                            }
                         }
                     }
                 }
-            }
 
-            if (!canStackHere) continue;
-            
-            // Si la pieza queda sobre otra (maxYUnder > startY), verificar soporte central
-            if (maxYUnder > startY && supportPiece) {
-                const centerSupportedX = Math.abs(xPos - supportPiece.position.x) < (supportPiece.l/2);
-                const centerSupportedZ = Math.abs(zPos - supportPiece.position.z) < (supportPiece.w/2);
-                if (!centerSupportedX || !centerSupportedZ) continue;
-            }
+                if (!canStackHere) continue;
+                
+                // Si la pieza que se coloca NO es apilable, NUNCA puede colocarse sobre otra pieza
+                if (!stackable && maxYUnder > startY + 0.001) continue;
 
-            let bestY = maxYUnder + h/2;
-            if (bestY + h/2 <= startY + deckHeight + 0.01) {
-                this.addBox(w, l, h, xPos, bestY, zPos, weight, stackable, sku);
-                return true;
+                // Si la pieza queda sobre otra (maxYUnder > startY), verificar soporte central
+                if (maxYUnder > startY && supportPiece) {
+                    const centerSupportedX = Math.abs(xPos - supportPiece.position.x) < (supportPiece.l/2);
+                    const centerSupportedZ = Math.abs(zPos - supportPiece.position.z) < (supportPiece.w/2);
+                    if (!centerSupportedX || !centerSupportedZ) continue;
+                }
+
+                let bestY = maxYUnder + h/2;
+                if (bestY + h/2 <= startY + deckHeight + 0.01) {
+                    this.addBox(w, l, h, xPos, bestY, zPos, weight, stackable, sku);
+                    return true;
+                }
             }
         }
         return false;
@@ -1290,8 +1784,8 @@ class CubicadorApp {
                     if (overlapX) {
                         const overlapZ = Math.abs(zPos - other.position.z) < (w/2 + other.w/2) - 0.01;
                         if (overlapZ) {
-                            if (!other.stackable) {
-                                canStackHere = false; // Bloqueado si el de abajo no es apilable
+                            if (!other.stackable || other.fragile) {
+                                canStackHere = false; // Bloqueado si el de abajo no es apilable o es frágil
                                 break;
                             }
                             const topY = other.position.y + other.h/2;
@@ -1304,6 +1798,9 @@ class CubicadorApp {
                 }
 
                 if (!canStackHere) continue;
+
+                // REGLA CRÍTICA: Si la pieza que se coloca NO es apilable, NUNCA puede colocarse sobre otra pieza
+                if (!stackable && maxYUnder > startY + 0.001) continue;
 
                 // Si la pieza queda sobre otra (maxYUnder > startY), verificar soporte central
                 if (maxYUnder > startY && supportPiece) {
@@ -1442,7 +1939,7 @@ class CubicadorApp {
         this.cargoList.push({ 
             position: new THREE.Vector3(x, y, z),
             rotation: new THREE.Euler(),
-            l, w, h, weight, stackable, originalColor: color, sku: sku,
+            l, w, h, weight, stackable: stackable === true, originalColor: color, sku: sku,
             proxyMesh: null
         });
     }
@@ -1571,7 +2068,7 @@ saveCurrentShipment() {
             document.getElementById('input-description').value = '';
             document.getElementById('input-sku').value = '';
             document.getElementById('cb-fragile').checked = false;
-            document.getElementById('cb-stackable').checked = true;
+            document.getElementById('cb-stackable').checked = false;
             document.getElementById('cb-dangerous').checked = false;
             document.getElementById('cb-refrigerated').checked = false;
 
@@ -1745,26 +2242,46 @@ saveCurrentShipment() {
         if (y > 240) { doc.addPage(); y = 20; }
         
         doc.setFillColor(...primaryColor);
-        doc.rect(15, y, 180, 40, 'F');
+        doc.rect(15, y, 180, 42, 'F');
         
         const totalWeight = this.cargoList.reduce((sum, c) => sum + c.weight, 0);
         const totalVol = this.cargoList.reduce((sum, c) => sum + (c.w * c.l * c.h), 0);
         const efficiency = Math.round((totalVol / unit.volume) * 100);
         
         doc.setTextColor(255, 255, 255);
-        doc.setFontSize(12);
-        doc.text("RESUMEN DE CARGA", 20, y + 10);
+        doc.setFontSize(11);
+        doc.setFont("helvetica", "bold");
+        doc.text("RESUMEN DE CARGA", 20, y + 8);
+        
+        const hasLegalWeight = window.currentTripLegalWeight && window.fromMassiveResult;
+        const effectivePdfPayload = hasLegalWeight
+            ? Math.min(unit.maxPayload, window.currentTripLegalWeight)
+            : unit.maxPayload;
+
+        doc.setFont("helvetica", "normal");
+        if (hasLegalWeight) {
+            doc.setFontSize(9);
+            doc.text(`PESO TOTAL: ${data.stats.totalWeight} kg / ${effectivePdfPayload.toLocaleString()} kg`, 20, y + 16);
+            doc.setFontSize(8);
+            doc.text(`[LÍMITE LEGAL: ${window.currentTripLegalWeight.toLocaleString()} kg]`, 20, y + 22);
+            doc.setFontSize(9);
+            doc.text(`VOLUMEN OCUPADO: ${data.stats.totalVol.toFixed(2)} m³ / ${unit.volume} m³`, 20, y + 29);
+            doc.text(`EFICIENCIA DE ESPACIO: ${data.stats.efficiency}%`, 20, y + 36);
+        } else {
+            doc.setFontSize(9);
+            doc.text(`PESO TOTAL: ${data.stats.totalWeight} kg / ${effectivePdfPayload.toLocaleString()} kg`, 20, y + 18);
+            doc.text(`VOLUMEN OCUPADO: ${data.stats.totalVol.toFixed(2)} m³ / ${unit.volume} m³`, 20, y + 26);
+            doc.text(`EFICIENCIA DE ESPACIO: ${data.stats.efficiency}%`, 20, y + 34);
+        }
         
         doc.setFontSize(10);
-        doc.text(`PESO TOTAL: ${data.stats.totalWeight} kg / ${unit.maxPayload} kg`, 20, y + 20);
-        doc.text(`VOLUMEN OCUPADO: ${data.stats.totalVol.toFixed(2)} m³ / ${unit.volume} m³`, 20, y + 28);
-        doc.text(`EFICIENCIA DE ESPACIO: ${data.stats.efficiency}%`, 20, y + 36);
-        
-        doc.text("CUMPLIMIENTO NORMATIVO (NOMS):", 110, y + 10);
-        doc.setFontSize(9);
-        doc.text("- NOM-012-SCT-2-2017", 115, y + 18);
-        doc.text("- NOM-068-SCT-2-2014", 115, y + 26);
-        doc.text("- NOM-010-SCT-2-2009", 115, y + 34);
+        doc.setFont("helvetica", "bold");
+        doc.text("CUMPLIMIENTO NORMATIVO (NOMS):", 120, y + 8);
+        doc.setFontSize(8.5);
+        doc.setFont("helvetica", "normal");
+        doc.text("- NOM-012-SCT-2-2017", 122, y + 16);
+        doc.text("- NOM-068-SCT-2-2014", 122, y + 24);
+        doc.text("- NOM-010-SCT-2-2009", 122, y + 32);
 
         const maxCargoW = this.cargoList.length > 0 ? Math.max(...this.cargoList.map(c => c.w)) : 0;
         const maxCargoH = this.cargoList.length > 0 ? Math.max(...this.cargoList.map(c => c.h)) : 0;
@@ -1817,18 +2334,23 @@ saveCurrentShipment() {
         const weightText = document.getElementById('stat-weight-text');
         const weightPct = document.getElementById('stat-weight-pct');
         
-        weightText.innerText = `${totalWeight.toLocaleString()} / ${unit.maxPayload.toLocaleString()} kg`;
+        const effectivePayload = (window.currentTripLegalWeight && window.fromMassiveResult)
+            ? Math.min(unit.maxPayload, window.currentTripLegalWeight)
+            : unit.maxPayload;
+
+        weightText.innerText = `${totalWeight.toLocaleString()} / ${effectivePayload.toLocaleString()} kg`;
         
-        const weightRatio = (totalWeight / unit.maxPayload) * 100;
-        weightPct.innerText = `${Math.round(weightRatio)}% de carga útil`;
+        const weightRatio = (totalWeight / effectivePayload) * 100;
+        const legalTag = (window.currentTripLegalWeight && window.fromMassiveResult) ? ` (Legal: ${window.currentTripLegalWeight.toLocaleString()} kg)` : '';
+        weightPct.innerText = `${Math.round(weightRatio)}% de carga útil${legalTag}`;
         
         // WARNING DE SOBREPESO
-        if (totalWeight > unit.maxPayload) {
+        if (totalWeight > effectivePayload) {
             weightText.style.color = '#ff453a';
             weightPct.innerHTML = `<span style="color: #ff453a; font-weight: 800;">⚠️ SOBREPESO DETECTADO</span>`;
             // Solo mostrar alert en modo individual (no en cubicación masiva, que ya validó el peso)
             if (!this._notifiedOverweight && !window.fromMassiveResult) {
-                alert(`⚠️ ¡ATENCIÓN! Has excedido la capacidad de carga (Payload) del contenedor ${unit.name}. El peso actual es de ${totalWeight}kg vs el máximo de ${unit.maxPayload}kg.`);
+                alert(`⚠️ ¡ATENCIÓN! Has excedido la capacidad de carga (Payload) del contenedor ${unit.name}. El peso actual es de ${totalWeight}kg vs el máximo de ${effectivePayload}kg.`);
                 this._notifiedOverweight = true;
             }
         } else {
@@ -2097,6 +2619,7 @@ saveCurrentShipment() {
         this.renderUnitChips();
         this.createFullUnit();
         this.updateStats();
+
     }
 
     onWindowResize() {
